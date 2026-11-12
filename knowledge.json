@@ -1217,6 +1217,41 @@
 			]
 		},
 		{
+			"file": "answers/server-and-browser.md",
+			"symbols": [
+				"ajax",
+				"cache",
+				"conf",
+				"emit",
+				"localize",
+				"newaction",
+				"plugin",
+				"route"
+			],
+			"tags": [
+				"application",
+				"begin",
+				"browser",
+				"end",
+				"server",
+				"total"
+			]
+		},
+		{
+			"file": "answers/frontend-library.md",
+			"symbols": [
+				"ajax"
+			],
+			"tags": [
+				"add",
+				"bootstrap",
+				"include",
+				"jcomponent",
+				"jquery",
+				"library"
+			]
+		},
+		{
 			"file": "answers/versions.md",
 			"symbols": [
 				"cron",

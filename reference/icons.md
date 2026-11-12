@@ -1,6 +1,6 @@
 # Total Icons: the names
 
-The 600 icons of Total Icons, the icon font that the jComponent library loads. Use one of these names; a name that is not here draws nothing.
+The 595 names of Total Icons, the icon font that the jComponent library loads. Use one of these names; a name that is not here draws nothing.
 
 - Source: <https://github.com/totaljs/jComponent> (`spa.min@20.css`), revision `3fedd009`. License: MIT, Copyright (c) Peter Širka.
 - Update the list with `node scripts/components.js`; do not edit it here.
@@ -14,7 +14,7 @@ The classes `ti` and `ti-` with the name:
 <button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
 ```
 
-In the metadata of a plugin and in the configuration of a component the icon is written with both classes:
+In the metadata of a plugin the icon is written with both classes. In the configuration of a component the name alone is enough (`icon:home`): the component adds `ti ti-` to a value without a space.
 
 ```js
 exports.icon = 'ti ti-check-circle';
@@ -32,17 +32,17 @@ exports.icon = 'ti ti-check-circle';
 - **h**: hammer, hashtag, hdd, heading, headphone, heart, heart-alt, helicopter, highlighter, history, holiday, holiday1, home, hospital, hospital-alt, hourglass, html5
 - **i**: icone, icons, idcard, idcard-alt, image, images, inbox, incognito, industry, infinity, info, info-circle, injection, input, instagram, invoice, italic
 - **j**: java, js
-- **k**: kafka, key, keyboard, keys, kokot
+- **k**: kafka, key, keyboard, keys
 - **l**: language, language-alt, laptop, laptop-code, laugh, laugh-wink, layer-group, layer-plus, layout, leaf, lightbulb, lightbulb-on, link, link-alt, linkedin, linux, list, list-alt, list-ol, loading, lock, long-arrow-down, long-arrow-left, long-arrow-right, long-arrow-up
 - **m**: macro, magic, magic-alt, magnet, male, male-alt, map-pin, markdown, mastodon, maximize, meat, menu, menu-alt, microchip, microchip-alt, microphone, microsoft, minimize, minus, minus-circle, minus-square, mobile, mobile-ring, money-check-alt, monitor-heart-rate, motherboard, movie, music, mute
 - **n**: navicon, network, network-alt, newspaper, npm
 - **o**: object, object-group, openai, openplatform, opensource, opensource-alt
-- **p**: paint-brush, paint-brush-alt, palette, paperclip, parking, parking-alt, paste, pause, peach, pear, pen, pencil, pencil-alt, pencil-paintbrush, phone, phone-alt, phone-laptop, photo-video, pica, pilot, pin, pin-alt, ping-pong, pistol, play, play-alt, plug, plug-alt, plus, plus-circle, plus-square, pointer, poop, pos, power-off, presentation, print, project-diagram, pulse, pulse-alt, puzzle, python
+- **p**: paint-brush, paint-brush-alt, palette, paperclip, parking, parking-alt, paste, pause, peach, pear, pen, pencil, pencil-alt, pencil-paintbrush, phone, phone-alt, phone-laptop, photo-video, pilot, pin, pin-alt, ping-pong, pistol, play, play-alt, plug, plug-alt, plus, plus-circle, plus-square, pointer, poop, pos, power-off, presentation, print, project-diagram, pulse, pulse-alt, puzzle, python
 - **q**: qrcode, qrcode-alt, question-circle, quote-left, quote-right
 - **r**: rabbit-fast, radio, raspberry, reader, receipt, recycle, redo, refresh, relations, relax, remove, retweet, robot, robot-alt, rocket, router, rss-square, ruler, runner
-- **s**: satellite, save, scissors, scissors-alt, script, search, search-dot, search-minus, search-plus, selection, send, server, settings, share, share-alt, shield, shield-alt, shield-check, ship, shit, shopping-cart, sidebar, sign-in, sign-in-alt, sign-out, sign-out-alt, sitemap, sliders-h, sliders-v, smile, smile-wink, sms, snowflake, sort, sort-asc, sort-desc, sort-down-alt, sort-up-alt, spellcheck, spider, spinner, square, square-alt, stackoverflow, star, star-alt, stars, start, stop-alt, stopwatch, stopwatch-alt, store, stream, strikethrough, suitcase, sun, support, swimming, sync
-- **t**: table, table-alt, tablet, tachometer, tag, tags, tasks, telegram, television, tennis, terminal, terrace, test, thermometer, thumbs-up, ticket, ticket-alt, tiktok, times, times-circle, times-circle-alt, tint, totaljs, totaljs-alt, traffic-light, train, tram, trash, tree, trees, trending-down, trending-up, trophy, trophy-alt, truck, turkey, tv, twitter, twitter-x
+- **s**: satellite, save, scissors, scissors-alt, script, search, search-dot, search-minus, search-plus, selection, send, server, settings, share, share-alt, shield, shield-alt, shield-check, ship, shopping-cart, sidebar, sign-in, sign-in-alt, sign-out, sign-out-alt, sitemap, sliders-h, sliders-v, smile, smile-wink, sms, snowflake, sort, sort-asc, sort-desc, sort-down-alt, sort-up-alt, spellcheck, spider, spinner, square, square-alt, stackoverflow, star, star-alt, stars, start, stop-alt, stopwatch, stopwatch-alt, store, stream, strikethrough, suitcase, sun, support, swimming, sync
+- **t**: table, table-alt, tablet, tachometer, tag, tags, tasks, telegram, television, tennis, terminal, terrace, thermometer, thumbs-up, ticket, ticket-alt, tiktok, times, times-circle, times-circle-alt, tint, totaljs, totaljs-alt, traffic-light, train, tram, trash, tree, trees, trending-down, trending-up, trophy, trophy-alt, truck, turkey, tv, twitter, twitter-x
 - **u**: umbrella-open, underline, underscore, undo, university, unlink, unlock, upload, user, users, users-alt, users-cog
-- **v**: vacation, vacation1, variables, vector, version, versioning, video, volleyball, volume, volume-down, volume-up
+- **v**: vacation, variables, vector, version, versioning, video, volleyball, volume, volume-down, volume-up
 - **w**: wallet, warning, warning-alt, washing, water, weather, wechat, whatsapp, wheelchair, whistle, wifi, wind, window, window-alt, window-frame, window-open, windows, wrench
 - **y**: youtube

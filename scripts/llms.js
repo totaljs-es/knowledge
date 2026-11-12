@@ -64,6 +64,8 @@ var PAGES = [
 	['Answers', 'answers/test-an-application.md', 'How do I test a Total.js 5 application?', 'A short answer with its code and the application that shows it'],
 	['Answers', 'answers/javascript-style.md', 'Which JavaScript style does Total.js 5 code use?', 'A short answer with its code and the application that shows it'],
 	['Answers', 'answers/not-express.md', 'Is Total.js like Express? Which packages do I need?', 'A short answer with its code and the application that shows it'],
+	['Answers', 'answers/server-and-browser.md', 'Where does the server end and the browser begin in a Total.js application?', 'Total.js 5 sends models and jComponent 20 is in charge of the browser: what each side does, how a model crosses, and the names that exist on both sides'],
+	['Answers', 'answers/frontend-library.md', 'What does the jComponent 20 library include? Do I add jQuery or Bootstrap?', 'jQuery, Tangular, the grid of Bootstrap 3, helper classes, Total Icons and the CSS variables; no Bootstrap buttons, forms or modals: components instead'],
 	['Answers', 'answers/versions.md', 'Which version of Total.js 5 should I use, and what does the beta add?', 'A short answer with its code and the application that shows it'],
 	['Questions', 'questions/application.md', 'The application: questions and answers', 'Folders, the start script, config, helpers, state, modules, plugins or not, packages and versions'],
 	['Questions', 'questions/actions.md', 'Actions: questions and answers', 'NEWACTION: names, input, params, query, answers, errors, permissions and calls between actions'],

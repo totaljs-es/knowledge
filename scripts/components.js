@@ -105,7 +105,12 @@ var found = {};
 	found[rule.substring(4, rule.length - 7)] = 1;
 });
 
-var icons = Object.keys(found).sort();
+// A few second names of an icon in the style sheet are not names to teach: they are left out
+var LEFTOUT = ['kokot', 'pica', 'shit', 'test', 'vacation1'];
+
+var icons = Object.keys(found).filter(function(name) {
+	return LEFTOUT.indexOf(name) === -1;
+}).sort();
 
 var groups = {};
 
@@ -119,7 +124,7 @@ icons.forEach(function(name) {
 var page = [
 	'# Total Icons: the names',
 	'',
-	'The ' + icons.length + ' icons of Total Icons, the icon font that the jComponent library loads. Use one of these names; a name that is not here draws nothing.',
+	'The ' + icons.length + ' names of Total Icons, the icon font that the jComponent library loads. Use one of these names; a name that is not here draws nothing.',
 	'',
 	'- Source: <https://github.com/totaljs/jComponent> (`spa.min@20.css`), revision `' + revision(library) + '`. License: MIT, Copyright (c) Peter Širka.',
 	'- Update the list with `node scripts/components.js`; do not edit it here.',
@@ -133,7 +138,7 @@ var page = [
 	'<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>',
 	'```',
 	'',
-	'In the metadata of a plugin and in the configuration of a component the icon is written with both classes:',
+	'In the metadata of a plugin the icon is written with both classes. In the configuration of a component the name alone is enough (`icon:home`): the component adds `ti ti-` to a value without a space.',
 	'',
 	'```js',
 	'exports.icon = \'ti ti-check-circle\';',
