@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 173 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 208 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -6279,6 +6279,422 @@ Inside the worker, `NEWTHREAD()` without a name is the thread itself: `worker.da
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/helpers.md
+
+# Helpers of texts, numbers, dates and lists, cookies, headers and middleware: questions and answers
+
+## How do I make a slug from a text?
+
+With `slug` of the text. It removes the accents too:
+
+```js
+var a = 'Hello World!'.slug();     // hello-world
+var b = 'Čaj s mlékom'.slug();     // caj-s-mlekom
+```
+
+## How do I check that a text is an email, a URL or a phone?
+
+With `isEmail`, `isURL` and `isPhone` of the text. In the input of an action use the types `Email`, `URL` and `Phone` instead.
+
+```js
+var ok = 'anna@example.com'.isEmail();          // true
+var no = 'anna'.isEmail();                      // false
+var url = 'https://www.totaljs.com'.isURL();    // true
+var phone = '+421903111222'.isPhone();          // true
+```
+
+## How do I turn a text into a number, a date or an object?
+
+With `parseInt`, `parseFloat`, `parseDate` and `parseJSON` of the text. They do not throw: a text that is not a number gives `0`, and a text that is not JSON gives `undefined`.
+
+```js
+var count = '12'.parseInt();            // 12
+var zero = 'abc'.parseInt();            // 0
+var price = '12.5'.parseFloat();        // 12.5
+var date = '2026-11-12'.parseDate();    // a Date
+var obj = '{"a":1}'.parseJSON();        // { a: 1 }
+var none = 'not json'.parseJSON();      // undefined
+```
+
+## How do I shorten a text or write it with capitals?
+
+`max(length)` cuts the text and ends it with `...`; `capitalize()` starts every word with a capital:
+
+```js
+var short = 'A long text of a product'.max(10);    // A long ...
+var name = 'anna nowak'.capitalize();              // Anna Nowak
+```
+
+## How do I encode a text for HTML?
+
+With `encode` of the text, and `decode` for the way back:
+
+```js
+var safe = '<b>x</b>'.encode();     // &lt;b&gt;x&lt;/b&gt;
+var html = '&lt;b&gt;'.decode();    // <b>
+```
+
+## How do I hash a text?
+
+`sha256()` and `md5()` of the text give the hash in hexadecimal; `sha256(salt)` mixes a secret into it. `hash()` gives a short number, good for a key and not for a password:
+
+```js
+var password = model.password.sha256(CONF.secret);
+var key = 'text'.hash();    // 3556653
+```
+
+## How do I make a text for searching without accents?
+
+With `toSearch` of the text: lowercase and without accents. Keep it in a column `search` and compare it with the same form of what the user typed.
+
+```js
+model.search = model.name.toSearch();    // 'Čučoriedka Nowák' becomes 'cucoriedka nowak'
+```
+
+## How do I format a number?
+
+With `format(decimals)` of the number; the separators of thousands and of decimals are the next two arguments. `padLeft`, `round`, `floor` and `filesize` are numbers too:
+
+```js
+var a = (1234.5).format(2);              // 1 234.50
+var b = (1234.5).format(2, ',', '.');    // 1,234.50
+var c = (5).padLeft(3);                  // 005
+var d = (1.005).round(2);                // 1.01
+var e = (2.567).floor(2);                // 2.56
+var f = (1536).filesize();               // 1.50 KB
+```
+
+## How do I write a plural with a number?
+
+With `pluralize` of the number and four texts: for zero, one, a few and many. `#` is the number:
+
+```js
+var text = (3).pluralize('no items', '# item', '# items', '# items');    // 3 items
+```
+
+## How do I format a date?
+
+With `format` of the date:
+
+```js
+var a = NOW.format('yyyy-MM-dd HH:mm');    // 2026-11-12 09:05
+var b = NOW.format('dd.MM.yyyy');          // 12.11.2026
+```
+
+## How do I add time to a date?
+
+With `add` of the date and a text: a number and a unit. It returns a new date and does not change the first one; a negative number goes back.
+
+```js
+var tomorrow = NOW.add('1 day');
+var before = NOW.add('-2 hours');
+var expire = NOW.add('1 month');
+```
+
+## How do I sort a list of objects?
+
+With `quicksort` of the array and the name of the field; `_desc` after the name sorts it downwards, and several fields are separated with a comma:
+
+```js
+items.quicksort('name');
+items.quicksort('name_desc');
+items.quicksort('age_desc,name');
+```
+
+## How do I find, filter and remove items of a list?
+
+With the functions of the array, by the name of a field and its value:
+
+```js
+var item = items.findItem('id', 'b');                 // the object, or undefined
+var index = items.findIndex('id', 'b');               // its position, or -1
+var adults = items.findAll('age', 30);                // every object with that value
+var name = items.findValue('id', 'b', 'name', '');    // one field of the object, or the default
+var rest = items.remove('id', 'a');                   // the list without it
+var page = items.skip(20).take(10);
+var first = items.first();
+var last = items.last();
+```
+
+## How do I make a random text or an id?
+
+`UID()` is the id of a row: short and unique. `GUID(length)` is a random text of that length, for a token:
+
+```js
+model.id = UID();
+model.token = GUID(30);
+```
+
+## How do I copy an object?
+
+With `CLONE(obj)`: a deep copy, so a change of the copy does not reach the first object.
+
+```js
+var copy = CLONE(MAIN.settings);
+copy.theme.color = 'red';
+```
+
+## How do I build an address with a query string?
+
+With `QUERIFY(url, obj)`: it encodes the values.
+
+```js
+var url = QUERIFY('/api/', { q: 'a b', page: 2 });    // /api/?q=a%20b&page=2
+```
+
+## How do I read and set a cookie?
+
+With `$.cookie`: one argument reads it, and with a value it is set. The third argument is how long it lives and the fourth its options:
+
+```js
+ROUTE('GET /theme/', function($) {
+	var theme = $.cookie('theme');
+	$.cookie('theme', 'dark', '7 days', { httponly: true });
+	$.plain(theme);
+});
+```
+
+A cookie that does not exist is an empty text. To remove one, set it with a time in the past: `$.cookie('theme', '', '-1 day')`.
+
+## How do I read a header of the request and set one in the answer?
+
+The headers of the request are in `$.headers`, with their names in lowercase. The ones of the answer are in `$.response.headers`, and its status in `$.response.status`:
+
+```js
+ROUTE('GET /version/', function($) {
+	var client = $.headers['x-client'];
+	$.response.headers['x-version'] = '1.2.0';
+	$.response.status = 201;
+	$.json({ client: client });
+});
+```
+
+## What does the request know about the client?
+
+`$.ip` is its address, `$.url` the path, `$.query` the query string as an object, `$.method` the method, `$.mobile` whether it is a phone and `$.language` the language that `LOCALIZE` returned.
+
+```js
+ROUTE('GET /who/', function($) {
+	$.json({ ip: $.ip, url: $.url, page: $.query.page, method: $.method, mobile: $.mobile });
+});
+```
+
+## How do I run code before the routes that need it (a middleware)?
+
+Declare it with `MIDDLEWARE` in a definition and name it in the route with `#`. It calls `next()` to go on, or it answers and the route does not run:
+
+```js
+// definitions/init.js
+MIDDLEWARE('onlyjson', function($, next) {
+	if (($.headers.accept || '').indexOf('application/json') === -1)
+		$.invalid(400);
+	else
+		next();
+});
+```
+
+```js
+ROUTE('GET /report/ #onlyjson', function($) {
+	$.json({ ok: true });
+});
+```
+
+For who the user is use `AUTH`, not a middleware.
+
+## How do I make one route for every address under a path?
+
+With `*` at the end of the path. The parts of the address are in `$.split`:
+
+```js
+ROUTE('GET /docs/*', function($) {
+	// /docs/guide/install/ gives ['docs', 'guide', 'install']
+	$.json($.split);
+});
+```
+
+The route answers `/docs/` too.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/browser.md
+
+# The browser: state, events, storage, requests, uploads and pages without a reload: questions and answers
+
+## How do I read and change a value from anywhere in the browser?
+
+With `GET(path)` and `SET(path, value)`. The path starts with the path of the plugin, and every binding of that path draws again:
+
+```js
+var count = GET('counter.count');
+SET('counter.count', 10);
+```
+
+Inside the plugin use `exports.get('count')` and `exports.set('count', 10)`.
+
+## How do I increment a number, toggle a flag or add an item to a list?
+
+With `inc`, `toggle` and `push` of the plugin; they change the value and the screen draws again. `INC`, `TOGGLE` and `PUSH` do the same from outside, with the whole path:
+
+```js
+exports.inc('count', 1);
+exports.toggle('isopen');
+exports.push('items', 'new');
+
+INC('counter.count', 5);
+TOGGLE('counter.isopen');
+PUSH('counter.items', 'new');
+```
+
+## How do I show or hide a part of a screen?
+
+With a `ui-bind` and `show`: it removes the class `hidden` when the value is true.
+
+```html
+<ui-bind path="?.isopen" config="show" class="hidden">
+	<div>@(Details)</div>
+</ui-bind>
+```
+
+## How do I react when a value changes?
+
+With `exports.watch` in the plugin, or `WATCH` with the whole path. The function gets the new value:
+
+```js
+exports.watch('count', function(value) {
+	console.log(value);
+});
+
+WATCH('counter.count', function(value) {
+	console.log(value);
+});
+```
+
+## How do I send an event from one plugin to another?
+
+`EMIT(name, a, b)` sends it and every `ON(name, ...)` hears it, in a plugin with `exports.on`:
+
+```js
+// the plugin that listens
+exports.on('saved', function(id) {
+	exports.refresh();
+});
+
+// the one that saved
+EMIT('saved', id);
+```
+
+## How do I call a function of another plugin?
+
+With `EXEC('plugin/function', arguments)`. The plugins are also in `PLUGINS`:
+
+```js
+EXEC('counter/add', el);
+PLUGINS.counter.refresh();
+```
+
+## How do I keep a value in the browser between visits?
+
+With `CACHE(key, value, expire)`; `CACHE(key)` reads it and gives `null` when it is not there or its time is over. It is kept in the `localStorage`:
+
+```js
+CACHE('filter', { status: 'open' }, '1 day');
+var filter = CACHE('filter');
+```
+
+## How do I keep a preference of the user in the browser?
+
+With `PREF.set(name, value, expire)`; the value is then a property of `PREF`:
+
+```js
+PREF.set('theme', 'dark', '1 month');
+var theme = PREF.theme;
+```
+
+## How do I read and set a cookie in the browser?
+
+With `COOKIES.get`, `COOKIES.set` and `COOKIES.rem`:
+
+```js
+COOKIES.set('language', 'sk', '1 day');
+var language = COOKIES.get('language');
+COOKIES.rem('language');
+```
+
+## How do I call a route of the server that is not an API endpoint?
+
+With `AJAX`: the method and the address in one text, the data and a callback. The answer is parsed, and its dates are `Date` objects:
+
+```js
+AJAX('GET /api/ping/', function(response) {
+	console.log(response);
+});
+
+AJAX('POST /api/echo/', { name: 'Anna' }, function(response) {
+	console.log(response);
+});
+```
+
+For the endpoints of the API of a plugin use `exports.tapi`.
+
+## How do I upload a file from the browser with its progress?
+
+With `UPLOAD`: the method and the address, a `FormData`, the callback and a function that gets the percentage:
+
+```js
+var data = new FormData();
+data.append('file', input.files[0]);
+
+UPLOAD('POST /api/upload/', data, function(response) {
+	exports.refresh();
+}, function(percentage) {
+	exports.set('progress', percentage);
+});
+```
+
+The route of the server has `@upload` and its size limit.
+
+## How do I make pages in the browser without a reload?
+
+With `ROUTE` of the library: an address and the function that runs for it. `REDIRECT(url)` goes to an address without a reload:
+
+```js
+ROUTE('/products/', function() {
+	SET('common.page', 'products');
+});
+
+ROUTE('/products/{id}/', function(id) {
+	SET('common.page', 'product');
+	SET('product.id', id);
+});
+
+REDIRECT('/products/abc/');
+```
+
+`NAV.url` is the current address, `NAV.query` its query string as an object, and `NAV.back()` goes back.
+
+## How do I share a setting between the parts of the interface?
+
+With `ENV(name, value)`; `ENV(name)` reads it:
+
+```js
+ENV('apiurl', '/api/');
+var url = ENV('apiurl');
+```
+
+## Are the helpers of texts, numbers and dates in the browser too?
+
+Yes: the library has `format` of a text, a number and a date, `GUID`, `QUERIFY` and `NOW`, with the same results as on the server.
+
+```js
+var text = 'Hello {0}'.format('Anna');           // Hello Anna
+var price = (1234.5).format(2);                  // 1 234.50
+var day = NOW.format('yyyy-MM-dd');
+var url = QUERIFY('/api/', { q: 'a b' });        // /api/?q=a%20b
+var id = GUID(8);
+```
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md
 
 # La aplicación: preguntas y respuestas
@@ -8223,6 +8639,422 @@ Dentro del worker, `NEWTHREAD()` sin nombre es el propio hilo: `worker.data` es 
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/helpers.md
+
+# Ayudantes de textos, números, fechas y listas, cookies, cabeceras y middleware: preguntas y respuestas
+
+## ¿Cómo hago un slug a partir de un texto?
+
+Con `slug` del texto. También quita los acentos:
+
+```js
+var a = 'Hello World!'.slug();     // hello-world
+var b = 'Čaj s mlékom'.slug();     // caj-s-mlekom
+```
+
+## ¿Cómo compruebo que un texto es un correo, una URL o un teléfono?
+
+Con `isEmail`, `isURL` e `isPhone` del texto. En la entrada de una acción usa en su lugar los tipos `Email`, `URL` y `Phone`.
+
+```js
+var ok = 'anna@example.com'.isEmail();          // true
+var no = 'anna'.isEmail();                      // false
+var url = 'https://www.totaljs.com'.isURL();    // true
+var phone = '+421903111222'.isPhone();          // true
+```
+
+## ¿Cómo convierto un texto en un número, una fecha o un objeto?
+
+Con `parseInt`, `parseFloat`, `parseDate` y `parseJSON` del texto. No lanzan errores: un texto que no es un número da `0`, y un texto que no es JSON da `undefined`.
+
+```js
+var count = '12'.parseInt();            // 12
+var zero = 'abc'.parseInt();            // 0
+var price = '12.5'.parseFloat();        // 12.5
+var date = '2026-11-12'.parseDate();    // a Date
+var obj = '{"a":1}'.parseJSON();        // { a: 1 }
+var none = 'not json'.parseJSON();      // undefined
+```
+
+## ¿Cómo acorto un texto o lo escribo con mayúsculas iniciales?
+
+`max(longitud)` corta el texto y lo termina con `...`; `capitalize()` empieza cada palabra con mayúscula:
+
+```js
+var short = 'A long text of a product'.max(10);    // A long ...
+var name = 'anna nowak'.capitalize();              // Anna Nowak
+```
+
+## ¿Cómo codifico un texto para HTML?
+
+Con `encode` del texto, y `decode` para la vuelta:
+
+```js
+var safe = '<b>x</b>'.encode();     // &lt;b&gt;x&lt;/b&gt;
+var html = '&lt;b&gt;'.decode();    // <b>
+```
+
+## ¿Cómo calculo el hash de un texto?
+
+`sha256()` y `md5()` del texto dan el hash en hexadecimal; `sha256(sal)` le mezcla un secreto. `hash()` da un número corto, bueno para una clave y no para una contraseña:
+
+```js
+var password = model.password.sha256(CONF.secret);
+var key = 'text'.hash();    // 3556653
+```
+
+## ¿Cómo hago un texto para buscar sin acentos?
+
+Con `toSearch` del texto: en minúsculas y sin acentos. Guárdalo en una columna `search` y compáralo con la misma forma de lo que escribió el usuario.
+
+```js
+model.search = model.name.toSearch();    // 'Čučoriedka Nowák' becomes 'cucoriedka nowak'
+```
+
+## ¿Cómo doy formato a un número?
+
+Con `format(decimales)` del número; los separadores de miles y de decimales son los dos argumentos siguientes. `padLeft`, `round`, `floor` y `filesize` también son del número:
+
+```js
+var a = (1234.5).format(2);              // 1 234.50
+var b = (1234.5).format(2, ',', '.');    // 1,234.50
+var c = (5).padLeft(3);                  // 005
+var d = (1.005).round(2);                // 1.01
+var e = (2.567).floor(2);                // 2.56
+var f = (1536).filesize();               // 1.50 KB
+```
+
+## ¿Cómo escribo un plural con un número?
+
+Con `pluralize` del número y cuatro textos: para cero, uno, unos pocos y muchos. `#` es el número:
+
+```js
+var text = (3).pluralize('no items', '# item', '# items', '# items');    // 3 items
+```
+
+## ¿Cómo doy formato a una fecha?
+
+Con `format` de la fecha:
+
+```js
+var a = NOW.format('yyyy-MM-dd HH:mm');    // 2026-11-12 09:05
+var b = NOW.format('dd.MM.yyyy');          // 12.11.2026
+```
+
+## ¿Cómo sumo tiempo a una fecha?
+
+Con `add` de la fecha y un texto: un número y una unidad. Devuelve una fecha nueva y no cambia la primera; un número negativo va hacia atrás.
+
+```js
+var tomorrow = NOW.add('1 day');
+var before = NOW.add('-2 hours');
+var expire = NOW.add('1 month');
+```
+
+## ¿Cómo ordeno una lista de objetos?
+
+Con `quicksort` del array y el nombre del campo; `_desc` tras el nombre lo ordena hacia abajo, y varios campos se separan con una coma:
+
+```js
+items.quicksort('name');
+items.quicksort('name_desc');
+items.quicksort('age_desc,name');
+```
+
+## ¿Cómo busco, filtro y quito elementos de una lista?
+
+Con las funciones del array, por el nombre de un campo y su valor:
+
+```js
+var item = items.findItem('id', 'b');                 // the object, or undefined
+var index = items.findIndex('id', 'b');               // its position, or -1
+var adults = items.findAll('age', 30);                // every object with that value
+var name = items.findValue('id', 'b', 'name', '');    // one field of the object, or the default
+var rest = items.remove('id', 'a');                   // the list without it
+var page = items.skip(20).take(10);
+var first = items.first();
+var last = items.last();
+```
+
+## ¿Cómo hago un texto aleatorio o un id?
+
+`UID()` es el id de una fila: corto y único. `GUID(longitud)` es un texto aleatorio de esa longitud, para un token:
+
+```js
+model.id = UID();
+model.token = GUID(30);
+```
+
+## ¿Cómo copio un objeto?
+
+Con `CLONE(obj)`: una copia profunda, así un cambio en la copia no llega al primer objeto.
+
+```js
+var copy = CLONE(MAIN.settings);
+copy.theme.color = 'red';
+```
+
+## ¿Cómo construyo una dirección con su cadena de consulta?
+
+Con `QUERIFY(url, obj)`: codifica los valores.
+
+```js
+var url = QUERIFY('/api/', { q: 'a b', page: 2 });    // /api/?q=a%20b&page=2
+```
+
+## ¿Cómo leo y pongo una cookie?
+
+Con `$.cookie`: un argumento la lee, y con un valor se pone. El tercer argumento es cuánto dura y el cuarto sus opciones:
+
+```js
+ROUTE('GET /theme/', function($) {
+	var theme = $.cookie('theme');
+	$.cookie('theme', 'dark', '7 days', { httponly: true });
+	$.plain(theme);
+});
+```
+
+Una cookie que no existe es un texto vacío. Para quitar una, ponla con un tiempo en el pasado: `$.cookie('theme', '', '-1 day')`.
+
+## ¿Cómo leo una cabecera de la petición y pongo una en la respuesta?
+
+Las cabeceras de la petición están en `$.headers`, con sus nombres en minúsculas. Las de la respuesta están en `$.response.headers`, y su estado en `$.response.status`:
+
+```js
+ROUTE('GET /version/', function($) {
+	var client = $.headers['x-client'];
+	$.response.headers['x-version'] = '1.2.0';
+	$.response.status = 201;
+	$.json({ client: client });
+});
+```
+
+## ¿Qué sabe la petición sobre el cliente?
+
+`$.ip` es su dirección, `$.url` la ruta, `$.query` la cadena de consulta como objeto, `$.method` el método, `$.mobile` si es un móvil y `$.language` el idioma que devolvió `LOCALIZE`.
+
+```js
+ROUTE('GET /who/', function($) {
+	$.json({ ip: $.ip, url: $.url, page: $.query.page, method: $.method, mobile: $.mobile });
+});
+```
+
+## ¿Cómo ejecuto código antes de las rutas que lo necesitan (un middleware)?
+
+Decláralo con `MIDDLEWARE` en una definición y nómbralo en la ruta con `#`. Llama a `next()` para seguir, o responde y la ruta no se ejecuta:
+
+```js
+// definitions/init.js
+MIDDLEWARE('onlyjson', function($, next) {
+	if (($.headers.accept || '').indexOf('application/json') === -1)
+		$.invalid(400);
+	else
+		next();
+});
+```
+
+```js
+ROUTE('GET /report/ #onlyjson', function($) {
+	$.json({ ok: true });
+});
+```
+
+Para saber quién es el usuario usa `AUTH`, no un middleware.
+
+## ¿Cómo hago una ruta para todas las direcciones bajo una ruta?
+
+Con `*` al final de la ruta. Las partes de la dirección están en `$.split`:
+
+```js
+ROUTE('GET /docs/*', function($) {
+	// /docs/guide/install/ gives ['docs', 'guide', 'install']
+	$.json($.split);
+});
+```
+
+La ruta responde también a `/docs/`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/browser.md
+
+# El navegador: estado, eventos, almacenamiento, peticiones, subidas y páginas sin recargar: preguntas y respuestas
+
+## ¿Cómo leo y cambio un valor desde cualquier parte del navegador?
+
+Con `GET(ruta)` y `SET(ruta, valor)`. La ruta empieza por la del plugin, y cada enlace de esa ruta se vuelve a pintar:
+
+```js
+var count = GET('counter.count');
+SET('counter.count', 10);
+```
+
+Dentro del plugin usa `exports.get('count')` y `exports.set('count', 10)`.
+
+## ¿Cómo incremento un número, cambio un indicador o añado un elemento a una lista?
+
+Con `inc`, `toggle` y `push` del plugin; cambian el valor y la pantalla se vuelve a pintar. `INC`, `TOGGLE` y `PUSH` hacen lo mismo desde fuera, con la ruta entera:
+
+```js
+exports.inc('count', 1);
+exports.toggle('isopen');
+exports.push('items', 'new');
+
+INC('counter.count', 5);
+TOGGLE('counter.isopen');
+PUSH('counter.items', 'new');
+```
+
+## ¿Cómo muestro u oculto una parte de una pantalla?
+
+Con un `ui-bind` y `show`: quita la clase `hidden` cuando el valor es verdadero.
+
+```html
+<ui-bind path="?.isopen" config="show" class="hidden">
+	<div>@(Details)</div>
+</ui-bind>
+```
+
+## ¿Cómo reacciono cuando cambia un valor?
+
+Con `exports.watch` en el plugin, o `WATCH` con la ruta entera. La función recibe el valor nuevo:
+
+```js
+exports.watch('count', function(value) {
+	console.log(value);
+});
+
+WATCH('counter.count', function(value) {
+	console.log(value);
+});
+```
+
+## ¿Cómo envío un evento de un plugin a otro?
+
+`EMIT(nombre, a, b)` lo envía y cada `ON(nombre, ...)` lo oye, en un plugin con `exports.on`:
+
+```js
+// the plugin that listens
+exports.on('saved', function(id) {
+	exports.refresh();
+});
+
+// the one that saved
+EMIT('saved', id);
+```
+
+## ¿Cómo llamo a una función de otro plugin?
+
+Con `EXEC('plugin/función', argumentos)`. Los plugins están también en `PLUGINS`:
+
+```js
+EXEC('counter/add', el);
+PLUGINS.counter.refresh();
+```
+
+## ¿Cómo guardo un valor en el navegador entre visitas?
+
+Con `CACHE(clave, valor, caducidad)`; `CACHE(clave)` lo lee y da `null` cuando no está o su tiempo ha pasado. Se guarda en el `localStorage`:
+
+```js
+CACHE('filter', { status: 'open' }, '1 day');
+var filter = CACHE('filter');
+```
+
+## ¿Cómo guardo una preferencia del usuario en el navegador?
+
+Con `PREF.set(nombre, valor, caducidad)`; el valor es después una propiedad de `PREF`:
+
+```js
+PREF.set('theme', 'dark', '1 month');
+var theme = PREF.theme;
+```
+
+## ¿Cómo leo y pongo una cookie en el navegador?
+
+Con `COOKIES.get`, `COOKIES.set` y `COOKIES.rem`:
+
+```js
+COOKIES.set('language', 'sk', '1 day');
+var language = COOKIES.get('language');
+COOKIES.rem('language');
+```
+
+## ¿Cómo llamo a una ruta del servidor que no es un endpoint de la API?
+
+Con `AJAX`: el método y la dirección en un texto, los datos y un callback. La respuesta viene interpretada, y sus fechas son objetos `Date`:
+
+```js
+AJAX('GET /api/ping/', function(response) {
+	console.log(response);
+});
+
+AJAX('POST /api/echo/', { name: 'Anna' }, function(response) {
+	console.log(response);
+});
+```
+
+Para los endpoints de la API de un plugin usa `exports.tapi`.
+
+## ¿Cómo subo un archivo desde el navegador con su progreso?
+
+Con `UPLOAD`: el método y la dirección, un `FormData`, el callback y una función que recibe el porcentaje:
+
+```js
+var data = new FormData();
+data.append('file', input.files[0]);
+
+UPLOAD('POST /api/upload/', data, function(response) {
+	exports.refresh();
+}, function(percentage) {
+	exports.set('progress', percentage);
+});
+```
+
+La ruta del servidor lleva `@upload` y su límite de tamaño.
+
+## ¿Cómo hago páginas en el navegador sin recargar?
+
+Con `ROUTE` de la biblioteca: una dirección y la función que se ejecuta para ella. `REDIRECT(url)` va a una dirección sin recargar:
+
+```js
+ROUTE('/products/', function() {
+	SET('common.page', 'products');
+});
+
+ROUTE('/products/{id}/', function(id) {
+	SET('common.page', 'product');
+	SET('product.id', id);
+});
+
+REDIRECT('/products/abc/');
+```
+
+`NAV.url` es la dirección actual, `NAV.query` su cadena de consulta como objeto, y `NAV.back()` vuelve atrás.
+
+## ¿Cómo comparto un ajuste entre las partes de la interfaz?
+
+Con `ENV(nombre, valor)`; `ENV(nombre)` lo lee:
+
+```js
+ENV('apiurl', '/api/');
+var url = ENV('apiurl');
+```
+
+## ¿Están los ayudantes de textos, números y fechas también en el navegador?
+
+Sí: la biblioteca tiene `format` de un texto, un número y una fecha, `GUID`, `QUERIFY` y `NOW`, con los mismos resultados que en el servidor.
+
+```js
+var text = 'Hello {0}'.format('Anna');           // Hello Anna
+var price = (1234.5).format(2);                  // 1 234.50
+var day = NOW.format('yyyy-MM-dd');
+var url = QUERIFY('/api/', { q: 'a b' });        // /api/?q=a%20b
+var id = GUID(8);
+```
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md
 
 # Aplikácia: otázky a odpovede
@@ -10164,6 +10996,422 @@ ROUTE('GET /sum/', function($) {
 ```
 
 Vo workeri je `NEWTHREAD()` bez názvu samotné vlákno: `worker.data` je to, čo poslala aplikácia.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/helpers.md
+
+# Pomocníci pre texty, čísla, dátumy a zoznamy, cookies, hlavičky a middleware: otázky a odpovede
+
+## Ako spravím slug z textu?
+
+Cez `slug` textu. Odstráni aj diakritiku:
+
+```js
+var a = 'Hello World!'.slug();     // hello-world
+var b = 'Čaj s mlékom'.slug();     // caj-s-mlekom
+```
+
+## Ako overím, že text je e-mail, URL alebo telefón?
+
+Cez `isEmail`, `isURL` a `isPhone` textu. Vo vstupe akcie použi namiesto toho typy `Email`, `URL` a `Phone`.
+
+```js
+var ok = 'anna@example.com'.isEmail();          // true
+var no = 'anna'.isEmail();                      // false
+var url = 'https://www.totaljs.com'.isURL();    // true
+var phone = '+421903111222'.isPhone();          // true
+```
+
+## Ako zmením text na číslo, dátum alebo objekt?
+
+Cez `parseInt`, `parseFloat`, `parseDate` a `parseJSON` textu. Nevyhadzujú chybu: text, ktorý nie je číslo, dá `0`, a text, ktorý nie je JSON, dá `undefined`.
+
+```js
+var count = '12'.parseInt();            // 12
+var zero = 'abc'.parseInt();            // 0
+var price = '12.5'.parseFloat();        // 12.5
+var date = '2026-11-12'.parseDate();    // a Date
+var obj = '{"a":1}'.parseJSON();        // { a: 1 }
+var none = 'not json'.parseJSON();      // undefined
+```
+
+## Ako skrátim text alebo ho napíšem s veľkými začiatočnými písmenami?
+
+`max(dĺžka)` skráti text a ukončí ho `...`; `capitalize()` začne každé slovo veľkým písmenom:
+
+```js
+var short = 'A long text of a product'.max(10);    // A long ...
+var name = 'anna nowak'.capitalize();              // Anna Nowak
+```
+
+## Ako zakódujem text pre HTML?
+
+Cez `encode` textu a `decode` pre cestu späť:
+
+```js
+var safe = '<b>x</b>'.encode();     // &lt;b&gt;x&lt;/b&gt;
+var html = '&lt;b&gt;'.decode();    // <b>
+```
+
+## Ako vypočítam hash textu?
+
+`sha256()` a `md5()` textu vrátia hash v hexadecimálnom tvare; `sha256(soľ)` doň primieša tajomstvo. `hash()` vráti krátke číslo, vhodné ako kľúč, nie na heslo:
+
+```js
+var password = model.password.sha256(CONF.secret);
+var key = 'text'.hash();    // 3556653
+```
+
+## Ako spravím text na vyhľadávanie bez diakritiky?
+
+Cez `toSearch` textu: malé písmená a bez diakritiky. Ulož ho do stĺpca `search` a porovnaj s rovnakým tvarom toho, čo napísal používateľ.
+
+```js
+model.search = model.name.toSearch();    // 'Čučoriedka Nowák' becomes 'cucoriedka nowak'
+```
+
+## Ako naformátujem číslo?
+
+Cez `format(desatinné)` čísla; oddeľovače tisícov a desatinných miest sú ďalšie dva argumenty. `padLeft`, `round`, `floor` a `filesize` sú tiež metódy čísla:
+
+```js
+var a = (1234.5).format(2);              // 1 234.50
+var b = (1234.5).format(2, ',', '.');    // 1,234.50
+var c = (5).padLeft(3);                  // 005
+var d = (1.005).round(2);                // 1.01
+var e = (2.567).floor(2);                // 2.56
+var f = (1536).filesize();               // 1.50 KB
+```
+
+## Ako napíšem množné číslo s číslom?
+
+Cez `pluralize` čísla a štyri texty: pre nulu, jeden, niekoľko a veľa. `#` je číslo:
+
+```js
+var text = (3).pluralize('no items', '# item', '# items', '# items');    // 3 items
+```
+
+## Ako naformátujem dátum?
+
+Cez `format` dátumu:
+
+```js
+var a = NOW.format('yyyy-MM-dd HH:mm');    // 2026-11-12 09:05
+var b = NOW.format('dd.MM.yyyy');          // 12.11.2026
+```
+
+## Ako pripočítam čas k dátumu?
+
+Cez `add` dátumu a text: číslo a jednotka. Vráti nový dátum a pôvodný nemení; záporné číslo ide späť.
+
+```js
+var tomorrow = NOW.add('1 day');
+var before = NOW.add('-2 hours');
+var expire = NOW.add('1 month');
+```
+
+## Ako zoradím zoznam objektov?
+
+Cez `quicksort` poľa a názov políčka; `_desc` za názvom zoradí zostupne a viac políčok sa oddelí čiarkou:
+
+```js
+items.quicksort('name');
+items.quicksort('name_desc');
+items.quicksort('age_desc,name');
+```
+
+## Ako nájdem, vyfiltrujem a odstránim položky zoznamu?
+
+Cez funkcie poľa, podľa názvu políčka a jeho hodnoty:
+
+```js
+var item = items.findItem('id', 'b');                 // the object, or undefined
+var index = items.findIndex('id', 'b');               // its position, or -1
+var adults = items.findAll('age', 30);                // every object with that value
+var name = items.findValue('id', 'b', 'name', '');    // one field of the object, or the default
+var rest = items.remove('id', 'a');                   // the list without it
+var page = items.skip(20).take(10);
+var first = items.first();
+var last = items.last();
+```
+
+## Ako spravím náhodný text alebo id?
+
+`UID()` je id riadku: krátke a jedinečné. `GUID(dĺžka)` je náhodný text danej dĺžky, na token:
+
+```js
+model.id = UID();
+model.token = GUID(30);
+```
+
+## Ako skopírujem objekt?
+
+Cez `CLONE(obj)`: hlboká kópia, takže zmena kópie sa nedostane do pôvodného objektu.
+
+```js
+var copy = CLONE(MAIN.settings);
+copy.theme.color = 'red';
+```
+
+## Ako zostavím adresu s query stringom?
+
+Cez `QUERIFY(url, obj)`: zakóduje hodnoty.
+
+```js
+var url = QUERIFY('/api/', { q: 'a b', page: 2 });    // /api/?q=a%20b&page=2
+```
+
+## Ako prečítam a nastavím cookie?
+
+Cez `$.cookie`: jeden argument ju prečíta a s hodnotou sa nastaví. Tretí argument je, ako dlho žije, a štvrtý jej možnosti:
+
+```js
+ROUTE('GET /theme/', function($) {
+	var theme = $.cookie('theme');
+	$.cookie('theme', 'dark', '7 days', { httponly: true });
+	$.plain(theme);
+});
+```
+
+Cookie, ktorá neexistuje, je prázdny text. Na odstránenie ju nastav s časom v minulosti: `$.cookie('theme', '', '-1 day')`.
+
+## Ako prečítam hlavičku požiadavky a nastavím hlavičku odpovede?
+
+Hlavičky požiadavky sú v `$.headers`, s názvami malými písmenami. Hlavičky odpovede sú v `$.response.headers` a jej status v `$.response.status`:
+
+```js
+ROUTE('GET /version/', function($) {
+	var client = $.headers['x-client'];
+	$.response.headers['x-version'] = '1.2.0';
+	$.response.status = 201;
+	$.json({ client: client });
+});
+```
+
+## Čo vie požiadavka o klientovi?
+
+`$.ip` je jeho adresa, `$.url` cesta, `$.query` query string ako objekt, `$.method` metóda, `$.mobile` či je to mobil a `$.language` jazyk, ktorý vrátil `LOCALIZE`.
+
+```js
+ROUTE('GET /who/', function($) {
+	$.json({ ip: $.ip, url: $.url, page: $.query.page, method: $.method, mobile: $.mobile });
+});
+```
+
+## Ako spustím kód pred routami, ktoré ho potrebujú (middleware)?
+
+Deklaruj ho cez `MIDDLEWARE` v definícii a pomenuj ho v route cez `#`. Zavolá `next()`, aby sa pokračovalo, alebo odpovie a routa sa nespustí:
+
+```js
+// definitions/init.js
+MIDDLEWARE('onlyjson', function($, next) {
+	if (($.headers.accept || '').indexOf('application/json') === -1)
+		$.invalid(400);
+	else
+		next();
+});
+```
+
+```js
+ROUTE('GET /report/ #onlyjson', function($) {
+	$.json({ ok: true });
+});
+```
+
+Na zistenie, kto je používateľ, použi `AUTH`, nie middleware.
+
+## Ako spravím jednu routu pre všetky adresy pod cestou?
+
+Cez `*` na konci cesty. Časti adresy sú v `$.split`:
+
+```js
+ROUTE('GET /docs/*', function($) {
+	// /docs/guide/install/ gives ['docs', 'guide', 'install']
+	$.json($.split);
+});
+```
+
+Routa odpovie aj na `/docs/`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/browser.md
+
+# Prehliadač: stav, udalosti, úložisko, požiadavky, nahrávanie a stránky bez načítania: otázky a odpovede
+
+## Ako prečítam a zmením hodnotu odkiaľkoľvek v prehliadači?
+
+Cez `GET(cesta)` a `SET(cesta, hodnota)`. Cesta začína cestou pluginu a každý binding tej cesty sa prekreslí:
+
+```js
+var count = GET('counter.count');
+SET('counter.count', 10);
+```
+
+V plugine použi `exports.get('count')` a `exports.set('count', 10)`.
+
+## Ako zvýšim číslo, prepnem príznak alebo pridám položku do zoznamu?
+
+Cez `inc`, `toggle` a `push` pluginu; zmenia hodnotu a obrazovka sa prekreslí. `INC`, `TOGGLE` a `PUSH` robia to isté zvonka, s celou cestou:
+
+```js
+exports.inc('count', 1);
+exports.toggle('isopen');
+exports.push('items', 'new');
+
+INC('counter.count', 5);
+TOGGLE('counter.isopen');
+PUSH('counter.items', 'new');
+```
+
+## Ako zobrazím alebo skryjem časť obrazovky?
+
+Cez `ui-bind` a `show`: odstráni triedu `hidden`, keď je hodnota pravdivá.
+
+```html
+<ui-bind path="?.isopen" config="show" class="hidden">
+	<div>@(Details)</div>
+</ui-bind>
+```
+
+## Ako zareagujem na zmenu hodnoty?
+
+Cez `exports.watch` v plugine alebo `WATCH` s celou cestou. Funkcia dostane novú hodnotu:
+
+```js
+exports.watch('count', function(value) {
+	console.log(value);
+});
+
+WATCH('counter.count', function(value) {
+	console.log(value);
+});
+```
+
+## Ako pošlem udalosť z jedného pluginu do druhého?
+
+`EMIT(názov, a, b)` ju pošle a každé `ON(názov, ...)` ju zachytí, v plugine cez `exports.on`:
+
+```js
+// the plugin that listens
+exports.on('saved', function(id) {
+	exports.refresh();
+});
+
+// the one that saved
+EMIT('saved', id);
+```
+
+## Ako zavolám funkciu iného pluginu?
+
+Cez `EXEC('plugin/funkcia', argumenty)`. Pluginy sú aj v `PLUGINS`:
+
+```js
+EXEC('counter/add', el);
+PLUGINS.counter.refresh();
+```
+
+## Ako uložím hodnotu v prehliadači medzi návštevami?
+
+Cez `CACHE(kľúč, hodnota, expirácia)`; `CACHE(kľúč)` ju prečíta a vráti `null`, keď tam nie je alebo jej čas uplynul. Ukladá sa do `localStorage`:
+
+```js
+CACHE('filter', { status: 'open' }, '1 day');
+var filter = CACHE('filter');
+```
+
+## Ako uložím preferenciu používateľa v prehliadači?
+
+Cez `PREF.set(názov, hodnota, expirácia)`; hodnota je potom vlastnosť `PREF`:
+
+```js
+PREF.set('theme', 'dark', '1 month');
+var theme = PREF.theme;
+```
+
+## Ako prečítam a nastavím cookie v prehliadači?
+
+Cez `COOKIES.get`, `COOKIES.set` a `COOKIES.rem`:
+
+```js
+COOKIES.set('language', 'sk', '1 day');
+var language = COOKIES.get('language');
+COOKIES.rem('language');
+```
+
+## Ako zavolám routu servera, ktorá nie je API endpoint?
+
+Cez `AJAX`: metóda a adresa v jednom texte, dáta a callback. Odpoveď je spracovaná a jej dátumy sú objekty `Date`:
+
+```js
+AJAX('GET /api/ping/', function(response) {
+	console.log(response);
+});
+
+AJAX('POST /api/echo/', { name: 'Anna' }, function(response) {
+	console.log(response);
+});
+```
+
+Pre API endpointy pluginu použi `exports.tapi`.
+
+## Ako nahrám súbor z prehliadača s priebehom?
+
+Cez `UPLOAD`: metóda a adresa, `FormData`, callback a funkcia, ktorá dostane percentá:
+
+```js
+var data = new FormData();
+data.append('file', input.files[0]);
+
+UPLOAD('POST /api/upload/', data, function(response) {
+	exports.refresh();
+}, function(percentage) {
+	exports.set('progress', percentage);
+});
+```
+
+Routa servera má `@upload` a svoj limit veľkosti.
+
+## Ako spravím stránky v prehliadači bez načítania?
+
+Cez `ROUTE` knižnice: adresa a funkcia, ktorá sa pre ňu spustí. `REDIRECT(url)` prejde na adresu bez načítania:
+
+```js
+ROUTE('/products/', function() {
+	SET('common.page', 'products');
+});
+
+ROUTE('/products/{id}/', function(id) {
+	SET('common.page', 'product');
+	SET('product.id', id);
+});
+
+REDIRECT('/products/abc/');
+```
+
+`NAV.url` je aktuálna adresa, `NAV.query` jej query string ako objekt a `NAV.back()` ide späť.
+
+## Ako zdieľam nastavenie medzi časťami rozhrania?
+
+Cez `ENV(názov, hodnota)`; `ENV(názov)` ho prečíta:
+
+```js
+ENV('apiurl', '/api/');
+var url = ENV('apiurl');
+```
+
+## Sú pomocníci pre texty, čísla a dátumy aj v prehliadači?
+
+Áno: knižnica má `format` textu, čísla a dátumu, `GUID`, `QUERIFY` a `NOW`, s rovnakými výsledkami ako na serveri.
+
+```js
+var text = 'Hello {0}'.format('Anna');           // Hello Anna
+var price = (1234.5).format(2);                  // 1 234.50
+var day = NOW.format('yyyy-MM-dd');
+var url = QUERIFY('/api/', { q: 'a b' });        // /api/?q=a%20b
+var id = GUID(8);
+```
 
 ---
 

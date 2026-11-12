@@ -80,6 +80,8 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [SQL scripts for PostgreSQL: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sql.md): database.sql, names of tables and columns, types, code lists and the order of a script
 - [Style, tests and versions: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/style-and-tests.md): ES5 first, Total.Fs, format, tests, what 0.0.20 adds and what to do when not sure
 - [Mail, translations, redirects, CORS, encryption, cache and threads: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/server.md): MAIL and HTMLMAIL, resources and LOCALIZE, $.redirect, the route #404, CORS, the request limit, ENCRYPT and DECRYPT, CACHE and NEWTHREAD
+- [Helpers of texts, numbers, dates and lists, cookies, headers and middleware: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/helpers.md): slug, isEmail, parseJSON, format, sha256, toSearch, pluralize, dates with add, quicksort, findItem, GUID, CLONE, QUERIFY, $.cookie, $.headers, MIDDLEWARE and wildcard routes
+- [The browser: state, events, storage, requests, uploads and pages without a reload: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/browser.md): SET and GET, inc, toggle and push, ui-bind show, watch, EMIT and ON, EXEC, CACHE, PREF, COOKIES, AJAX, UPLOAD with progress, ROUTE and REDIRECT in the browser, NAV and ENV
 ## Questions in Spanish
 
 - [La aplicación: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md): The same questions and answers in Spanish, with the same code
@@ -94,6 +96,8 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [Scripts SQL para PostgreSQL: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/sql.md): The same questions and answers in Spanish, with the same code
 - [Estilo, pruebas y versiones: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/style-and-tests.md): The same questions and answers in Spanish, with the same code
 - [Correo, traducciones, redirecciones, CORS, cifrado, caché e hilos: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/server.md): The same questions and answers in Spanish, with the same code
+- [Ayudantes de textos, números, fechas y listas, cookies, cabeceras y middleware: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/helpers.md): The same questions and answers in Spanish, with the same code
+- [El navegador: estado, eventos, almacenamiento, peticiones, subidas y páginas sin recargar: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/browser.md): The same questions and answers in Spanish, with the same code
 ## Questions in Slovak
 
 - [Aplikácia: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
@@ -108,6 +112,8 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [SQL skripty pre PostgreSQL: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/sql.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 - [Štýl, testy a verzie: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/style-and-tests.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 - [E-mail, preklady, presmerovania, CORS, šifrovanie, cache a vlákna: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/server.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Pomocníci pre texty, čísla, dátumy a zoznamy, cookies, hlavičky a middleware: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/helpers.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Prehliadač: stav, udalosti, úložisko, požiadavky, nahrávanie a stránky bez načítania: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/browser.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
