@@ -1,0 +1,14 @@
+{
+	"name": "monitor",
+	"description": "An application that checks websites on a schedule, with Total.js 5",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"total5": "latest"
+	},
+	"scripts": {
+		"start": "node index.js 8000",
+		"test": "node test.js"
+	},
+	"license": "MIT"
+}

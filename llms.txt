@@ -43,6 +43,7 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
 - [Contacts on PostgreSQL](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts-postgresql/readme.md): The same queries with DATA on PostgreSQL: the definition of the database and the table names without the prefix nosql/
 - [Files: upload and download](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/files/readme.md): A multipart upload with a size limit, FILESTORAGE, a FILE route for the download and the removal
+- [Monitor: work on a schedule](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/monitor/readme.md): ON(service) and CRON, a request to another server with RESTBuilder, and a small state kept with MEMORIZE
 - [Website: views and a layout](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/website/readme.md): Public pages rendered on the server, without plugins and without a database
 - [Chat: a room over a WebSocket](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/chat/readme.md): A SOCKET route with its open, close and message events, and the websocket component in the browser
 - [Board: an application with plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/board/readme.md): Each feature with its routes, actions, screen and form, in jComponent 20

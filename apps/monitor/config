@@ -1,0 +1,8 @@
+name              : Monitor
+
+// The requests of the API must send this value in the header "x-token". Change it before the application is used.
+token             : change-this-token
+
+// Every how many minutes the websites are checked, and how long a website has to answer (milliseconds)
+interval (Number) : 5
+timeout  (Number) : 5000

@@ -44,6 +44,7 @@ var PAGES = [
 	['Applications', 'apps/contacts/readme.md', 'Contacts: an API without plugins', 'Actions, routes in controllers, a token and DATA on the embedded NoSQL database'],
 	['Applications', 'apps/contacts-postgresql/readme.md', 'Contacts on PostgreSQL', 'The same queries with DATA on PostgreSQL: the definition of the database and the table names without the prefix nosql/'],
 	['Applications', 'apps/files/readme.md', 'Files: upload and download', 'A multipart upload with a size limit, FILESTORAGE, a FILE route for the download and the removal'],
+	['Applications', 'apps/monitor/readme.md', 'Monitor: work on a schedule', 'ON(service) and CRON, a request to another server with RESTBuilder, and a small state kept with MEMORIZE'],
 	['Applications', 'apps/website/readme.md', 'Website: views and a layout', 'Public pages rendered on the server, without plugins and without a database'],
 	['Applications', 'apps/chat/readme.md', 'Chat: a room over a WebSocket', 'A SOCKET route with its open, close and message events, and the websocket component in the browser'],
 	['Applications', 'apps/board/readme.md', 'Board: an application with plugins', 'Each feature with its routes, actions, screen and form, in jComponent 20']
