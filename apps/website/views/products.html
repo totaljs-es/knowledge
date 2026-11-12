@@ -1,0 +1,11 @@
+@{title('@(Products)')}
+
+<h1>@(Products)</h1>
+<ul class="products">
+@{foreach m in model}
+	<li>
+		<a href="/products/@{m.id}/">@{m.name}</a>
+		<span>@{m.price.format(2)} EUR</span>
+	</li>
+@{end}
+</ul>

@@ -1,0 +1,64 @@
+<style>
+	.CLASS { padding: 20px; max-width: 700px; }
+	.CLASS .toolbar { display: flex; align-items: center; margin-bottom: 15px; }
+	.CLASS .toolbar h2 { flex: 1; margin: 0; font-size: 18px; }
+	.CLASS .note { display: flex; padding: 10px 0; border-bottom: 1px solid #E8E8E8; }
+	.CLASS .note .body { flex: 1; min-width: 0; white-space: pre-wrap; }
+	.CLASS .note .date { font-size: 11px; color: #999; }
+	.CLASS .note .remove { cursor: pointer; color: #C0392B; }
+</style>
+
+<ui-plugin class="CLASS">
+
+	<div class="toolbar">
+		<h2>@(Notes)</h2>
+		<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(New note)</button>
+	</div>
+
+	<ui-component name="empty" path="?.items" config="parent:auto">
+		<script type="text/html">
+			@(There are no notes yet)
+		</script>
+		<ui-bind path="?.items" config="template" class="block">
+			<script type="text/html">
+				{{ foreach m in value }}
+				<div class="note">
+					<div class="body">{{ m.body }}<div class="date">{{ m.dtcreated | format('yyyy-MM-dd HH:mm') }}</div></div>
+					<div class="remove exec" data-exec="?/remove" data-id="{{ m.id }}" title="@(Remove)"><i class="ti ti-trash"></i></div>
+				</div>
+				{{ end }}
+			</script>
+		</ui-bind>
+	</ui-component>
+
+</ui-plugin>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('notes ERROR', function(response) {
+				exports.set('items', response);
+			});
+		};
+
+		exports.create = function() {
+			SET('formnotes @default', {});
+			SET('common.form', 'formnotes');
+		};
+
+		exports.remove = function(el) {
+			var id = ATTRD(el);
+			SETTER('approve/show', '@(Are you sure you want to remove the note?)', ':ti ti-trash: @(Remove)', function() {
+				exports.tapi('notes_remove/{0} ERROR'.format(id), exports.refresh);
+			});
+		};
+
+	});
+
+</script>

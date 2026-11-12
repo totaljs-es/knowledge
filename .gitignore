@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# What an application writes when it runs
+apps/*/databases/
+apps/*/tmp/
+apps/*/logs/
+apps/*/public/ui-*
+index.js.json
+index.js.map
+index.pid

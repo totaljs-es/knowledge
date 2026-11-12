@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+
+	<header>
+		<a href="/" class="logo">@{CONF.name}</a>
+		<nav>
+			<a href="/">@(Home)</a>
+			<a href="/products/">@(Products)</a>
+		</nav>
+	</header>
+
+	<main>
+		@{body}
+	</main>
+
+	<footer>
+		@(Write to us:) <a href="mailto:@{CONF.email}">@{CONF.email}</a>
+	</footer>
+
+</body>
+</html>

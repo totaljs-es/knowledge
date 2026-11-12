@@ -1,0 +1,26 @@
+<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:ti ti-file-alt;title:@(Note);autofocus:true;submit:?/submit;width:420" class="hidden" plugin="~PATH~">
+	<div class="padding">
+		<ui-component name="input" path="?.body" config="required:1;type:multiline;height:120">@(Text)</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+
+<script>
+
+	PLUGIN(function(exports) {
+
+		exports.submit = function(hide) {
+			exports.tapi('notes_create ERROR', { body: exports.model.body }, function() {
+				hide();
+				PLUGINS.notes.refresh();
+			});
+		};
+
+	});
+
+</script>

@@ -1,0 +1,4 @@
+name              : Contacts
+
+// The requests of the API must send this value in the header "x-token". Change it before the application is used.
+token             : change-this-token

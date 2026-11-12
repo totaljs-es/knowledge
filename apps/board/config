@@ -1,0 +1,4 @@
+name              : Board
+
+// The application listens only on this computer: it has one user and no sign in
+$ip               : 127.0.0.1

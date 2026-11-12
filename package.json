@@ -1,0 +1,13 @@
+{
+	"name": "knowledge",
+	"description": "Total.js 5 knowledge for AI models: small complete applications, examples and answers that follow the conventions",
+	"version": "0.1.0",
+	"private": true,
+	"license": "MIT",
+	"scripts": {
+		"test": "node tools/test.js"
+	},
+	"dependencies": {
+		"total5": "latest"
+	}
+}

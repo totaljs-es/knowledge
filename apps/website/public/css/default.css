@@ -1,0 +1,10 @@
+body { margin: 0; font-family: Arial, sans-serif; color: #222; background-color: #FAF7F2; }
+header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background-color: #FFF; border-bottom: 1px solid #E5DED3; }
+header .logo { font-weight: bold; font-size: 18px; color: #8A4B1F; text-decoration: none; }
+header nav a { margin-left: 15px; color: #222; text-decoration: none; }
+main { max-width: 700px; margin: 0 auto; padding: 30px 20px; }
+footer { padding: 20px; text-align: center; font-size: 13px; color: #777; }
+.button { display: inline-block; padding: 10px 16px; border-radius: 4px; background-color: #8A4B1F; color: #FFF; text-decoration: none; }
+.products { list-style: none; padding: 0; }
+.products li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #E5DED3; }
+.price { font-size: 20px; font-weight: bold; }
