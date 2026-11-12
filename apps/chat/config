@@ -1,0 +1,4 @@
+name              : Chat
+
+// How many of the last messages a person gets when they come in
+history  (Number) : 50

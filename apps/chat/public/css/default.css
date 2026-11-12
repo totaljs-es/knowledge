@@ -1,0 +1,13 @@
+html, body { height: 100%; margin: 0; }
+.room { max-width: 700px; height: 100%; margin: 0 auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; }
+.room h1 { margin: 0 0 10px; font-size: 20px; }
+.room form { display: flex; gap: 8px; }
+.room form input { flex: 1; height: 34px; padding: 0 10px; border: 1px solid #D0D0D0; border-radius: 4px; font-size: 14px; }
+.room form button { height: 36px; padding: 0 14px; border: 0; border-radius: 4px; background-color: #4285F4; color: #FFF; font-size: 14px; cursor: pointer; }
+.room form button i { margin-right: 6px; }
+.room header { border-bottom: 1px solid #E0E0E0; padding-bottom: 10px; }
+.room .users span { display: inline-block; margin-right: 6px; padding: 2px 8px; border-radius: 10px; background-color: #EEF3FB; font-size: 12px; }
+.room .messages { display: block; flex: 1; overflow-y: auto; padding: 10px 0; }
+.room .message { margin-bottom: 10px; }
+.room .message .date { font-size: 11px; color: #999; }
+.room .send { display: block; }

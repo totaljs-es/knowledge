@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+	<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+	<script src="@{REPO.ui}"></script>
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+
+	<ui-component name="exec"></ui-component>
+	<ui-component name="errorhandler"></ui-component>
+
+	<div class="room">
+		@{body}
+	</div>
+
+</body>
+</html>

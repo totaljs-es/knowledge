@@ -1,0 +1,53 @@
+@{title(CONF.name)}
+
+<ui-component name="websocket" config="url:/chat/?name=@{encodeURIComponent(model.name)}"></ui-component>
+
+<header>
+	<h1>@{CONF.name}</h1>
+	<ui-bind path="chat.users" config="template" class="users">
+		<script type="text/html">
+			{{ foreach name in value }}<span>{{ name }}</span>{{ end }}
+		</script>
+	</ui-bind>
+</header>
+
+<ui-bind path="chat.items" config="template" class="messages">
+	<script type="text/html">
+		{{ foreach m in value }}
+		<div class="message"><b>{{ m.name }}</b> <span class="date">{{ m.date | format('HH:mm') }}</span><div>{{ m.text }}</div></div>
+		{{ end }}
+	</script>
+</ui-bind>
+
+<ui-component name="enter" path="chat" config="exec:chatsend;validate:false" class="send">
+	<ui-component name="input" path="chat.text" config="maxlength:500;placeholder:@(Write a message and press Enter);autofocus:1"></ui-component>
+</ui-component>
+
+<script>
+
+	var chat = { items: [], users: [], text: '' };
+
+	// Every message of the server has a TYPE
+	ON('message', function(msg) {
+		switch (msg.TYPE) {
+			case 'history':
+				SET('chat.items', msg.items);
+				break;
+			case 'users':
+				SET('chat.users', msg.items);
+				break;
+			case 'message':
+				PUSH('chat.items', msg);
+				break;
+		}
+	});
+
+	function chatsend() {
+		var text = (chat.text || '').trim();
+		if (text) {
+			SETTER('websocket/send', { TYPE: 'message', text: text });
+			SET('chat.text', '');
+		}
+	}
+
+</script>

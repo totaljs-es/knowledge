@@ -21,6 +21,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`apps/contacts-postgresql`](apps/contacts-postgresql) | The same API with its data in PostgreSQL: the same queries, without the prefix `nosql/` | `DATA` (QueryBuilder) on PostgreSQL |
 | [`apps/files`](apps/files) | An API to upload and download files, with a token | `FILESTORAGE` |
 | [`apps/website`](apps/website) | A website without plugins: views and a layout rendered on the server | A list in memory |
+| [`apps/chat`](apps/chat) | A chat room over a WebSocket, with a page in jComponent 20 | In memory |
 | [`apps/board`](apps/board) | An application with plugins: each feature has its routes, actions, screen and form (jComponent 20) | `DATA` (QueryBuilder) on the embedded NoSQL database |
 
 ## Use it
