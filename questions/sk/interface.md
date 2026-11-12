@@ -247,6 +247,21 @@ Jedno pravidlo na riadok, texty v `'`, bez prefixov prehliadačov (`/*auto*/` na
 
 Štýl jednej obrazovky ide na začiatok jej HTML, ohraničený cez `CLASS`. Spoločné veci idú do `public/css/default.css`.
 
+## Aké farby a rozmery použijem v CSS?
+
+CSS premenné knižnice jComponent: `var(--color)` je farba aplikácie, `var(--radius)` polomer rohov, `var(--gap)` a `var(--margin)` medzery a `var(--rgb)` farba ako tri čísla. Použi ich namiesto pevnej hodnoty, aby nová obrazovka vyzerala ako ostatné:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+Layout zmení farbu celej aplikácie na jednom mieste:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
+
 ## Aké ikony použijem?
 
 Total Icons: trieda `ti ti-name`, napríklad `ti ti-check-circle` alebo `ti ti-trash`.

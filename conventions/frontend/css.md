@@ -4,7 +4,7 @@
 - **One rule per line**: keep all declarations of a selector on the same line.
 - Strings in `'` apostrophes.
 - No vendor prefixes: current browsers do not need them. `/*auto*/` at the top of a file comes from Total.js 4, which added them; Total.js 5 keeps the mark and adds nothing.
-- No LESS and no SASS: Total.js CSS has variables (`$color: #E73323;` and then `color: $color;`) and nests rules inside a block that has no declarations of its own. It has no `&`.
+- No LESS and no SASS. The shared colors and sizes are the CSS variables of the jComponent library: `var(--color)`, `var(--rgb)`, `var(--radius)`, `var(--gap)` and `var(--margin)`. Use them instead of a fixed color or radius.
 
 ```css
 /*auto*/

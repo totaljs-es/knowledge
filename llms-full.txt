@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 224 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 225 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -1946,7 +1946,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/
 - **One rule per line**: keep all declarations of a selector on the same line.
 - Strings in `'` apostrophes.
 - No vendor prefixes: current browsers do not need them. `/*auto*/` at the top of a file comes from Total.js 4, which added them; Total.js 5 keeps the mark and adds nothing.
-- No LESS and no SASS: Total.js CSS has variables (`$color: #E73323;` and then `color: $color;`) and nests rules inside a block that has no declarations of its own. It has no `&`.
+- No LESS and no SASS. The shared colors and sizes are the CSS variables of the jComponent library: `var(--color)`, `var(--rgb)`, `var(--radius)`, `var(--gap)` and `var(--margin)`. Use them instead of a fixed color or radius.
 
 ```css
 /*auto*/
@@ -5843,6 +5843,21 @@ One rule per line, texts in `'`, no vendor prefixes (`/*auto*/` at the top of th
 
 The style of one screen goes at the top of its HTML, scoped with `CLASS`. What is shared goes in `public/css/default.css`.
 
+## Which colors and sizes do I use in the CSS?
+
+The CSS variables of the jComponent library: `var(--color)` is the color of the application, `var(--radius)` the radius of the corners, `var(--gap)` and `var(--margin)` the spaces, and `var(--rgb)` the color as three numbers. Use them instead of a fixed value, so that a new screen looks like the rest:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+The layout changes the color of the whole application in one place:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
+
 ## Which icons do I use?
 
 Total Icons: the class `ti ti-name`, as `ti ti-check-circle` or `ti ti-trash`.
@@ -8463,6 +8478,21 @@ Una regla por línea, textos entre `'`, sin prefijos de navegador (`/*auto*/` al
 
 El estilo de una pantalla va al principio de su HTML, acotado con `CLASS`. Lo compartido va en `public/css/default.css`.
 
+## ¿Qué colores y medidas uso en el CSS?
+
+Las variables CSS de la biblioteca jComponent: `var(--color)` es el color de la aplicación, `var(--radius)` el radio de las esquinas, `var(--gap)` y `var(--margin)` los espacios, y `var(--rgb)` el color como tres números. Úsalas en vez de un valor fijo, para que una pantalla nueva se parezca al resto:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+El layout cambia el color de toda la aplicación en un solo sitio:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
+
 ## ¿Qué iconos uso?
 
 Total Icons: la clase `ti ti-name`, como `ti ti-check-circle` o `ti ti-trash`.
@@ -11082,6 +11112,21 @@ Jedno pravidlo na riadok, texty v `'`, bez prefixov prehliadačov (`/*auto*/` na
 ```
 
 Štýl jednej obrazovky ide na začiatok jej HTML, ohraničený cez `CLASS`. Spoločné veci idú do `public/css/default.css`.
+
+## Aké farby a rozmery použijem v CSS?
+
+CSS premenné knižnice jComponent: `var(--color)` je farba aplikácie, `var(--radius)` polomer rohov, `var(--gap)` a `var(--margin)` medzery a `var(--rgb)` farba ako tri čísla. Použi ich namiesto pevnej hodnoty, aby nová obrazovka vyzerala ako ostatné:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+Layout zmení farbu celej aplikácie na jednom mieste:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
 
 ## Aké ikony použijem?
 

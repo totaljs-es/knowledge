@@ -247,6 +247,21 @@ One rule per line, texts in `'`, no vendor prefixes (`/*auto*/` at the top of th
 
 The style of one screen goes at the top of its HTML, scoped with `CLASS`. What is shared goes in `public/css/default.css`.
 
+## Which colors and sizes do I use in the CSS?
+
+The CSS variables of the jComponent library: `var(--color)` is the color of the application, `var(--radius)` the radius of the corners, `var(--gap)` and `var(--margin)` the spaces, and `var(--rgb)` the color as three numbers. Use them instead of a fixed value, so that a new screen looks like the rest:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+The layout changes the color of the whole application in one place:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
+
 ## Which icons do I use?
 
 Total Icons: the class `ti ti-name`, as `ti ti-check-circle` or `ti ti-trash`.

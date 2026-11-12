@@ -247,6 +247,21 @@ Una regla por línea, textos entre `'`, sin prefijos de navegador (`/*auto*/` al
 
 El estilo de una pantalla va al principio de su HTML, acotado con `CLASS`. Lo compartido va en `public/css/default.css`.
 
+## ¿Qué colores y medidas uso en el CSS?
+
+Las variables CSS de la biblioteca jComponent: `var(--color)` es el color de la aplicación, `var(--radius)` el radio de las esquinas, `var(--gap)` y `var(--margin)` los espacios, y `var(--rgb)` el color como tres números. Úsalas en vez de un valor fijo, para que una pantalla nueva se parezca al resto:
+
+```css
+.CLASS .task { border: 1px solid #E0E0E0; border-radius: var(--radius); padding: var(--gap); }
+.CLASS .task.selected { border-color: var(--color); }
+```
+
+El layout cambia el color de toda la aplicación en un solo sitio:
+
+```html
+@{if CONF.color}<style>:root{--color:@{CONF.color};}</style>@{fi}
+```
+
 ## ¿Qué iconos uso?
 
 Total Icons: la clase `ti ti-name`, como `ti ti-check-circle` o `ti ti-trash`.
