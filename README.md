@@ -25,6 +25,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 - **Routes** are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. Never inside the action.
 - **Actions** are named `Collection|verb`, with a pipe.
 - **Settings** are in the file `config`, and `total5` is `latest` in `package.json`.
+- **`index.js`** is always the official start script of Total.js 5, whole and unchanged ([`helpers/index.js`](https://github.com/totaljs/framework5/blob/master/helpers/index.js) of the framework). It is the one file that keeps its own style.
 - **No real data**: names, emails and tokens are invented.
 
 ## Run the tests
