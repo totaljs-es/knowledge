@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 160 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 173 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
 | [`skills/`](skills) | Two skills for agents: write Total.js 5 code, and review a change |
 | [`tools/`](tools) | `check.js` checks application files against the rules a script can decide, `rules.js` prints the rules, `test.js` runs the tests of every application |
@@ -5648,6 +5648,198 @@ No. Total.js 5 (`total5`) is the current framework and Total.js 4 (`total4`) is 
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/server.md
+
+# Mail, translations, redirects, CORS, encryption, cache and threads: questions and answers
+
+## How do I send an email?
+
+With `MAIL`, which is in the framework: the address, the subject, a view for the body and its model. The server of the mail goes in `config`:
+
+```
+mail_smtp          : smtp.example.com
+mail_smtp_options  : {"port":465,"secure":true,"user":"shop@example.com","password":"..."}
+mail_from          : shop@example.com
+```
+
+```js
+MAIL('anna@example.com', 'Welcome', 'mails/welcome', { name: 'Anna' }, function(err) {
+	err && console.error(err);
+});
+```
+
+```html
+@{layout('')}
+<p>Welcome, @{model.name}</p>
+```
+
+The view is `views/mails/welcome.html`. No package for mail is needed.
+
+## How do I send an email in the language of the user?
+
+Give the language to `MAIL` before the callback. The subject and the view are translated when their texts are in `@(...)`:
+
+```js
+MAIL('anna@example.com', '@(Welcome)', 'mails/welcome', { name: 'Anna' }, 'sk', function(err) {
+	err && console.error(err);
+});
+```
+
+## How do I send an email without a view?
+
+With `HTMLMAIL`: the body is the HTML itself.
+
+```js
+HTMLMAIL('anna@example.com', 'Your order', '<b>Thanks</b>', function(err) {
+	err && console.error(err);
+});
+```
+
+## How do I translate the texts of an application?
+
+Write every text for people in English inside `@(...)` and add one file per language in `resources/`. A line is the key and the translation; the key is `T` and the hash of the English text:
+
+```html
+<h1>@(Welcome)</h1>
+```
+
+```
+T1bx8wg2 : Vitajte
+```
+
+```js
+var key = 'T' + 'Welcome'.hash(true).toString(36);
+```
+
+That line is in `resources/sk.resource`. A text without a translation stays in English.
+
+## How does the application know the language of a request?
+
+With `LOCALIZE` in a definition: a function that returns the language of the request. The views are then rendered in it, and it is in `$.language`:
+
+```js
+// definitions/init.js
+LOCALIZE(function($) {
+	return $.query.language || '';
+});
+```
+
+An empty text is the default language: the texts as they are written.
+
+## How do I translate a text in the code?
+
+With `TRANSLATE(language, text)`: it translates every `@(...)` of the text.
+
+```js
+var text = TRANSLATE('sk', '@(Welcome)');
+```
+
+## How do I redirect to another address?
+
+With `$.redirect(url)`. It answers 302; `true` as the second argument answers 301, a permanent redirect:
+
+```js
+ROUTE('GET /old/', function($) {
+	$.redirect('/new/');
+});
+
+ROUTE('GET /moved/', function($) {
+	$.redirect('/new/', true);
+});
+```
+
+## How do I make my own page for an address that does not exist?
+
+With the route `#404`: it runs for every address without a route. Set the status, because the answer of a route is 200:
+
+```js
+ROUTE('#404', function($) {
+	$.response.status = 404;
+	$.view('404');
+});
+```
+
+## How do I allow requests from another website (CORS)?
+
+With `CORS` in a definition and the origin that is allowed. `CORS()` without an origin allows every website:
+
+```js
+// definitions/init.js
+CORS('https://shop.example.com');
+```
+
+A request from an allowed origin gets the `access-control-allow-origin` header, the preflight `OPTIONS` request too. A request from another origin is answered with 400, and a request without the `Origin` header (a server, `curl`) is not affected. No package and no middleware.
+
+## How do I limit the requests of one address?
+
+With `$httpreqlimit` in `config`: how many requests one IP address can make in a minute. The ones over the limit are answered with 503 until the next minute:
+
+```
+$httpreqlimit : 200
+```
+
+`0`, the default, is no limit.
+
+## How do I encrypt and decrypt a value?
+
+With `ENCRYPT(value, key)` and `DECRYPT(text, key)`. The value can be an object; the result is a text for a link or a cookie:
+
+```js
+var token = ENCRYPT({ id: 'abc', expire: 123 }, 'download');
+var data = DECRYPT(token, 'download');
+
+if (!data)
+	$.invalid(401);
+```
+
+`DECRYPT` returns `null` for another key and for a text that was changed. Both use the `secret` of `config`, so give the application its own.
+
+## How do I keep a value in memory for a while?
+
+With `CACHE`: `CACHE.set(key, value, expire)` and `CACHE.read(key)`, which gives nothing when the time is over.
+
+```js
+var rates = CACHE.read('rates');
+
+if (!rates) {
+	rates = { eur: 1, usd: 1.1 };
+	CACHE.set('rates', rates, '1 minute');
+}
+```
+
+It is the memory of the process: a restart empties it. For a value that must stay after a restart use `MEMORIZE`.
+
+## How do I run heavy work without blocking the application?
+
+In a thread. The work is a file in `workers/`, and `NEWTHREAD(name, data)` starts it:
+
+```js
+// workers/sum.js
+require('total5');
+
+var worker = NEWTHREAD();
+var total = 0;
+
+for (var i = 1; i <= worker.data.max; i++)
+	total += i;
+
+worker.postMessage({ total: total });
+```
+
+```js
+ROUTE('GET /sum/', function($) {
+	var worker = NEWTHREAD('sum', { max: 1000 });
+	worker.on('message', function(msg) {
+		worker.terminate();
+		$.json(msg);
+	});
+});
+```
+
+Inside the worker, `NEWTHREAD()` without a name is the thread itself: `worker.data` is what the application sent.
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md
 
 # La aplicación: preguntas y respuestas
@@ -7400,6 +7592,198 @@ No. Total.js 5 (`total5`) es el framework actual y Total.js 4 (`total4`) es el a
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/server.md
+
+# Correo, traducciones, redirecciones, CORS, cifrado, caché e hilos: preguntas y respuestas
+
+## ¿Cómo envío un correo?
+
+Con `MAIL`, que está en el framework: la dirección, el asunto, una vista para el cuerpo y su modelo. El servidor de correo va en `config`:
+
+```
+mail_smtp          : smtp.example.com
+mail_smtp_options  : {"port":465,"secure":true,"user":"shop@example.com","password":"..."}
+mail_from          : shop@example.com
+```
+
+```js
+MAIL('anna@example.com', 'Welcome', 'mails/welcome', { name: 'Anna' }, function(err) {
+	err && console.error(err);
+});
+```
+
+```html
+@{layout('')}
+<p>Welcome, @{model.name}</p>
+```
+
+La vista es `views/mails/welcome.html`. No hace falta ningún paquete para el correo.
+
+## ¿Cómo envío un correo en el idioma del usuario?
+
+Pasa el idioma a `MAIL` antes del callback. El asunto y la vista se traducen cuando sus textos están en `@(...)`:
+
+```js
+MAIL('anna@example.com', '@(Welcome)', 'mails/welcome', { name: 'Anna' }, 'sk', function(err) {
+	err && console.error(err);
+});
+```
+
+## ¿Cómo envío un correo sin una vista?
+
+Con `HTMLMAIL`: el cuerpo es el propio HTML.
+
+```js
+HTMLMAIL('anna@example.com', 'Your order', '<b>Thanks</b>', function(err) {
+	err && console.error(err);
+});
+```
+
+## ¿Cómo traduzco los textos de una aplicación?
+
+Escribe cada texto para personas en inglés dentro de `@(...)` y añade un archivo por idioma en `resources/`. Una línea es la clave y la traducción; la clave es `T` y el hash del texto en inglés:
+
+```html
+<h1>@(Welcome)</h1>
+```
+
+```
+T1bx8wg2 : Vitajte
+```
+
+```js
+var key = 'T' + 'Welcome'.hash(true).toString(36);
+```
+
+Esa línea está en `resources/sk.resource`. Un texto sin traducción se queda en inglés.
+
+## ¿Cómo sabe la aplicación el idioma de una petición?
+
+Con `LOCALIZE` en una definición: una función que devuelve el idioma de la petición. Las vistas se pintan en él, y está en `$.language`:
+
+```js
+// definitions/init.js
+LOCALIZE(function($) {
+	return $.query.language || '';
+});
+```
+
+Un texto vacío es el idioma por defecto: los textos tal como están escritos.
+
+## ¿Cómo traduzco un texto en el código?
+
+Con `TRANSLATE(idioma, texto)`: traduce cada `@(...)` del texto.
+
+```js
+var text = TRANSLATE('sk', '@(Welcome)');
+```
+
+## ¿Cómo redirijo a otra dirección?
+
+Con `$.redirect(url)`. Responde 302; `true` como segundo argumento responde 301, una redirección permanente:
+
+```js
+ROUTE('GET /old/', function($) {
+	$.redirect('/new/');
+});
+
+ROUTE('GET /moved/', function($) {
+	$.redirect('/new/', true);
+});
+```
+
+## ¿Cómo hago mi propia página para una dirección que no existe?
+
+Con la ruta `#404`: se ejecuta para cada dirección sin ruta. Pon el estado, porque la respuesta de una ruta es 200:
+
+```js
+ROUTE('#404', function($) {
+	$.response.status = 404;
+	$.view('404');
+});
+```
+
+## ¿Cómo permito peticiones desde otro sitio web (CORS)?
+
+Con `CORS` en una definición y el origen permitido. `CORS()` sin origen permite cualquier sitio web:
+
+```js
+// definitions/init.js
+CORS('https://shop.example.com');
+```
+
+Una petición de un origen permitido recibe la cabecera `access-control-allow-origin`, también la petición previa `OPTIONS`. Una petición de otro origen se responde con 400, y una petición sin la cabecera `Origin` (un servidor, `curl`) no se ve afectada. Sin paquete y sin middleware.
+
+## ¿Cómo limito las peticiones de una dirección?
+
+Con `$httpreqlimit` en `config`: cuántas peticiones puede hacer una dirección IP en un minuto. Las que pasan del límite se responden con 503 hasta el minuto siguiente:
+
+```
+$httpreqlimit : 200
+```
+
+`0`, el valor por defecto, es sin límite.
+
+## ¿Cómo cifro y descifro un valor?
+
+Con `ENCRYPT(valor, clave)` y `DECRYPT(texto, clave)`. El valor puede ser un objeto; el resultado es un texto para un enlace o una cookie:
+
+```js
+var token = ENCRYPT({ id: 'abc', expire: 123 }, 'download');
+var data = DECRYPT(token, 'download');
+
+if (!data)
+	$.invalid(401);
+```
+
+`DECRYPT` devuelve `null` con otra clave y con un texto que fue cambiado. Los dos usan el `secret` de `config`, así que pon a la aplicación el suyo.
+
+## ¿Cómo guardo un valor en memoria durante un tiempo?
+
+Con `CACHE`: `CACHE.set(clave, valor, caducidad)` y `CACHE.read(clave)`, que no devuelve nada cuando el tiempo ha pasado.
+
+```js
+var rates = CACHE.read('rates');
+
+if (!rates) {
+	rates = { eur: 1, usd: 1.1 };
+	CACHE.set('rates', rates, '1 minute');
+}
+```
+
+Es la memoria del proceso: un reinicio la vacía. Para un valor que debe seguir tras un reinicio usa `MEMORIZE`.
+
+## ¿Cómo ejecuto trabajo pesado sin bloquear la aplicación?
+
+En un hilo. El trabajo es un archivo en `workers/`, y `NEWTHREAD(nombre, datos)` lo arranca:
+
+```js
+// workers/sum.js
+require('total5');
+
+var worker = NEWTHREAD();
+var total = 0;
+
+for (var i = 1; i <= worker.data.max; i++)
+	total += i;
+
+worker.postMessage({ total: total });
+```
+
+```js
+ROUTE('GET /sum/', function($) {
+	var worker = NEWTHREAD('sum', { max: 1000 });
+	worker.on('message', function(msg) {
+		worker.terminate();
+		$.json(msg);
+	});
+});
+```
+
+Dentro del worker, `NEWTHREAD()` sin nombre es el propio hilo: `worker.data` es lo que envió la aplicación.
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md
 
 # Aplikácia: otázky a odpovede
@@ -9149,6 +9533,198 @@ Povedz to a over si to v zdrojovom kóde frameworku alebo v jeho dokumentácii n
 ## Je kód Total.js 5 rovnaký ako Total.js 4?
 
 Nie. Total.js 5 (`total5`) je aktuálny framework a Total.js 4 (`total4`) je predchádzajúci. Nemiešaj ich kód: príklad pre jeden nemusí fungovať v druhom.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/server.md
+
+# E-mail, preklady, presmerovania, CORS, šifrovanie, cache a vlákna: otázky a odpovede
+
+## Ako odošlem e-mail?
+
+Cez `MAIL`, ktorý je vo frameworku: adresa, predmet, view pre telo a jeho model. Poštový server je v `config`:
+
+```
+mail_smtp          : smtp.example.com
+mail_smtp_options  : {"port":465,"secure":true,"user":"shop@example.com","password":"..."}
+mail_from          : shop@example.com
+```
+
+```js
+MAIL('anna@example.com', 'Welcome', 'mails/welcome', { name: 'Anna' }, function(err) {
+	err && console.error(err);
+});
+```
+
+```html
+@{layout('')}
+<p>Welcome, @{model.name}</p>
+```
+
+View je `views/mails/welcome.html`. Na e-mail netreba žiadny balíček.
+
+## Ako odošlem e-mail v jazyku používateľa?
+
+Jazyk odovzdaj do `MAIL` pred callbackom. Predmet a view sa preložia, keď sú ich texty v `@(...)`:
+
+```js
+MAIL('anna@example.com', '@(Welcome)', 'mails/welcome', { name: 'Anna' }, 'sk', function(err) {
+	err && console.error(err);
+});
+```
+
+## Ako odošlem e-mail bez view?
+
+Cez `HTMLMAIL`: telo je priamo HTML.
+
+```js
+HTMLMAIL('anna@example.com', 'Your order', '<b>Thanks</b>', function(err) {
+	err && console.error(err);
+});
+```
+
+## Ako preložím texty aplikácie?
+
+Každý text pre ľudí napíš po anglicky v `@(...)` a pridaj jeden súbor na jazyk do `resources/`. Riadok je kľúč a preklad; kľúč je `T` a hash anglického textu:
+
+```html
+<h1>@(Welcome)</h1>
+```
+
+```
+T1bx8wg2 : Vitajte
+```
+
+```js
+var key = 'T' + 'Welcome'.hash(true).toString(36);
+```
+
+Ten riadok je v `resources/sk.resource`. Text bez prekladu ostane po anglicky.
+
+## Ako aplikácia zistí jazyk požiadavky?
+
+Cez `LOCALIZE` v definícii: funkcia, ktorá vráti jazyk požiadavky. View sa potom vykreslia v ňom a je v `$.language`:
+
+```js
+// definitions/init.js
+LOCALIZE(function($) {
+	return $.query.language || '';
+});
+```
+
+Prázdny text je predvolený jazyk: texty tak, ako sú napísané.
+
+## Ako preložím text v kóde?
+
+Cez `TRANSLATE(jazyk, text)`: preloží každé `@(...)` v texte.
+
+```js
+var text = TRANSLATE('sk', '@(Welcome)');
+```
+
+## Ako presmerujem na inú adresu?
+
+Cez `$.redirect(url)`. Odpovie 302; `true` ako druhý argument odpovie 301, trvalé presmerovanie:
+
+```js
+ROUTE('GET /old/', function($) {
+	$.redirect('/new/');
+});
+
+ROUTE('GET /moved/', function($) {
+	$.redirect('/new/', true);
+});
+```
+
+## Ako spravím vlastnú stránku pre adresu, ktorá neexistuje?
+
+Cez routu `#404`: spustí sa pre každú adresu bez routy. Nastav status, lebo odpoveď routy je 200:
+
+```js
+ROUTE('#404', function($) {
+	$.response.status = 404;
+	$.view('404');
+});
+```
+
+## Ako povolím požiadavky z inej webovej stránky (CORS)?
+
+Cez `CORS` v definícii a povolený origin. `CORS()` bez originu povolí každú stránku:
+
+```js
+// definitions/init.js
+CORS('https://shop.example.com');
+```
+
+Požiadavka z povoleného originu dostane hlavičku `access-control-allow-origin`, aj predbežná požiadavka `OPTIONS`. Požiadavka z iného originu dostane 400 a požiadavky bez hlavičky `Origin` (server, `curl`) sa to netýka. Bez balíčka a bez middleware.
+
+## Ako obmedzím požiadavky z jednej adresy?
+
+Cez `$httpreqlimit` v `config`: koľko požiadaviek môže jedna IP adresa spraviť za minútu. Tie nad limit dostanú 503 až do ďalšej minúty:
+
+```
+$httpreqlimit : 200
+```
+
+`0`, predvolená hodnota, znamená bez limitu.
+
+## Ako zašifrujem a dešifrujem hodnotu?
+
+Cez `ENCRYPT(hodnota, kľúč)` a `DECRYPT(text, kľúč)`. Hodnota môže byť objekt; výsledok je text do odkazu alebo cookie:
+
+```js
+var token = ENCRYPT({ id: 'abc', expire: 123 }, 'download');
+var data = DECRYPT(token, 'download');
+
+if (!data)
+	$.invalid(401);
+```
+
+`DECRYPT` vráti `null` pri inom kľúči a pri zmenenom texte. Oba používajú `secret` z `config`, takže daj aplikácii vlastný.
+
+## Ako uložím hodnotu do pamäte na určitý čas?
+
+Cez `CACHE`: `CACHE.set(kľúč, hodnota, expirácia)` a `CACHE.read(kľúč)`, ktoré po uplynutí času nevráti nič.
+
+```js
+var rates = CACHE.read('rates');
+
+if (!rates) {
+	rates = { eur: 1, usd: 1.1 };
+	CACHE.set('rates', rates, '1 minute');
+}
+```
+
+Je to pamäť procesu: reštart ju vyprázdni. Pre hodnotu, ktorá má ostať aj po reštarte, použi `MEMORIZE`.
+
+## Ako spustím náročnú prácu bez blokovania aplikácie?
+
+Vo vlákne. Práca je súbor vo `workers/` a `NEWTHREAD(názov, dáta)` ju spustí:
+
+```js
+// workers/sum.js
+require('total5');
+
+var worker = NEWTHREAD();
+var total = 0;
+
+for (var i = 1; i <= worker.data.max; i++)
+	total += i;
+
+worker.postMessage({ total: total });
+```
+
+```js
+ROUTE('GET /sum/', function($) {
+	var worker = NEWTHREAD('sum', { max: 1000 });
+	worker.on('message', function(msg) {
+		worker.terminate();
+		$.json(msg);
+	});
+});
+```
+
+Vo workeri je `NEWTHREAD()` bez názvu samotné vlákno: `worker.data` je to, čo poslala aplikácia.
 
 ---
 

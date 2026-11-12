@@ -36,7 +36,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 - `answers/`: short answers to common questions (how to start an application, where the routes go, which storage, plugins or not...), each with its question in English and in Spanish.
 - `questions/`: one question and its short answer, by subject (`actions.md`, `routes.md`, `data.md`...). `questions/es/` and `questions/sk/` have the same pages in Spanish and in Slovak: the same sections in the same order and the same code, only the text is translated.
 - `reference/`: what each version of Total.js 5 adds, tried with that version, and `reference/jcomponent/`, the official guides of the interface library (copies, not edited here). A feature of a beta is used only in a project that depends on that version.
-- `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
+- `llms.txt` (index), `llms-full.txt` (every page in one file) and `knowledge.json` (the API names and the words of the headings of each page, for a program that searches them): they are generated with `npm run llms`, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.
 - `skills/`: the skills to write and to review Total.js 5 code (`.claude/skills/` and `.agents/skills/` point to them).
 - `tools/check.js`: checks application files against the rules a script can decide. `tools/rules.js` prints the rules above. `tools/test.js` runs the tests of every application.

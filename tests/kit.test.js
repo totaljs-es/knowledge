@@ -85,6 +85,11 @@ Test.push('llms.txt and llms-full.txt', function(next) {
 
 	check('llms.txt matches the pages (run npm run llms)', read('llms.txt') === llms.index());
 	check('llms-full.txt matches the pages (run npm run llms)', read('llms-full.txt') === llms.full());
+	check('knowledge.json matches the pages (run npm run llms)', read('knowledge.json') === llms.meta());
+
+	var meta = JSON.parse(read('knowledge.json')).documents;
+	var services = meta.findItem('file', 'questions/services.md');
+	check('knowledge.json has every page with its API names and the words of its headings', meta.length === llms.PAGES.length && services.symbols.indexOf('cron') !== -1 && services.tags.indexOf('minute') !== -1);
 
 	var listed = llms.PAGES.map(function(page) {
 		return page[1];

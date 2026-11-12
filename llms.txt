@@ -77,6 +77,7 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [The interface with jComponent 20: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/interface.md): Plugins, screens, tapi, exec, CLASS, components, COMPONENTATOR, forms and CSS
 - [SQL scripts for PostgreSQL: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sql.md): database.sql, names of tables and columns, types, code lists and the order of a script
 - [Style, tests and versions: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/style-and-tests.md): ES5 first, Total.Fs, format, tests, what 0.0.20 adds and what to do when not sure
+- [Mail, translations, redirects, CORS, encryption, cache and threads: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/server.md): MAIL and HTMLMAIL, resources and LOCALIZE, $.redirect, the route #404, CORS, the request limit, ENCRYPT and DECRYPT, CACHE and NEWTHREAD
 ## Questions in Spanish
 
 - [La aplicación: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md): The same questions and answers in Spanish, with the same code
@@ -90,6 +91,7 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [La interfaz con jComponent 20: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/interface.md): The same questions and answers in Spanish, with the same code
 - [Scripts SQL para PostgreSQL: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/sql.md): The same questions and answers in Spanish, with the same code
 - [Estilo, pruebas y versiones: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/style-and-tests.md): The same questions and answers in Spanish, with the same code
+- [Correo, traducciones, redirecciones, CORS, cifrado, caché e hilos: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/server.md): The same questions and answers in Spanish, with the same code
 ## Questions in Slovak
 
 - [Aplikácia: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
@@ -103,6 +105,7 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [Rozhranie s jComponent 20: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/interface.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 - [SQL skripty pre PostgreSQL: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/sql.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 - [Štýl, testy a verzie: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/style-and-tests.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [E-mail, preklady, presmerovania, CORS, šifrovanie, cache a vlákna: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/server.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database

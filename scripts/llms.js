@@ -74,6 +74,7 @@ var PAGES = [
 	['Questions', 'questions/interface.md', 'The interface with jComponent 20: questions and answers', 'Plugins, screens, tapi, exec, CLASS, components, COMPONENTATOR, forms and CSS'],
 	['Questions', 'questions/sql.md', 'SQL scripts for PostgreSQL: questions and answers', 'database.sql, names of tables and columns, types, code lists and the order of a script'],
 	['Questions', 'questions/style-and-tests.md', 'Style, tests and versions: questions and answers', 'ES5 first, Total.Fs, format, tests, what 0.0.20 adds and what to do when not sure'],
+	['Questions', 'questions/server.md', 'Mail, translations, redirects, CORS, encryption, cache and threads: questions and answers', 'MAIL and HTMLMAIL, resources and LOCALIZE, $.redirect, the route #404, CORS, the request limit, ENCRYPT and DECRYPT, CACHE and NEWTHREAD'],
 	['Questions in Spanish', 'questions/es/application.md', 'La aplicación: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
 	['Questions in Spanish', 'questions/es/actions.md', 'Acciones: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
 	['Questions in Spanish', 'questions/es/routes.md', 'Rutas y autenticación: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
@@ -85,6 +86,7 @@ var PAGES = [
 	['Questions in Spanish', 'questions/es/interface.md', 'La interfaz con jComponent 20: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
 	['Questions in Spanish', 'questions/es/sql.md', 'Scripts SQL para PostgreSQL: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
 	['Questions in Spanish', 'questions/es/style-and-tests.md', 'Estilo, pruebas y versiones: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
+	['Questions in Spanish', 'questions/es/server.md', 'Correo, traducciones, redirecciones, CORS, cifrado, caché e hilos: preguntas y respuestas', 'The same questions and answers in Spanish, with the same code'],
 	['Questions in Slovak', 'questions/sk/application.md', 'Aplikácia: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
 	['Questions in Slovak', 'questions/sk/actions.md', 'Akcie: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
 	['Questions in Slovak', 'questions/sk/routes.md', 'Routy a autentifikácia: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
@@ -96,6 +98,7 @@ var PAGES = [
 	['Questions in Slovak', 'questions/sk/interface.md', 'Rozhranie s jComponent 20: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
 	['Questions in Slovak', 'questions/sk/sql.md', 'SQL skripty pre PostgreSQL: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
 	['Questions in Slovak', 'questions/sk/style-and-tests.md', 'Štýl, testy a verzie: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
+	['Questions in Slovak', 'questions/sk/server.md', 'E-mail, preklady, presmerovania, CORS, šifrovanie, cache a vlákna: otázky a odpovede', 'The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it'],
 	['Applications', 'apps/contacts/readme.md', 'Contacts: an API without plugins', 'Actions, routes in controllers, a token and DATA on the embedded NoSQL database'],
 	['Applications', 'apps/contacts-postgresql/readme.md', 'Contacts on PostgreSQL', 'The same queries with DATA on PostgreSQL: the definition of the database and the table names without the prefix nosql/'],
 	['Applications', 'apps/files/readme.md', 'Files: upload and download', 'A multipart upload with a size limit, FILESTORAGE, a FILE route for the download and the removal'],
@@ -138,11 +141,73 @@ exports.full = function() {
 	return lines.join('\n');
 };
 
+// Words that say nothing about the subject of a page
+var STOP = ('the and for with how does can what which where when who should use from into that this are not its you your one way put get make write there about without than them they have has was all any some other more each every between both only also same after before under over').split(' ').reduce(function(map, word) {
+	map[word] = 1;
+	return map;
+}, {});
+
+// knowledge.json: for every page, the API names it uses (ROUTE, CRON, UID) and the words of its headings. A program that searches these pages finds
+// with them the page that answers a request although its title says something else. A name or a word that is in more than a third of the pages
+// says nothing about one of them and is left out.
+exports.meta = function() {
+
+	var documents = [];
+	var frequency = {};
+
+	function count(list) {
+		list.forEach(function(name) {
+			frequency[name] = (frequency[name] || 0) + 1;
+		});
+	}
+
+	for (var i = 0; i < PAGES.length; i++) {
+
+		var page = PAGES[i];
+		var text = Fs.readFileSync(Path.join(ROOT, page[1]), 'utf8').replace(/\r\n/g, '\n');
+		var symbols = {};
+		var tags = {};
+
+		// API names: a global in capitals that is called, or written as code
+		(text.match(/\b[A-Z][A-Z0-9_]{2,}(?=\()|`[A-Z][A-Z0-9_]{2,}`/g) || []).forEach(function(name) {
+			symbols[name.replace(/`/g, '').toLowerCase()] = 1;
+		});
+
+		((page[2] + '\n' + (text.match(/^#{1,3} .+$/gm) || []).join('\n')).toLowerCase().match(/[a-z][a-z0-9]{2,}/g) || []).forEach(function(word) {
+			if (STOP[word])
+				return;
+			tags[word] = 1;
+			// The singular of a plural, so that "files" and "file" find the same page
+			if (word.length > 4 && /[^su]s$/.test(word))
+				tags[word.substring(0, word.length - 1)] = 1;
+		});
+
+		var doc = { file: page[1], symbols: Object.keys(symbols).sort(), tags: Object.keys(tags).sort() };
+		count(doc.symbols);
+		count(doc.tags);
+		documents.push(doc);
+	}
+
+	var max = Math.ceil(PAGES.length / 3);
+
+	documents.forEach(function(doc) {
+		doc.symbols = doc.symbols.filter(function(name) {
+			return frequency[name] <= max;
+		});
+		doc.tags = doc.tags.filter(function(name) {
+			return frequency[name] <= max && doc.symbols.indexOf(name) === -1;
+		});
+	});
+
+	return JSON.stringify({ documents: documents }, null, '\t') + '\n';
+};
+
 if (require.main === module) {
 	if (process.argv.indexOf('--write') !== -1) {
 		Fs.writeFileSync(Path.join(ROOT, 'llms.txt'), exports.index());
 		Fs.writeFileSync(Path.join(ROOT, 'llms-full.txt'), exports.full());
-		console.log('llms.txt and llms-full.txt written');
+		Fs.writeFileSync(Path.join(ROOT, 'knowledge.json'), exports.meta());
+		console.log('llms.txt, llms-full.txt and knowledge.json written');
 	} else
 		process.stdout.write(exports.index());
 }
