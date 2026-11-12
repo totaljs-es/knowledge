@@ -2,7 +2,7 @@ NEWACTION('Contacts|list', {
 	name: 'List of contacts',
 	query: 'search:String',
 	action: async function($) {
-		var builder = DATA.find('tbl_contact');
+		var builder = DATA.find('nosql/tbl_contact');
 		$.query.search && builder.search('name', $.query.search);
 		builder.sort('name');
 		var items = await builder.promise($);
@@ -14,7 +14,7 @@ NEWACTION('Contacts|read', {
 	name: 'Read a contact',
 	params: '*id:UID',
 	action: async function($) {
-		var item = await DATA.read('tbl_contact').id($.params.id).error(404).promise($);
+		var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
 		$.callback(item);
 	}
 });
@@ -25,7 +25,7 @@ NEWACTION('Contacts|create', {
 	action: async function($, model) {
 		model.id = UID();
 		model.dtcreated = NOW;
-		await DATA.insert('tbl_contact', model).promise($);
+		await DATA.insert('nosql/tbl_contact', model).promise($);
 		$.success(model.id);
 	}
 });
@@ -36,7 +36,7 @@ NEWACTION('Contacts|update', {
 	input: '*name:String, email:Email, phone:Phone',
 	action: async function($, model) {
 		model.dtupdated = NOW;
-		await DATA.modify('tbl_contact', model).id($.params.id).error(404).promise($);
+		await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
 		$.success($.params.id);
 	}
 });
@@ -45,7 +45,7 @@ NEWACTION('Contacts|remove', {
 	name: 'Remove a contact',
 	params: '*id:UID',
 	action: async function($) {
-		await DATA.remove('tbl_contact').id($.params.id).error(404).promise($);
+		await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
 		$.success($.params.id);
 	}
 });

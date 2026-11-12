@@ -25,7 +25,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | Application | Shape | Storage |
 |---|---|---|
 | [`apps/contacts`](apps/contacts) | An API without plugins, with a token | `DATA` (QueryBuilder) on the embedded NoSQL database |
-| [`apps/contacts-postgresql`](apps/contacts-postgresql) | The same API with its data in PostgreSQL: the actions and the routes are the same files | `DATA` (QueryBuilder) on PostgreSQL |
+| [`apps/contacts-postgresql`](apps/contacts-postgresql) | The same API with its data in PostgreSQL: the same queries, without the prefix `nosql/` | `DATA` (QueryBuilder) on PostgreSQL |
 | [`apps/website`](apps/website) | A website without plugins: views and a layout rendered on the server | A list in memory |
 | [`apps/board`](apps/board) | An application with plugins: each feature has its routes, actions, screen and form (jComponent 20) | `DATA` (QueryBuilder) on the embedded NoSQL database |
 
@@ -54,7 +54,7 @@ codex plugin add totaljs
 - **ES5 first**: `var` and `function`. `const` or `let` only where the code needs it, as a constant at the top of a file. `async` / `await` only where the code waits for the database (`await NOSQL(...).promise($)`).
 - **Routes** are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. Never inside the action.
 - **Actions** are named `Collection|verb`, with a pipe.
-- **Data** goes through `DATA` (QueryBuilder) from the start, so an application can move from the embedded database to PostgreSQL without changing its actions. `NOSQL()`, `MEMORIZE()` and `FILESTORAGE()` are for what they are made for: see [storage](conventions/backend/storage-and-integrations.md).
+- **Data** goes through `DATA` (QueryBuilder) from the start, with SQL names and the prefix `nosql/` on the embedded database (`DATA.find('nosql/tbl_contact')`), so an application moves to PostgreSQL without writing its queries again. `NOSQL()`, `MEMORIZE()` and `FILESTORAGE()` are for what they are made for: see [storage](conventions/backend/storage-and-integrations.md).
 - **Settings** are in the file `config`, and `total5` is `latest` in `package.json`.
 - **`index.js`** is always the official start script of Total.js 5, whole and unchanged ([`helpers/index.js`](https://github.com/totaljs/framework5/blob/master/helpers/index.js) of the framework). It is the one file that keeps its own style.
 - **No real data**: names, emails and tokens are invented.
@@ -99,7 +99,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 - Routes are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. An existing application that declares `route:` in its actions keeps its style; never register the same endpoint twice.
 - An application that will grow by features is made with plugins; a small API or a website with a few pages is not. See the applications of `apps/`.
 - Loaded application modules are accessed through `MODS`, shared helpers hang from `FUNC` and shared state from `MAIN`.
-- Keep the storage of an existing application. In a new one the records go through `DATA` (QueryBuilder) from the start, on the embedded NoSQL database until it needs PostgreSQL; `NOSQL()` is for an embedded store that will never be SQL, `MEMORIZE()` for a small named object, `FILESTORAGE()` for files. In request queries use `.promise($)` / `.callback($)`; ids are `UID()`, dates are `NOW`.
+- Keep the storage of an existing application. In a new one the records go through `DATA` (QueryBuilder) from the start, with SQL names: `DATA.find('nosql/tbl_contact')` on the embedded NoSQL database, and the same table without the prefix `nosql/` when it moves to PostgreSQL; `NOSQL()` is for an embedded store that will never be SQL, `MEMORIZE()` for a small named object, `FILESTORAGE()` for files. In request queries use `.promise($)` / `.callback($)`; ids are `UID()`, dates are `NOW`.
 - Preserve URLs, permissions, input and output shapes, settings keys and model paths during a style correction. Do not add an abstraction when a direct native call fits.
 - Frontend: match the jComponent major version of the application; use an existing component before writing one; load catalogue components with `COMPONENTATOR()`.
 - Every text for people is `@(Text)`, in English.
@@ -1049,34 +1049,35 @@ An existing feature keeps its model. A new application chooses by what the data 
 
 | The data | Use |
 |---|---|
-| The records of the application (contacts, tasks, orders), small today and maybe on PostgreSQL tomorrow | `DATA` with QueryBuilder from the start, on the embedded NoSQL database |
+| The records of the application (contacts, tasks, orders), small today and maybe on PostgreSQL tomorrow | `DATA` with QueryBuilder from the start: `DATA.find('nosql/tbl_contact')` on the embedded NoSQL database |
 | An embedded store that will never be SQL (a log, a queue, a cache on disk) | `NOSQL('name')` directly |
 | A small named object that is kept by itself (settings, counters) | `MEMORIZE('name')` |
 | Files and their metadata | `FILESTORAGE('name')` |
 
-`DATA` works on the embedded NoSQL database: one definition registers it as the default connection, and the actions name the tables without a prefix.
+`DATA` works on the embedded NoSQL database with the prefix `nosql/` before the name of the table. It needs no definition and no dependency:
 
 ```js
-// definitions/db.js
-NEWDB('default', F.querybuilders.nosql);
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+await DATA.insert('nosql/tbl_contact', model).promise($);
+await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
+await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
 ```
 
-```js
-var items = await DATA.find('tbl_contact').sort('name').promise($);
-var item = await DATA.read('tbl_contact').id($.params.id).error(404).promise($);
-await DATA.insert('tbl_contact', model).promise($);
-await DATA.modify('tbl_contact', model).id($.params.id).error(404).promise($);
-await DATA.remove('tbl_contact').id($.params.id).error(404).promise($);
-```
+The file is `databases/tbl_contact.nosql`, the same one that `NOSQL('tbl_contact')` reads. Name the tables and the columns as in SQL from the start (`tbl_contact`, `isdone`, `dtcreated`; see [SQL scripts](../database/sql-scripts.md)).
 
-The file is `databases/tbl_contact.nosql`, the same one that `NOSQL('tbl_contact')` reads. Name the tables and the columns as in SQL from the start (`tbl_contact`, `isdone`, `dtcreated`; see [SQL scripts](../database/sql-scripts.md)). An application written this way moves to PostgreSQL by changing that definition for the one of its adapter, and its actions stay as they are:
+An application written this way moves to PostgreSQL without writing its queries again: it adds the definition of its adapter and takes the prefix `nosql/` away from the table names.
 
 ```js
 // definitions/db.js
 require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
 ```
 
-Checked with Total.js 5 0.0.19: `apps/contacts` (embedded database) and `apps/contacts-postgresql` (PostgreSQL 18) of the [knowledge repository](https://github.com/totaljs-es/knowledge) share the same action and route files, and both pass the same tests.
+```js
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+The prefix is the form of the framework's own tests and of the CMS (`DATA.modify('nosql/pages', ...)`). Checked with Total.js 5 0.0.19: `apps/contacts` (embedded database) and `apps/contacts-postgresql` (PostgreSQL 18) of the [knowledge repository](https://github.com/totaljs-es/knowledge) have the same queries and pass the same tests.
 
 ## Outgoing requests
 
@@ -1864,7 +1865,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contact
 
 # Contacts
 
-An API of contacts with Total.js 5: list, read, create, update and remove. The data goes through `DATA` (QueryBuilder) on the embedded NoSQL database, so the application needs nothing else to run, and it can move to PostgreSQL later without changing its actions.
+An API of contacts with Total.js 5: list, read, create, update and remove. The data goes through `DATA` (QueryBuilder) on the embedded NoSQL database (`DATA.find('nosql/tbl_contact')`), so the application needs nothing else to run. It can move to PostgreSQL later by taking the prefix `nosql/` away: see [`apps/contacts-postgresql`](../contacts-postgresql).
 
 **The request it answers:** "Create an API for contacts (name, email and phone) with a token, without a database server."
 
@@ -1878,7 +1879,6 @@ An API of contacts with Total.js 5: list, read, create, update and remove. The d
 | `controllers/api.js` | The routes of the API, one line each |
 | `schemas/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
-| `definitions/db.js` | The database of `DATA`: the embedded NoSQL database as the default connection |
 | `test.js` | The tests: they start the application and call every action |
 
 ## Run it
@@ -1920,23 +1920,24 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contact
 
 # Contacts on PostgreSQL
 
-The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its actions, its routes and its authorization are the same files, byte for byte: what changes is the definition of the database.
+The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its routes and its authorization are the same files, and its actions are the same code: only the prefix `nosql/` of the table name is gone.
 
 **The request it answers:** "My contacts API has grown: move its data to PostgreSQL."
 
-**The shape:** an application without plugins, with `DATA` (QueryBuilder) on PostgreSQL. An application written with `DATA` from the start moves here without touching its actions.
+**The shape:** an application without plugins, with `DATA` (QueryBuilder) on PostgreSQL. An application written with `DATA` from the start moves here by adding the definition of the database and taking the prefix `nosql/` away from its table names; no query is written again.
 
 ## What differs from apps/contacts
 
 | File | In `apps/contacts` | Here |
 |---|---|---|
-| `definitions/db.js` | `NEWDB('default', F.querybuilders.nosql);` | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
+| `schemas/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
+| `definitions/db.js` | | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
 | `config` | | `database : postgresql://user:password@localhost/contacts` |
 | `package.json` | | the dependency `querybuilderpg` |
 | `database.sql` | | the table `tbl_contact` |
 | `definitions/init.js` | | creates the table from `database.sql` the first time the application starts |
 
-`schemas/contacts.js`, `controllers/api.js` and `definitions/auth.js` do not change. A test checks that they are the same files.
+`controllers/api.js` and `definitions/auth.js` do not change, and `schemas/contacts.js` changes only in that prefix. A test checks both.
 
 The table has the names of the SQL conventions, which the application used from the start: `tbl_contact`, `id` as `text` filled with `UID()`, `dtcreated` and `dtupdated`.
 
@@ -2052,7 +2053,6 @@ A board of tasks and notes with Total.js 5, made with plugins. Each feature is a
 | `controllers/default.js` | The route of the page: it gives the layout the plugins that the user can see |
 | `definitions/auth.js` | Who the request is: one local user |
 | `definitions/init.js` | The components of the interface that the layout loads |
-| `definitions/db.js` | The database of `DATA`: the embedded NoSQL database as the default connection |
 | `views/index.html` | The layout: the menu, a `page` for the screen of each plugin and an `importer` for its form |
 | `public/css/default.css` | The styles of the layout |
 | `plugins/tasks/`, `plugins/notes/` | The two features |

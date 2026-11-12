@@ -1,6 +1,6 @@
 # Contacts
 
-An API of contacts with Total.js 5: list, read, create, update and remove. The data goes through `DATA` (QueryBuilder) on the embedded NoSQL database, so the application needs nothing else to run, and it can move to PostgreSQL later without changing its actions.
+An API of contacts with Total.js 5: list, read, create, update and remove. The data goes through `DATA` (QueryBuilder) on the embedded NoSQL database (`DATA.find('nosql/tbl_contact')`), so the application needs nothing else to run. It can move to PostgreSQL later by taking the prefix `nosql/` away: see [`apps/contacts-postgresql`](../contacts-postgresql).
 
 **The request it answers:** "Create an API for contacts (name, email and phone) with a token, without a database server."
 
@@ -14,7 +14,6 @@ An API of contacts with Total.js 5: list, read, create, update and remove. The d
 | `controllers/api.js` | The routes of the API, one line each |
 | `schemas/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
-| `definitions/db.js` | The database of `DATA`: the embedded NoSQL database as the default connection |
 | `test.js` | The tests: they start the application and call every action |
 
 ## Run it

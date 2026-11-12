@@ -17,7 +17,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | Application | Shape | Storage |
 |---|---|---|
 | [`apps/contacts`](apps/contacts) | An API without plugins, with a token | `DATA` (QueryBuilder) on the embedded NoSQL database |
-| [`apps/contacts-postgresql`](apps/contacts-postgresql) | The same API with its data in PostgreSQL: the actions and the routes are the same files | `DATA` (QueryBuilder) on PostgreSQL |
+| [`apps/contacts-postgresql`](apps/contacts-postgresql) | The same API with its data in PostgreSQL: the same queries, without the prefix `nosql/` | `DATA` (QueryBuilder) on PostgreSQL |
 | [`apps/website`](apps/website) | A website without plugins: views and a layout rendered on the server | A list in memory |
 | [`apps/board`](apps/board) | An application with plugins: each feature has its routes, actions, screen and form (jComponent 20) | `DATA` (QueryBuilder) on the embedded NoSQL database |
 
@@ -46,7 +46,7 @@ codex plugin add totaljs
 - **ES5 first**: `var` and `function`. `const` or `let` only where the code needs it, as a constant at the top of a file. `async` / `await` only where the code waits for the database (`await NOSQL(...).promise($)`).
 - **Routes** are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. Never inside the action.
 - **Actions** are named `Collection|verb`, with a pipe.
-- **Data** goes through `DATA` (QueryBuilder) from the start, so an application can move from the embedded database to PostgreSQL without changing its actions. `NOSQL()`, `MEMORIZE()` and `FILESTORAGE()` are for what they are made for: see [storage](conventions/backend/storage-and-integrations.md).
+- **Data** goes through `DATA` (QueryBuilder) from the start, with SQL names and the prefix `nosql/` on the embedded database (`DATA.find('nosql/tbl_contact')`), so an application moves to PostgreSQL without writing its queries again. `NOSQL()`, `MEMORIZE()` and `FILESTORAGE()` are for what they are made for: see [storage](conventions/backend/storage-and-integrations.md).
 - **Settings** are in the file `config`, and `total5` is `latest` in `package.json`.
 - **`index.js`** is always the official start script of Total.js 5, whole and unchanged ([`helpers/index.js`](https://github.com/totaljs/framework5/blob/master/helpers/index.js) of the framework). It is the one file that keeps its own style.
 - **No real data**: names, emails and tokens are invented.
