@@ -19,9 +19,9 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 - Settings are in the file `config` (not `config.json`, not environment variables), read with `CONF`. `total5` is the dependency in `package.json`, as `latest`.
 - Actions are named `Collection|verb` with a pipe: `Tickets|list`, `Reports|Categories|list`. Never `/` or `\` in an action or schema name.
 - Routes are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. An existing application that declares `route:` in its actions keeps its style; never register the same endpoint twice.
-- An application that will grow by features is made with plugins; a small API or a website with a few pages is not. See the three applications of `apps/`.
+- An application that will grow by features is made with plugins; a small API or a website with a few pages is not. See the applications of `apps/`.
 - Loaded application modules are accessed through `MODS`, shared helpers hang from `FUNC` and shared state from `MAIN`.
-- Keep the storage of the application: `DATA` for SQL, `NOSQL` for the embedded database, `FILESTORAGE` for files. In request queries use `.promise($)` / `.callback($)`; ids are `UID()`, dates are `NOW`.
+- Keep the storage of an existing application. In a new one the records go through `DATA` (QueryBuilder) from the start, on the embedded NoSQL database until it needs PostgreSQL; `NOSQL()` is for an embedded store that will never be SQL, `MEMORIZE()` for a small named object, `FILESTORAGE()` for files. In request queries use `.promise($)` / `.callback($)`; ids are `UID()`, dates are `NOW`.
 - Preserve URLs, permissions, input and output shapes, settings keys and model paths during a style correction. Do not add an abstraction when a direct native call fits.
 - Frontend: match the jComponent major version of the application; use an existing component before writing one; load catalogue components with `COMPONENTATOR()`.
 - Every text for people is `@(Text)`, in English.

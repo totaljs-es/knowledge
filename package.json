@@ -10,6 +10,7 @@
 		"check": "node tools/check.js"
 	},
 	"dependencies": {
+		"querybuilderpg": "^1.0.24",
 		"total5": "latest"
 	}
 }

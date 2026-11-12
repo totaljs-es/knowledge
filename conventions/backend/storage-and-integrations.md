@@ -15,6 +15,41 @@ Do not switch models during a cleanup.
 
 A `FUNC.load` typically reads the metadata, initializes defaults, compiles derived objects and emits reload; `FUNC.save` excludes compiled references before serialization. Changing a record can therefore require cache refresh as well as saving. Follow the feature's actual invalidation path rather than inventing a second cache.
 
+## A new application: which storage
+
+An existing feature keeps its model. A new application chooses by what the data is:
+
+| The data | Use |
+|---|---|
+| The records of the application (contacts, tasks, orders), small today and maybe on PostgreSQL tomorrow | `DATA` with QueryBuilder from the start, on the embedded NoSQL database |
+| An embedded store that will never be SQL (a log, a queue, a cache on disk) | `NOSQL('name')` directly |
+| A small named object that is kept by itself (settings, counters) | `MEMORIZE('name')` |
+| Files and their metadata | `FILESTORAGE('name')` |
+
+`DATA` works on the embedded NoSQL database: one definition registers it as the default connection, and the actions name the tables without a prefix.
+
+```js
+// definitions/db.js
+NEWDB('default', F.querybuilders.nosql);
+```
+
+```js
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+var item = await DATA.read('tbl_contact').id($.params.id).error(404).promise($);
+await DATA.insert('tbl_contact', model).promise($);
+await DATA.modify('tbl_contact', model).id($.params.id).error(404).promise($);
+await DATA.remove('tbl_contact').id($.params.id).error(404).promise($);
+```
+
+The file is `databases/tbl_contact.nosql`, the same one that `NOSQL('tbl_contact')` reads. Name the tables and the columns as in SQL from the start (`tbl_contact`, `isdone`, `dtcreated`; see [SQL scripts](../database/sql-scripts.md)). An application written this way moves to PostgreSQL by changing that definition for the one of its adapter, and its actions stay as they are:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+Checked with Total.js 5 0.0.19: `apps/contacts` (embedded database) and `apps/contacts-postgresql` (PostgreSQL 18) of the [knowledge repository](https://github.com/totaljs-es/knowledge) share the same action and route files, and both pass the same tests.
+
 ## Outgoing requests
 
 Use `RESTBuilder` and the existing integration configuration. A notification that is intentionally independent can use `RESTBuilder.POST(...).callback(NOOP)`; use explicit error handling when an action's result depends on the remote call.

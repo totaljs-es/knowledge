@@ -1,0 +1,15 @@
+{
+	"name": "contacts-postgresql",
+	"description": "An API of contacts with Total.js 5 and PostgreSQL",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"total5": "latest",
+		"querybuilderpg": "latest"
+	},
+	"scripts": {
+		"start": "node index.js 8000",
+		"test": "node test.js"
+	},
+	"license": "MIT"
+}

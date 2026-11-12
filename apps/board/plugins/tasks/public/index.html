@@ -24,8 +24,8 @@
 		<ui-bind path="?.items" config="template" class="block">
 			<script type="text/html">
 				{{ foreach m in value }}
-				<div class="task{{ if m.done }} done{{ fi }}">
-					<div class="check exec" data-exec="?/done" data-id="{{ m.id }}" title="@(Done)"><i class="ti ti-{{ if m.done }}check-square{{ else }}square{{ fi }}"></i></div>
+				<div class="task{{ if m.isdone }} done{{ fi }}">
+					<div class="check exec" data-exec="?/done" data-id="{{ m.id }}" title="@(Done)"><i class="ti ti-{{ if m.isdone }}check-square{{ else }}square{{ fi }}"></i></div>
 					<div class="body exec" data-exec="?/edit" data-id="{{ m.id }}">
 						<div class="name">{{ m.name }}</div>
 						{{ if m.note }}<div class="note">{{ m.note }}</div>{{ fi }}

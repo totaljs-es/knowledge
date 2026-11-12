@@ -37,6 +37,7 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [CSS](https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/frontend/css.md): Formatting, CLASS scoping, predefined classes
 ## Applications
 
-- [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and the embedded NoSQL database
+- [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
+- [Contacts on PostgreSQL](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts-postgresql/readme.md): The same actions and routes with DATA on PostgreSQL: only the definition of the database changes
 - [Website: views and a layout](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/website/readme.md): Public pages rendered on the server, without plugins and without a database
 - [Board: an application with plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/board/readme.md): Each feature with its routes, actions, screen and form, in jComponent 20

@@ -1,0 +1,7 @@
+name              : Contacts
+
+// The requests of the API must send this value in the header "x-token". Change it before the application is used.
+token             : change-this-token
+
+// The connection of PostgreSQL. The database must exist; the application creates its table the first time it starts.
+database          : postgresql://user:password@localhost/contacts

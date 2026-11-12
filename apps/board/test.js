@@ -92,7 +92,7 @@ Test.push('tasks', async function(next) {
 	check('save answers with the id of the new task', r.response.success === true && typeof(id) === 'string' && id.length > 0);
 
 	r = await api('tasks');
-	check('the new task is in the list and is not done', r.response.length === 1 && r.response[0].name === 'Buy flour' && r.response[0].done === false);
+	check('the new task is in the list and is not done', r.response.length === 1 && r.response[0].name === 'Buy flour' && r.response[0].isdone === false);
 
 	r = await api('tasks_save', { id: id, name: 'Buy flour and sugar', note: '' });
 	check('save with an id updates the task', r.response.success === true && r.response.value === id);
@@ -102,11 +102,11 @@ Test.push('tasks', async function(next) {
 
 	await api('tasks_done/' + id);
 	r = await api('tasks_read/' + id);
-	check('done marks the task', r.response.done === true);
+	check('done marks the task', r.response.isdone === true);
 
 	await api('tasks_done/' + id);
 	r = await api('tasks_read/' + id);
-	check('done again takes the mark away', r.response.done === false);
+	check('done again takes the mark away', r.response.isdone === false);
 
 	r = await api('tasks_remove/' + id);
 	check('remove answers with the id', r.response.success === true && r.response.value === id);

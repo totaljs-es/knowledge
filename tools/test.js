@@ -11,12 +11,17 @@ var apps = Fs.readdirSync(root).filter(function(name) {
 });
 
 var failed = [];
+var skipped = [];
 
 for (var i = 0; i < apps.length; i++) {
 	console.log('\n=== apps/' + apps[i]);
 	var result = Child.spawnSync(process.execPath, ['test.js'], { cwd: Path.join(root, apps[i]), stdio: 'inherit' });
-	result.status && failed.push(apps[i]);
+	// The code 3 is an application that could not be tested here (its tests need a database server that does not answer)
+	if (result.status === 3)
+		skipped.push(apps[i]);
+	else if (result.status)
+		failed.push(apps[i]);
 }
 
-console.log('\nApplications: ' + apps.length + ', failed: ' + (failed.length ? failed.join(', ') : 'none'));
+console.log('\nApplications: ' + apps.length + ', failed: ' + (failed.length ? failed.join(', ') : 'none') + ', skipped: ' + (skipped.length ? skipped.join(', ') : 'none'));
 process.exit(failed.length ? 1 : 0);

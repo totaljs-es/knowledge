@@ -40,7 +40,8 @@ var PAGES = [
 	['Frontend', 'conventions/frontend/binding-and-forms.md', 'Binding and forms', 'Connected screen/importer/form flow, binding, translations and lifecycle'],
 	['Frontend', 'conventions/frontend/cms-widgets.md', 'CMS widgets', 'Native single-file format, metadata, settings, scoped CSS, rendering and previews'],
 	['Frontend', 'conventions/frontend/css.md', 'CSS', 'Formatting, CLASS scoping, predefined classes'],
-	['Applications', 'apps/contacts/readme.md', 'Contacts: an API without plugins', 'Actions, routes in controllers, a token and the embedded NoSQL database'],
+	['Applications', 'apps/contacts/readme.md', 'Contacts: an API without plugins', 'Actions, routes in controllers, a token and DATA on the embedded NoSQL database'],
+	['Applications', 'apps/contacts-postgresql/readme.md', 'Contacts on PostgreSQL', 'The same actions and routes with DATA on PostgreSQL: only the definition of the database changes'],
 	['Applications', 'apps/website/readme.md', 'Website: views and a layout', 'Public pages rendered on the server, without plugins and without a database'],
 	['Applications', 'apps/board/readme.md', 'Board: an application with plugins', 'Each feature with its routes, actions, screen and form, in jComponent 20']
 ];

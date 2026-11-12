@@ -13,6 +13,7 @@ A board of tasks and notes with Total.js 5, made with plugins. Each feature is a
 | `controllers/default.js` | The route of the page: it gives the layout the plugins that the user can see |
 | `definitions/auth.js` | Who the request is: one local user |
 | `definitions/init.js` | The components of the interface that the layout loads |
+| `definitions/db.js` | The database of `DATA`: the embedded NoSQL database as the default connection |
 | `views/index.html` | The layout: the menu, a `page` for the screen of each plugin and an `importer` for its form |
 | `public/css/default.css` | The styles of the layout |
 | `plugins/tasks/`, `plugins/notes/` | The two features |
