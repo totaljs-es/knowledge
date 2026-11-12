@@ -21,7 +21,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 
 - **It runs.** An application enters when it starts and its tests pass. `npm test` runs them all.
 - **Total.js 5 and jComponent 20**, as the [conventions](https://github.com/totaljs-es/conventions) say.
-- **ES5**: `var` and `function`. `async` / `await` only where the code waits for the database (`await NOSQL(...).promise($)`).
+- **ES5 first**: `var` and `function`. `const` or `let` only where the code needs it, as a constant at the top of a file. `async` / `await` only where the code waits for the database (`await NOSQL(...).promise($)`).
 - **Routes** are in `controllers/`, or in the `index.js` of the plugin when the application has plugins. Never inside the action.
 - **Actions** are named `Collection|verb`, with a pipe.
 - **Settings** are in the file `config`, and `total5` is `latest` in `package.json`.

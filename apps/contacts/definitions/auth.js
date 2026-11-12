@@ -1,4 +1,4 @@
-var BOT = { id: 'bot', name: 'Bot', sa: true };
+const BOT = { id: 'bot', name: 'Bot', sa: true };
 
 AUTH(function($) {
 
