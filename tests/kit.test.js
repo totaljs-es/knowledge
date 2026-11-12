@@ -102,6 +102,33 @@ Test.push('llms.txt and llms-full.txt', function(next) {
 	next();
 });
 
+Test.push('the answers', function(next) {
+
+	var files = Total.Fs.readdirSync(Total.Path.join(ROOT, 'answers'));
+	check('there are answers', files.length >= 10);
+
+	files.forEach(function(name) {
+		var file = 'answers/' + name;
+		var text = read(file);
+		var head = text.match(/^---\nquestion: (.{10,})\nquestion_es: (.{10,})\n---\n\n# (.+)\n/);
+		check(file + ' has its question in English and in Spanish, and the title is the question', !!head && head[1] === head[3]);
+
+		// The code of an answer follows the rules it teaches; a block that shows the bad form says "avoid"
+		var blocks = (text.match(/```js\n[\s\S]*?```/g) || []).filter(function(block) {
+			return block.indexOf('// avoid') === -1;
+		});
+		check(file + ' has no arrow function and no template literal in its code', blocks.every(function(block) {
+			return !(/=>/).test(block) && !(/`[^`\n]*\$\{/).test(block.replace(/^```js\n|```$/g, ''));
+		}));
+		check(file + ' does not require a Node.js module in its code', blocks.every(function(block) {
+			return !(/require\('(fs|path|crypto|os|http|https|zlib)'\)/).test(block);
+		}));
+		check(file + ' points to an application or a page of this repository', (/\]\(\.\.\/(apps|conventions|reference)\//).test(text) || name === 'not-express.md');
+	});
+
+	next();
+});
+
 Test.push('the pages', function(next) {
 
 	var all = pages('').concat(['CLAUDE.md', 'GEMINI.md']);

@@ -33,6 +33,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 
 - `conventions/`: the pages, one folder per zone (`general/`, `backend/`, `database/`, `frontend/`).
 - `apps/`: small complete applications, each with its `readme.md` and its `test.js`.
+- `answers/`: short answers to common questions (how to start an application, where the routes go, which storage, plugins or not...), each with its question in English and in Spanish.
 - `reference/`: what each version of Total.js 5 adds, tried with that version. A feature of a beta is used only in a project that depends on that version.
 - `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.

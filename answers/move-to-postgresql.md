@@ -1,0 +1,31 @@
+---
+question: How do I move an application from the embedded database to PostgreSQL?
+question_es: ¿Cómo paso una aplicación de la base de datos embebida a PostgreSQL?
+---
+
+# How do I move an application from the embedded database to PostgreSQL?
+
+An application that uses `DATA` from the start changes four things, and no query is written again:
+
+1. Add the adapter to `package.json`: `"querybuilderpg": "latest"`.
+2. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
+3. Add the definition of the database:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+4. Take the prefix `nosql/` away from the table names:
+
+```js
+// before
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+
+// after
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+The tables must exist in PostgreSQL: write them in `database.sql`, with the same names the application already used.
+
+[`apps/contacts`](../apps/contacts) and [`apps/contacts-postgresql`](../apps/contacts-postgresql) are the same application before and after; a test checks that their actions differ only in that prefix.

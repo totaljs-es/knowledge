@@ -10,6 +10,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 |---|---|
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
+| [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version: [0.0.20](reference/total5-0.0.20.md), the beta |
 | [`skills/`](skills) | Two skills for agents: write Total.js 5 code, and review a change |
 | [`tools/`](tools) | `check.js` checks application files against the rules a script can decide, `rules.js` prints the rules, `test.js` runs the tests of every application |

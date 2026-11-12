@@ -38,6 +38,22 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 ## Reference
 
 - [What Total.js 5 0.0.20 adds](https://raw.githubusercontent.com/totaljs-es/knowledge/main/reference/total5-0.0.20.md): MCP tools from actions, the cache of an action, the types JSON and IP, $.content, the environment of an action, total5 test and fakes; each one tried with the beta
+## Answers
+
+- [How do I start a new Total.js 5 application?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/new-application.md): A short answer with its code and the application that shows it
+- [Where do the routes and the logic of an API go?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/routes-and-actions.md): A short answer with its code and the application that shows it
+- [Should my application use plugins?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/plugins-or-not.md): A short answer with its code and the application that shows it
+- [Where do I keep the data of a Total.js 5 application?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/which-storage.md): A short answer with its code and the application that shows it
+- [How do I move an application from the embedded database to PostgreSQL?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/move-to-postgresql.md): A short answer with its code and the application that shows it
+- [How do I protect an API with a token?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/protect-an-api.md): A short answer with its code and the application that shows it
+- [How do I upload and download files?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/upload-files.md): A short answer with its code and the application that shows it
+- [How do I use a WebSocket?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/websocket.md): A short answer with its code and the application that shows it
+- [How do I run something on a schedule?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/scheduled-work.md): A short answer with its code and the application that shows it
+- [How do I make a page with a layout?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/pages.md): A short answer with its code and the application that shows it
+- [How do I test a Total.js 5 application?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/test-an-application.md): A short answer with its code and the application that shows it
+- [Which JavaScript style does Total.js 5 code use?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/javascript-style.md): A short answer with its code and the application that shows it
+- [Is Total.js like Express? Which packages do I need?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/not-express.md): A short answer with its code and the application that shows it
+- [Which version of Total.js 5 should I use, and what does the beta add?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/versions.md): A short answer with its code and the application that shows it
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database

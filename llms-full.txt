@@ -18,6 +18,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 |---|---|
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
+| [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version: [0.0.20](reference/total5-0.0.20.md), the beta |
 | [`skills/`](skills) | Two skills for agents: write Total.js 5 code, and review a change |
 | [`tools/`](tools) | `check.js` checks application files against the rules a script can decide, `rules.js` prints the rules, `test.js` runs the tests of every application |
@@ -115,6 +116,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 
 - `conventions/`: the pages, one folder per zone (`general/`, `backend/`, `database/`, `frontend/`).
 - `apps/`: small complete applications, each with its `readme.md` and its `test.js`.
+- `answers/`: short answers to common questions (how to start an application, where the routes go, which storage, plugins or not...), each with its question in English and in Spanish.
 - `reference/`: what each version of Total.js 5 adds, tried with that version. A feature of a beta is used only in a project that depends on that version.
 - `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.
@@ -1995,6 +1997,543 @@ Test.push('orders', async function(next) {
 ## A problem found in 0.0.20-3
 
 `$.invalidsafe(msg, err)` in an action throws `ReferenceError: path is not defined` and the request ends in a timeout. Use `$.invalid(msg)` and log the error apart until a later version fixes it.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/new-application.md
+
+---
+question: How do I start a new Total.js 5 application?
+question_es: ¿Cómo empiezo una aplicación nueva con Total.js 5?
+---
+
+# How do I start a new Total.js 5 application?
+
+A Total.js 5 application is a folder with three files and the folders it needs:
+
+```
+index.js        the official start script, whole and unchanged
+config          the settings, one "key : value" per line
+package.json    "total5" is the dependency
+controllers/    the routes
+schemas/        the actions
+definitions/    what runs at the start: AUTH, schedules, shared state
+views/          the pages, when it has pages
+public/         the static files
+```
+
+```json
+{
+	"name": "myapp",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"total5": "latest"
+	},
+	"scripts": {
+		"start": "node index.js 8000"
+	}
+}
+```
+
+```text
+name              : My application
+```
+
+`index.js` is always the official start script of the framework: copy it from [project structure](../conventions/general/project-structure.md), do not write a shorter one. Then `npm install` and `node index.js 8000`.
+
+The settings are in the file `config`, not in `config.json` and not in environment variables. The smallest complete examples are [`apps/website`](../apps/website) (pages) and [`apps/contacts`](../apps/contacts) (an API).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/routes-and-actions.md
+
+---
+question: Where do the routes and the logic of an API go?
+question_es: ¿Dónde van las rutas y la lógica de una API?
+---
+
+# Where do the routes and the logic of an API go?
+
+The logic is an action, in a file of `schemas/`. The route is one line in a file of `controllers/` and points to the action. The name of an action has a pipe: `Collection|verb`.
+
+```js
+// schemas/contacts.js
+NEWACTION('Contacts|create', {
+	name: 'Create a contact',
+	input: '*name:String, email:Email',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_contact', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    +contacts_create    --> Contacts|create');
+};
+```
+
+- `input` is the body, `params` the parameters of the address (`{id}`) and `query` the query string. A `*` makes a field required; a wrong value answers 400 with the name of the field.
+- The request is a `POST` to `/api/` with `{ "schema": "contacts_create", "data": { ... } }`.
+- The first `+` of the route asks for a signed in user; the `+` before the name says that the request has a body, and a `-` that it has none.
+- In an application with plugins the routes are in the `index.js` of the plugin. They are never declared inside the action in a new application.
+
+See [`apps/contacts`](../apps/contacts) and [actions](../conventions/backend/actions.md).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/plugins-or-not.md
+
+---
+question: Should my application use plugins?
+question_es: ¿Debe mi aplicación usar plugins?
+---
+
+# Should my application use plugins?
+
+Use plugins when the application has screens to manage data and will grow by features: each feature is a folder in `plugins/` with its routes, its actions, its screen and its form, and adding one does not touch the rest.
+
+Do not use plugins for a small API with one or two collections, or for a website with a few pages: `controllers/`, `schemas/` and `views/` are enough.
+
+| The application | Shape | Example |
+|---|---|---|
+| A small API | No plugins: `controllers/` and `schemas/` | [`apps/contacts`](../apps/contacts) |
+| Public pages | No plugins: `controllers/` and `views/` | [`apps/website`](../apps/website) |
+| Screens to manage data, more features later | Plugins | [`apps/board`](../apps/board) |
+
+```
+plugins/tasks/
+	index.js              the name, the icon, the position in the menu and the routes
+	schemas/tasks.js      the actions
+	public/index.html     the screen
+	public/form.html      the form
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/which-storage.md
+
+---
+question: Where do I keep the data of a Total.js 5 application?
+question_es: ¿Dónde guardo los datos de una aplicación Total.js 5?
+---
+
+# Where do I keep the data of a Total.js 5 application?
+
+It depends on what the data is:
+
+| The data | Use |
+|---|---|
+| The records of the application (contacts, tasks, orders) | `DATA` with QueryBuilder: `DATA.find('nosql/tbl_contact')` on the embedded NoSQL database |
+| An embedded store that will never be SQL (a log, a queue) | `NOSQL('name')` |
+| A small object that is kept by itself (settings, counters) | `MEMORIZE('name')` |
+| Files | `FILESTORAGE('name')` |
+
+```js
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+await DATA.insert('nosql/tbl_contact', model).promise($);
+await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
+await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+The embedded database needs no server, no definition and no dependency: the file is `databases/tbl_contact.nosql`. Name the tables and the fields as in SQL from the start (`tbl_contact`, `isdone`, `dtcreated`), so that the application can move to PostgreSQL later.
+
+Examples: [`apps/contacts`](../apps/contacts) (`DATA`), [`apps/files`](../apps/files) (`FILESTORAGE`), [`apps/monitor`](../apps/monitor) (`MEMORIZE`). The page: [storage](../conventions/backend/storage-and-integrations.md).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/move-to-postgresql.md
+
+---
+question: How do I move an application from the embedded database to PostgreSQL?
+question_es: ¿Cómo paso una aplicación de la base de datos embebida a PostgreSQL?
+---
+
+# How do I move an application from the embedded database to PostgreSQL?
+
+An application that uses `DATA` from the start changes four things, and no query is written again:
+
+1. Add the adapter to `package.json`: `"querybuilderpg": "latest"`.
+2. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
+3. Add the definition of the database:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+4. Take the prefix `nosql/` away from the table names:
+
+```js
+// before
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+
+// after
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+The tables must exist in PostgreSQL: write them in `database.sql`, with the same names the application already used.
+
+[`apps/contacts`](../apps/contacts) and [`apps/contacts-postgresql`](../apps/contacts-postgresql) are the same application before and after; a test checks that their actions differ only in that prefix.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/protect-an-api.md
+
+---
+question: How do I protect an API with a token?
+question_es: ¿Cómo protejo una API con un token?
+---
+
+# How do I protect an API with a token?
+
+One `AUTH` in `definitions/auth.js` decides who each request is. A route that starts with `+` is only for a request that `AUTH` accepted.
+
+```js
+// definitions/auth.js
+const BOT = { id: 'bot', name: 'Bot', sa: true };
+
+AUTH(function($) {
+
+	var token = $.headers['x-token'];
+
+	if (!token) {
+		$.invalid();
+		return;
+	}
+
+	// Too many wrong tokens from the same client
+	if (BLOCKED($, 10)) {
+		$.invalid();
+		return;
+	}
+
+	if (token === CONF.token) {
+		BLOCKED($, -1);
+		$.success(BOT);
+	} else
+		$.invalid();
+});
+```
+
+```js
+ROUTE('+API    ?    -contacts    --> Contacts|list');
+```
+
+The token is a setting of the file `config` (`token : ...`), read with `CONF.token`. A request without it, or with a wrong one, is answered with 401. Inside an action the user is `$.user`.
+
+See [`apps/contacts`](../apps/contacts) and [routes and authentication](../conventions/backend/routes-and-auth.md).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/upload-files.md
+
+---
+question: How do I upload and download files?
+question_es: ¿Cómo subo y descargo archivos?
+---
+
+# How do I upload and download files?
+
+The upload is a `POST` route with `@upload` and a size limit; the files go to `FILESTORAGE`; the download is a `FILE` route.
+
+```js
+// controllers/api.js
+ROUTE('+POST   /upload/    @upload <5MB    --> Files|upload');
+ROUTE('FILE /download/*.*', download);
+
+function download($) {
+	var name = $.split[1];
+	var opt = {};
+	opt.id = name.substring(0, name.lastIndexOf('.'));
+	opt.download = $.query.download === '1';
+	FILESTORAGE('files').http($, opt);
+}
+```
+
+```js
+// schemas/files.js
+NEWACTION('Files|upload', {
+	name: 'Upload files',
+	action: async function($) {
+		var response = [];
+		for (var i = 0; i < $.files.length; i++) {
+			var meta = await $.files[i].fs('files', UID());
+			meta.url = '/download/{0}.{1}'.format(meta.id, meta.ext);
+			response.push(meta);
+		}
+		$.callback(response);
+	}
+});
+```
+
+`meta` has `id`, `name`, `size`, `ext`, `type` and `date`. A request over the limit is answered with 431. `FILESTORAGE('files').browse()` lists the files and `.remove(id, callback)` removes one.
+
+The complete application: [`apps/files`](../apps/files).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/websocket.md
+
+---
+question: How do I use a WebSocket?
+question_es: ¿Cómo uso un WebSocket?
+---
+
+# How do I use a WebSocket?
+
+A WebSocket is a route with the method `SOCKET`. Its function receives the socket of the route once; the events receive each connection.
+
+```js
+// controllers/default.js
+exports.install = function() {
+	ROUTE('SOCKET /chat/', socket);
+};
+
+function socket($) {
+
+	$.on('open', function(client) {
+		client.send({ TYPE: 'hello' });        // to this connection
+	});
+
+	$.on('message', function(client, message) {
+		$.send(message);                       // to everybody
+	});
+
+	$.on('close', function(client) {
+	});
+}
+```
+
+Messages are objects, sent and received as JSON; give each one a `TYPE`. `client.query` is the query of the address the browser connected to, and `$.connections` has the open connections. Check what the browser sends before using it.
+
+In the browser, with jComponent 20:
+
+```html
+<ui-component name="websocket" config="url:/chat/"></ui-component>
+```
+
+```js
+ON('message', function(msg) {
+	// msg is the object the server sent
+});
+
+SETTER('websocket/send', { TYPE: 'message', text: 'Hello' });
+```
+
+Do not use `socket.io` or the package `ws`. The complete application: [`apps/chat`](../apps/chat).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/scheduled-work.md
+
+---
+question: How do I run something on a schedule?
+question_es: ¿Cómo ejecuto algo de forma programada?
+---
+
+# How do I run something on a schedule?
+
+In a file of `definitions/`. `ON('service')` is for "every N minutes" and `CRON` for a time of the day or of the week.
+
+```js
+// definitions/jobs.js
+
+// The framework emits "service" every minute, with the number of minutes since the start
+ON('service', function(counter) {
+	if (counter % 5 === 0)
+		ACTION('Sites|check').callback(ERROR('Sites|check'));
+});
+
+// Every day at midnight: minute hour day month weekday
+CRON('0 0 * * *', function() {
+	// ...
+});
+```
+
+Put the work in an action and let the schedule only call it: the API can call it too, and it can be tested without waiting.
+
+Write the minutes of a `CRON` as a list (`0,15,30,45 * * * *`). The step form (`*/15 * * * *`) runs every minute in Total.js 5 0.0.19; it works as a step from 0.0.20.
+
+Do not use `setInterval` or a package for schedules. The complete application: [`apps/monitor`](../apps/monitor).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/pages.md
+
+---
+question: How do I make a page with a layout?
+question_es: ¿Cómo hago una página con un layout?
+---
+
+# How do I make a page with a layout?
+
+A route calls a function, and the function renders a view of `views/` with its data. The view goes inside `views/layout.html`, where `@{body}` is.
+
+```js
+// controllers/default.js
+exports.install = function() {
+	ROUTE('GET /products/{id}/', product);
+};
+
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```html
+<!-- views/product.html -->
+@{title(model.name)}
+
+<h1>@{model.name}</h1>
+<p>@{model.price.format(2)} EUR</p>
+```
+
+```html
+<!-- views/layout.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+	@{body}
+</body>
+</html>
+```
+
+`@{title()}` sets the title (the framework adds the name of the application), `@{import()}` writes it and loads `public/css/default.css`, `@(Text)` marks a text for translation and `$.fallback(404)` answers with the page 404. Do not use `res.render`, `ejs` or `pug`.
+
+The complete application: [`apps/website`](../apps/website).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/test-an-application.md
+
+---
+question: How do I test a Total.js 5 application?
+question_es: ¿Cómo pruebo una aplicación Total.js 5?
+---
+
+# How do I test a Total.js 5 application?
+
+With the test library of the framework, in a `test.js` that starts the application and calls it as a client does.
+
+```js
+require('total5');
+require('total5/test');
+
+Test.push('contacts', async function(next) {
+	// call() is a function of the test that sends the request to the application, as the api() of apps/contacts/test.js
+	var response = await call('contacts_create', { name: 'Anna' });
+	Test.print('create answers with the id', response.success === true ? null : 'failed');
+	next();
+});
+
+Test.run();
+```
+
+`Test.print(message, error)` fails when the second argument is not empty. Run it with `node test.js`.
+
+What the tests of this repository do, and why:
+
+- They copy the application to a disposable folder and start it there with `node index.js <port>`, so the data of the application is never touched.
+- They wait until the application answers before the first check: the server answers before its routes are loaded.
+- They check the errors too: without the token, with a wrong field, with an id that does not exist.
+- A test that needs a database server uses one only for tests, and says `SKIPPED` when it is not there.
+
+Every application of [`apps/`](../apps) has a `test.js` to copy from. The page: [testing](../conventions/general/testing.md).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/javascript-style.md
+
+---
+question: Which JavaScript style does Total.js 5 code use?
+question_es: ¿Qué estilo de JavaScript usa el código de Total.js 5?
+---
+
+# Which JavaScript style does Total.js 5 code use?
+
+ES5 first, and the functions of the framework before any other.
+
+```js
+// good
+var item = items.findItem('id', id);
+var text = 'Hello {0}'.format(name);
+
+// avoid
+const item = items.find(m => m.id === id);
+const text = `Hello ${name}`;
+```
+
+- `var` and `function`; no arrow functions and no template literals. `const` or `let` only where the code needs it, as a constant at the top of a file.
+- `async` / `await` where the code waits for the database: `await DATA.find(...).promise($)`.
+- The prototypes of Total.js before your own helper: `findItem`, `format`, `parseJSON`, `slug`, `isEmail`.
+- No `require()` of a module of Node.js in the application: `Total.Fs`, `Total.Path`, `Total.Crypto`, `Total.Os`.
+- Tabs, semicolons, `'` for short texts, file names in lowercase with `-`.
+- `index.js` is the one exception: it is the official start script and keeps its own style.
+
+The page: [JavaScript style](../conventions/general/javascript-style.md).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/not-express.md
+
+---
+question: Is Total.js like Express? Which packages do I need?
+question_es: ¿Total.js es como Express? ¿Qué paquetes necesito?
+---
+
+# Is Total.js like Express? Which packages do I need?
+
+No. Total.js 5 is one package, `total5`, and it already has what an Express application adds with packages. An application does not install them and does not write `app.get()`.
+
+| Instead of | Total.js 5 has |
+|---|---|
+| `express`, `app.get('/', ...)` | `ROUTE('GET /', fn)` in `controllers/` |
+| `body-parser`, `joi` | `input` of `NEWACTION`: the body is parsed and checked |
+| `dotenv`, `process.env` | the file `config` and `CONF` |
+| `ejs`, `pug` | the views of `views/` with `@{...}` |
+| `multer` | a route with `@upload` and `$.files` |
+| `socket.io`, `ws` | `ROUTE('SOCKET /', fn)` |
+| `node-cron`, `setInterval` | `CRON()` and `ON('service')` |
+| `axios`, `node-fetch` | `RESTBuilder` |
+| `uuid` | `UID()` |
+| a database for a small application | the embedded NoSQL database through `DATA` |
+
+The only other dependency of the applications of this repository is `querybuilderpg`, for PostgreSQL.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/versions.md
+
+---
+question: Which version of Total.js 5 should I use, and what does the beta add?
+question_es: ¿Qué versión de Total.js 5 debo usar y qué añade la beta?
+---
+
+# Which version of Total.js 5 should I use, and what does the beta add?
+
+Use `"total5": "latest"` in `package.json`: it is the stable version. When this was written the stable version was `0.0.19` and the beta was `0.0.20`; `npm view total5 dist-tags` says which they are today.
+
+Total.js 5 is the current framework. Total.js 4 (`total4`) is the previous one and its code is not the same: do not mix them.
+
+What 0.0.20 adds is in [reference](../reference/total5-0.0.20.md): actions as MCP tools, the cache of an action, the field types `JSON` and `IP`, `$.content()`, `total5 test` and fakes for tests. Use one of those only in a project that depends on `total5@beta` or on 0.0.20 and later, and say which version it needs.
+
+When you are not sure that a function exists in the version of the project, say so and check it in the source of the framework instead of guessing.
 
 ---
 
