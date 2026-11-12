@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 160 of them by subject, in English and in Spanish ([`questions/es/`](questions/es)) with the same code |
+| [`questions/`](questions) | One question and its short answer, 160 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
 | [`skills/`](skills) | Two skills for agents: write Total.js 5 code, and review a change |
 | [`tools/`](tools) | `check.js` checks application files against the rules a script can decide, `rules.js` prints the rules, `test.js` runs the tests of every application |
@@ -118,7 +118,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 - `conventions/`: the pages, one folder per zone (`general/`, `backend/`, `database/`, `frontend/`).
 - `apps/`: small complete applications, each with its `readme.md` and its `test.js`.
 - `answers/`: short answers to common questions (how to start an application, where the routes go, which storage, plugins or not...), each with its question in English and in Spanish.
-- `questions/`: one question and its short answer, by subject (`actions.md`, `routes.md`, `data.md`...). `questions/es/` has the same pages in Spanish: the same sections in the same order and the same code, only the text is translated.
+- `questions/`: one question and its short answer, by subject (`actions.md`, `routes.md`, `data.md`...). `questions/es/` and `questions/sk/` have the same pages in Spanish and in Slovak: the same sections in the same order and the same code, only the text is translated.
 - `reference/`: what each version of Total.js 5 adds, tried with that version, and `reference/jcomponent/`, the official guides of the interface library (copies, not edited here). A feature of a beta is used only in a project that depends on that version.
 - `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.
@@ -7397,6 +7397,1758 @@ Dilo y compruébalo en el código fuente del framework o en su documentación en
 ## ¿El código de Total.js 5 es el mismo que el de Total.js 4?
 
 No. Total.js 5 (`total5`) es el framework actual y Total.js 4 (`total4`) es el anterior. No mezcles su código: un ejemplo de uno puede no funcionar en el otro.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md
+
+# Aplikácia: otázky a odpovede
+
+## Aké priečinky má aplikácia Total.js 5?
+
+Framework načíta každý priečinok podľa jeho názvu:
+
+```
+index.js            the official start script
+config              settings, one "key : value" per line
+package.json        "total5" is the dependency
+controllers/        routes
+definitions/        auth.js, init.js, func.js, db.js: loaded at start
+schemas/            actions
+modules/            integrations with other systems
+plugins/<name>/     a feature with its server part and its screen
+views/              layout and pages
+public/             static files for the browser
+```
+
+Malé API potrebuje iba `index.js`, `config`, `package.json`, `controllers/`, `schemas/` a `definitions/`.
+
+## Čo patrí do index.js?
+
+Oficiálny štartovací skript Total.js 5, celý a bez zmien: `helpers/index.js` z frameworku. Jeho jadro je toto a zakomentované voľby oficiálneho súboru v ňom zostávajú:
+
+```js
+require('total5');
+
+const options = {};
+
+options.release = process.argv.includes('--release');
+options.servicemode = process.argv.includes('--service') || process.argv.includes('--servicemode');
+
+Total.run(options);
+```
+
+Nepíš ručne kratší a nemeň jeho štýl: je to jediný súbor, ktorý si ponecháva vlastný štýl.
+
+## Ako spustím aplikáciu Total.js 5?
+
+```
+npm install
+node index.js 8000
+```
+
+Číslo je port. Pre režim release pridaj `--release`: `node index.js 8000 --release`.
+
+## Čo potrebuje package.json?
+
+Iba `total5`. Framework má v sebe server, routy, šablóny, nástroj na dopyty do databázy aj testy:
+
+```json
+{
+	"name": "contacts",
+	"version": "1.0.0",
+	"private": true,
+	"dependencies": {
+		"total5": "latest"
+	}
+}
+```
+
+## Ako sa píše súbor config?
+
+Je to obyčajný textový súbor s názvom `config`, bez prípony, s jedným `kľúč : hodnota` na riadok. Riadok, ktorý sa začína `//`, je komentár:
+
+```
+name              : Contacts
+
+// The requests of the API must send this value in the header "x-token"
+token             : change-this-token
+```
+
+Kód číta hodnotu cez `CONF.token`. Nie je to JSON a nie je to súbor `.env`.
+
+## Kde v kóde prečítam nastavenie?
+
+V `CONF`, pod kľúčom zo súboru `config`:
+
+```js
+if (token === CONF.token)
+	$.success(BOT);
+```
+
+Nastavenia, ktoré patria frameworku, sa začínajú `$`, napríklad `$api`. Kľúče a adresy databáz zostávajú mimo repozitára.
+
+## Kam patria spoločné pomocné funkcie?
+
+Do `definitions/func.js`, ako funkcie objektu `FUNC`, s názvom malými písmenami a bez oddeľovačov:
+
+```js
+// definitions/func.js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+Akcie a kontroléry volajú `FUNC.refreshtags()`.
+
+## Kde držím stav v pamäti?
+
+V `MAIN`, objekte aplikácie, ktorý sa naplní v súbore v `definitions/`:
+
+```js
+// definitions/db.js
+MAIN.products = [
+	{ id: 'bread', name: 'Sourdough bread', price: 4.5 }
+];
+```
+
+`REPO` drží údaje v cache, ktoré potrebuje aj rozhranie. Nevytváraj nové globálne premenné.
+
+## Kam patrí práca pri štarte?
+
+Do `ON('ready', ...)` v `definitions/init.js`: spustí sa, keď aplikácia beží.
+
+```js
+// definitions/init.js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,locale,input,form,validate', true);
+});
+```
+
+## Ako pomenujem súbory a priečinky?
+
+Všetko malými písmenami, slová oddelené `-`, nikdy `_`: `search-results.html`. Statické súbory idú podľa typu do `public/`: `/img/`, `/js/`, `/css/`, `/fonts/`. Jeden plugin na jednu funkciu, pomenovaný podľa nej: `plugins/redirects`.
+
+## Čo je modul a ako ho použijem?
+
+Súbor v `modules/` je integrácia s iným systémom alebo samostatná služba. Framework ho načíta a jeho exporty zaregistruje v `MODS` pod názvom súboru:
+
+```js
+var data = MODS.visitors.today();
+```
+
+Modul aplikácie nenačítavaj cez `require(PATH.root('modules/...'))`. Názov s pomlčkou používa hranaté zátvorky: `MODS['knowledge-source']`.
+
+## Má nová aplikácia používať pluginy?
+
+Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí s pluginmi: každá funkcia je priečinok `plugins/<názov>/` so svojimi routami, akciami a obrazovkou. Malá služba s jednou alebo dvoma kolekciami ich nepotrebuje: stačia `controllers/` a `schemas/`.
+
+## Potrebujem Express alebo iné balíčky?
+
+Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Jediný ďalší balíček, ktorý bežná aplikácia pridáva, je adaptér jej databázy, napríklad `querybuilderpg` pre PostgreSQL.
+
+## Ktorú verziu Total.js 5 mám nainštalovať?
+
+`"total5": "latest"` v `package.json` je stabilná verzia. Beta je `npm install total5@beta`. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/actions.md
+
+# Akcie: otázky a odpovede
+
+## Čo je akcia?
+
+Jedna jednotka logiky servera: názov, vstup, ktorý prijíma, kto ju smie volať, a funkcia. Definuje sa cez `NEWACTION` v súbore v `schemas/`:
+
+```js
+NEWACTION('Contacts|create', {
+	name: 'Create a contact',
+	input: '*name:String, email:Email, phone:Phone',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_contact', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+## Ako pomenujem akciu?
+
+`Kolekcia|sloveso`: kolekcia v množnom čísle s veľkým začiatočným písmenom, zvislá čiara a sloveso. `Tickets|list`, `Groups|create`, `Users|remove`. Medzi časťami nikdy nie je `/`.
+
+```js
+NEWACTION('Tickets|list', {
+	name: 'List of tickets',
+	action: function($) {
+		DATA.find('nosql/tbl_ticket').callback($);
+	}
+});
+```
+
+## Aké slovesá používajú akcie?
+
+| Sloveso | Čo robí |
+|---|---|
+| `list` | vráti kolekciu |
+| `read` | vráti jeden záznam |
+| `create` | vloží záznam a odpovie novým id |
+| `update` | upraví jeden záznam |
+| `save` | vytvorí alebo upraví podľa `id` |
+| `remove` | zmaže jeden záznam |
+
+## Kam dám akcie?
+
+Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+
+## Ako deklarujem vstup akcie?
+
+Textom v `input`: polia oddelené čiarkami, `*` pred povinným poľom a typ za `:`.
+
+```js
+input: '*name:String, email:Email, phone:Phone, isactive:Boolean, tags:[String]'
+```
+
+Telo príde zvalidované ako druhý argument funkcie: `action: function($, model)`.
+
+## Aké typy môže mať pole?
+
+`String`, `String(100)` s maximálnou dĺžkou, `Number`, `Boolean`, `Date`, `UID`, `Email`, `Phone`, `URL`, `Color`, `Icon` a zoznam v hranatých zátvorkách: `[String]`. Nesprávna hodnota odpovie 400 s názvom poľa.
+
+## Ako prečítam id z adresy?
+
+Deklaruj ho v `params` a čítaj v `$.params`:
+
+```js
+NEWACTION('Contacts|read', {
+	name: 'Read a contact',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+Routa má v adrese `{id}`: `ROUTE('+API ? -contacts_read/{id} --> Contacts|read')`.
+
+## Ako v akcii prečítam query string?
+
+Deklaruj ho v `query` a čítaj v `$.query`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	action: function($) {
+		$.callback($.query.search);
+	}
+});
+```
+
+## Ako akcia odpovedá?
+
+| Volanie | Použitie |
+|---|---|
+| `$.callback(data)` | vráti údaje: záznam, zoznam |
+| `$.success()` alebo `$.success(id)` | odpoveď o úspechu, s hodnotou, ak ju pošleš |
+| `$.invalid(404)` | chyba s týmto HTTP stavom |
+| `$.invalid('@(Text for the user)')` | chyba validácie alebo obchodnej logiky |
+
+Na každej ceste odpovedz raz a po skoršej odpovedi daj `return`.
+
+## Ako odpoviem, že záznam neexistuje?
+
+`$.invalid(404)`. Pri `DATA` to urobí `.error(404)`, keď dopyt nič nenájde:
+
+```js
+if (!item) {
+	$.invalid(404);
+	return;
+}
+```
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## Ako odpoviem chybovou správou pre používateľa?
+
+`$.invalid('@(text)')`. `@(...)` označuje text na preklad; text sa píše po anglicky, lebo je to kľúč:
+
+```js
+if (MAIN.monitor.sites.findItem('url', model.url)) {
+	$.invalid('@(The website is already in the list)');
+	return;
+}
+```
+
+## Ako obmedzím akciu len pre niektorých používateľov?
+
+Cez `permissions` alebo `user: true` v akcii. `+` v route žiada prihláseného používateľa; kontrola v akcii chráni aj volanie, ktoré neprichádza z tejto routy.
+
+```js
+NEWACTION('Redirects|save', {
+	name: 'Save redirect',
+	input: 'id,*url,*target,permanent:Boolean',
+	permissions: 'redirects,admin',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## Ako znovu použijem polia vstupu?
+
+Pomenovanou schémou a `@`:
+
+```js
+NEWSCHEMA('@Group', '*name,color:Color,icon:Icon,reference,permissions:[String]');
+
+NEWACTION('Groups|create', {
+	name: 'Create group',
+	input: '@Group',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## Ako zavolám jednu akciu z druhej?
+
+`$.action('Názov').promise()` vnútri akcie a `ACTION('Názov', model)` mimo požiadavky:
+
+```js
+var types = await $.action('Items|types').promise();
+```
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+## Prečo je moja akcia async?
+
+Lebo čaká na databázu. Pošli `$` do `.promise($)`: chyba dopytu potom odpovie na požiadavku sama.
+
+```js
+action: async function($) {
+	var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+	$.callback(item);
+}
+```
+
+## Potrebuje každá akcia názov?
+
+Áno: `name` je krátky text pre ľudí ("Save redirect"). Používajú ho logy a nástroje. Prvý argument `NEWACTION` je jej identifikátor (`Redirects|save`).
+
+## Prečo môj povinný zoznam odmietne prázdny zoznam?
+
+Pole `*tags:[String]` je povinné a prázdny zoznam sa počíta ako chýbajúci. Ak je prázdny zoznam platný, odstráň `*`: `tags:[String]`.
+
+## Prečo je môj Boolean false, keď pole nebolo poslané?
+
+Chýbajúci `Boolean` je `false`. Keď má neprítomnosť znamenať „bez zmeny“, deklaruj akciu s `partial: true`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/routes.md
+
+# Routy a autentifikácia: otázky a odpovede
+
+## Kam patria routy?
+
+Do `exports.install` v súbore v `controllers/` alebo v `index.js` pluginu. Jeden riadok na routu:
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    -contacts                --> Contacts|list');
+	ROUTE('+API    ?    -contacts_read/{id}      --> Contacts|read');
+	ROUTE('+API    ?    +contacts_create         --> Contacts|create');
+	ROUTE('+API    ?    +contacts_update/{id}    --> Contacts|update');
+	ROUTE('+API    ?    -contacts_remove/{id}    --> Contacts|remove');
+};
+```
+
+## Ako čítam routu API?
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+- Prvé `+` znamená „iba pre prihlásených používateľov“. Bez neho je routa verejná.
+- `?` je adresa API: predvolene `/api/`.
+- `+tickets_create` je názov endpointu; jeho `+` hovorí, že požiadavka má telo, a `-`, že ho nemá.
+- Za `-->` ide akcia.
+- Číslo je maximálna veľkosť tela v bajtoch.
+
+## Ako klient zavolá routu API?
+
+Cez `POST` na adresu API (`/api/`), s názvom endpointu v `schema` a telom v `data`:
+
+```
+POST /api/
+x-token: change-this-token
+content-type: application/json
+
+{ "schema": "contacts_create", "data": { "name": "Anna" } }
+```
+
+Endpoint s parametrom ho nesie v názve: `"schema": "contacts_read/ID"`.
+
+## Ako pomenujem endpoint?
+
+Malými písmenami s `_`: `tickets_create`, `users_remove/{id}`. Pred názvom použi `-` pri čítaní a mazaní a `+` pri vytváraní a úprave. `{id}` naplní `$.params.id`.
+
+## Ako urobím routu, ktorá vráti stránku?
+
+Routa `GET` s funkciou, ktorá dostane `$`:
+
+```js
+exports.install = function() {
+	ROUTE('GET /', home);
+	ROUTE('GET /products/{id}/', product);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+## Ako odpoviem JSON-om z funkcie routy?
+
+Cez `$.json(data)`. Vo funkcii routy má `$.callback(err, value)` chybu ako prvý argument, takže to nie je volanie z akcie:
+
+```js
+ROUTE('GET /status/', function($) {
+	$.json({ ok: true });
+});
+```
+
+## Ako urobím verejnú routu?
+
+Vynechaj `+` pred metódou. `ROUTE('POST /notify/', notify)` je verejná; `ROUTE('+GET /setup/', setup)` je iba pre prihlásených používateľov.
+
+## Ako aplikácia vie, od koho je požiadavka?
+
+Jedným `AUTH` v `definitions/auth.js`. Zavolá `$.success(user)` alebo `$.invalid()`:
+
+```js
+const BOT = { id: 'bot', name: 'Bot', sa: true };
+
+AUTH(function($) {
+	var token = $.headers['x-token'];
+	if (token && token === CONF.token)
+		$.success(BOT);
+	else
+		$.invalid();
+});
+```
+
+Každá routa s `+` potom potrebuje tohto používateľa.
+
+## Ako ochránim API tokenom?
+
+Daj token do `config`, skontroluj hlavičku v `AUTH` a označ routy znakom `+`:
+
+```js
+AUTH(function($) {
+
+	var token = $.headers['x-token'];
+
+	if (!token) {
+		$.invalid();
+		return;
+	}
+
+	if (BLOCKED($, 10)) {
+		$.invalid();
+		return;
+	}
+
+	if (token === CONF.token) {
+		BLOCKED($, -1);
+		$.success(BOT);
+	} else
+		$.invalid();
+});
+```
+
+## Ako obmedzím nesprávne pokusy o prihlásenie?
+
+Cez `BLOCKED($, limit)`: počíta pokusy každého klienta a vráti `true`, keď sa limit prekročí. `BLOCKED($, -1)` ich po správnom prihlásení zabudne.
+
+```js
+if (BLOCKED($, 10)) {
+	$.invalid();
+	return;
+}
+```
+
+## Ako vyzerá objekt používateľa?
+
+Malý objekt: `{ id, name, sa, permissions }`. `sa` označuje superadministrátora. `AUTH` ho odovzdá cez `$.success(user)` a akcie ho čítajú v `$.user`.
+
+## Ako dám route väčší limit tela?
+
+Veľkosťou v bajtoch ako druhým argumentom `ROUTE`:
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+Nahrávanie súborov hovorí svoju veľkosť priamo v route: `<5MB`.
+
+## Môže akcia deklarovať vlastnú routu?
+
+Áno: `route: '+API ?'` v `NEWACTION` zaregistruje endpoint. V novej aplikácii píš routy do `controllers/` alebo do `index.js` pluginu, aby sa všetky čítali na jednom mieste, a nedeklaruj tú istú routu dvakrát.
+
+## Je $.ip bezpečné pre bezpečnostný limit?
+
+Nie. `$.ip` je prvá hodnota hlavičky `X-Forwarded-For`, ktorú môže klient napísať. Pre bezpečnostný limit použi `$.req.socket.remoteAddress`, alebo hlavičke dôveruj iba za vlastnou proxy.
+
+## Ako odpoviem 404 zo stránky?
+
+Cez `$.fallback(404)`: je to stránka 404 frameworku, ako pri adrese bez routy.
+
+```js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/data.md
+
+# Údaje cez DATA: otázky a odpovede
+
+## Kde držím záznamy novej aplikácie?
+
+Vo vstavanej NoSQL databáze, cez `DATA`, s prefixom `nosql/` pred názvom tabuľky. Nepotrebuje server, definíciu ani závislosť:
+
+```js
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+```
+
+Súbor je `databases/tbl_contact.nosql`.
+
+## Ako vypíšem záznamy?
+
+```js
+NEWACTION('Contacts|list', {
+	name: 'List of contacts',
+	action: async function($) {
+		var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+		$.callback(items);
+	}
+});
+```
+
+## Ako prečítam jeden záznam?
+
+`DATA.read()` s `.id()`. `.error(404)` odpovie 404, keď neexistuje:
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## Ako vložím záznam?
+
+V akcii naplň id cez `UID()` a dátum cez `NOW`:
+
+```js
+model.id = UID();
+model.dtcreated = NOW;
+await DATA.insert('nosql/tbl_contact', model).promise($);
+$.success(model.id);
+```
+
+## Ako upravím záznam?
+
+```js
+model.dtupdated = NOW;
+await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## Ako zmažem záznam?
+
+```js
+await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## Ako vytvorím jedinečné id?
+
+`UID()`. Je to funkcia frameworku: bez balíčka a bez `require`.
+
+```js
+model.id = UID();
+```
+
+## Ako filtrujem dopyt?
+
+Podmienkami na builderi: `where(field, value)`, `in(field, array)`, `notin(field, array)`, `search(field, keyword)`.
+
+```js
+var items = await DATA.find('tbl_tag').fields('id,search').where('folderid', id).promise($);
+```
+
+## Ako vyberiem polia, ktoré dopyt vráti?
+
+`.fields('a,b')`. Vymenuj ich; nečítaj všetko:
+
+```js
+var item = await DATA.read('tbl_user').fields('id,name').id(params.id).error('@(User not found)').promise($);
+```
+
+## Ako urobím zoznam so stránkovaním, triedením a filtrami z query stringu?
+
+Cez `autoquery`: číta `?page=`, `limit`, `sort` a polia, ktoré povolíš, s predvoleným triedením a maximálnou veľkosťou stránky.
+
+```js
+NEWACTION('Groups|list', {
+	name: 'List of groups',
+	action: function($) {
+		DATA.find('op.view_group').autoquery($.query, 'id:UID,name,color,icon,users:Number,dtcreated:Date,dtupdated:Date', 'dtcreated_desc', 100).callback($);
+	}
+});
+```
+
+## Ako pripojím aplikáciu k PostgreSQL?
+
+Pridaj balíček `querybuilderpg`, daj adresu databázy do `config` a napíš jednu definíciu:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+Dopyty sú tie isté volania `DATA`, s názvom tabuľky bez prefixu: `DATA.find('tbl_contact')`.
+
+## Ako prejdem zo vstavanej databázy na PostgreSQL?
+
+Odstráň prefix `nosql/` z názvov tabuliek, pridaj definíciu `querybuilderpg` a vytvor tabuľky cez `database.sql`. Dopyty sa nemenia:
+
+```js
+// before
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+
+// after
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+## Ako spustím priame SQL?
+
+`DATA.query()` s parametrami:
+
+```js
+await DATA.query('UPDATE tbl_ticket SET worked=worked+1 WHERE id=$1', [id]).promise($);
+```
+
+Uprednostni parametre (`$1`). Keď musí ísť hodnota do textu, ošetri ju cez `PG_ESCAPE(value)`. Nikdy nespájaj to, čo poslal používateľ.
+
+## Ako po zápise odpoviem úspechom bez async?
+
+`.callback($.done(id))` odpovie úspechom aplikácie a touto hodnotou:
+
+```js
+DATA.remove('tbl_tag').id($.params.id).error(404).callback($.done($.params.id));
+```
+
+`.callback($)` naopak odpovie priamym výsledkom dopytu.
+
+## Ako použijem DATA mimo požiadavky?
+
+`.promise()` bez `$`, s vlastným ošetrením chýb, alebo callback s chybou na prvom mieste:
+
+```js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+## Ako hľadám text vo viacerých poliach?
+
+Cez `or` a `search`:
+
+```js
+builder.or(function(b) {
+	b.search('name', text);
+	b.search('email', text);
+});
+```
+
+## Musím nastaviť QueryBuilder pre vstavanú databázu?
+
+Nie. QueryBuilder je v Total.js 5 už načítaný a prefix `nosql/` pošle dopyt do vstavanej databázy. Iba databázový server potrebuje svoj adaptér, napríklad `querybuilderpg`.
+
+## Ako pomenujem tabuľky a polia vo vstavanej databáze?
+
+Ako v SQL od prvého dňa, aby aplikácia mohla neskôr prejsť na PostgreSQL: tabuľky `tbl_contact`, dátumy `dtcreated` a `dtupdated`, príznaky `isdone`, cudzí kľúč ako tabuľka plus `id` (`userid`).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/storage.md
+
+# Úložisko a súbory: otázky a odpovede
+
+## Ktoré úložisko si vyberiem pre novú aplikáciu?
+
+Podľa toho, čo sú to za údaje:
+
+| Údaje | Použi |
+|---|---|
+| Záznamy aplikácie (kontakty, úlohy, objednávky) | `DATA` nad vstavanou databázou: `DATA.find('nosql/tbl_contact')` |
+| Vstavané úložisko, ktoré nikdy nebude SQL (log, fronta) | `NOSQL('name')` |
+| Malý objekt, ktorý sa ukladá sám (nastavenia, počítadlá) | `MEMORIZE('name')` |
+| Súbory | `FILESTORAGE('name')` |
+
+## Ako si uchovám malý objekt medzi reštartmi bez databázy?
+
+Cez `MEMORIZE`: framework objekt sám ukladá do súboru.
+
+```js
+// definitions/db.js
+MAIN.monitor = MEMORIZE('monitor', 1000);
+
+if (!MAIN.monitor.sites)
+	MAIN.monitor.sites = [];
+```
+
+Druhý argument je oneskorenie uloženia v milisekundách. Po zmene zavolaj `MAIN.monitor.save()`.
+
+## Ako uložím zmenu objektu MEMORIZE?
+
+Zmeň objekt a zavolaj jeho `save()`:
+
+```js
+MAIN.monitor.sites.push(model);
+MAIN.monitor.save();
+$.success(model.id);
+```
+
+## Kedy použijem NOSQL() priamo?
+
+Pre vstavané úložisko, ktoré nikdy nebude SQL: log, fronta, cache na disku. Záznamy aplikácie idú cez `DATA` s prefixom `nosql/`, ktorý číta ten istý súbor a umožní aplikácii neskôr prejsť na PostgreSQL.
+
+```js
+NOSQL('logs').insert({ id: UID(), message: 'Started', dtcreated: NOW });
+```
+
+## Ako prijmem nahraný súbor?
+
+Routa `POST` s `@upload` a maximálnou veľkosťou a akcia, ktorá číta `$.files`:
+
+```js
+ROUTE('+POST   /upload/    @upload <5MB    --> Files|upload');
+```
+
+```js
+NEWACTION('Files|upload', {
+	name: 'Upload files',
+	action: async function($) {
+
+		if (!$.files.length) {
+			$.invalid('@(No file was sent)');
+			return;
+		}
+
+		var response = [];
+
+		for (var i = 0; i < $.files.length; i++) {
+			var meta = await $.files[i].fs('files', UID());
+			response.push(meta);
+		}
+
+		$.callback(response);
+	}
+});
+```
+
+## Kde sa držia nahrané súbory?
+
+Vo `FILESTORAGE`. `$.files[i].fs('files', UID())` presunie nahraný súbor do úložiska s názvom `files` s novým id a vráti jeho metadáta. Priečinok je `databases/fs-files`.
+
+## Ako vypíšem súbory úložiska?
+
+```js
+var items = await FILESTORAGE('files').browse().promise($);
+```
+
+Každá položka má svoje `id`, názov, príponu (`ext`) a veľkosť.
+
+## Ako pošlem uložený súbor do prehliadača?
+
+Routou `FILE` a metódou `http()` úložiska:
+
+```js
+ROUTE('FILE /download/*.*', download);
+
+function download($) {
+	var name = $.split[1];
+	var opt = {};
+	opt.id = name.substring(0, name.lastIndexOf('.'));
+	opt.download = $.query.download === '1';
+	FILESTORAGE('files').http($, opt);
+}
+```
+
+## Ako zmažem uložený súbor?
+
+```js
+FILESTORAGE('files').remove($.params.id, function(err) {
+	if (err)
+		$.invalid(404);
+	else
+		$.success($.params.id);
+});
+```
+
+## Čo sa stane, keď je nahrávaný súbor väčší než limit routy?
+
+Framework odmietne požiadavku so stavom 431 a akcia sa nespustí. Limit je v route: `@upload <5MB`.
+
+## Má existujúca aplikácia zmeniť svoje úložisko?
+
+Nie. Funkcia si ponecháva model, ktorý už má: metadáta v pamäti ukladané do súboru, SQL cez `DATA` alebo objekt `MEMORIZE`. Úložisko nemeň počas upratovania kódu.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/services.md
+
+# Plánovaná práca, HTTP volania a WebSocket: otázky a odpovede
+
+## Ako spustím niečo každú minútu?
+
+Framework vysiela `service` každú minútu, s počtom minút od štartu. Bez časovača a bez balíčka:
+
+```js
+// definitions/init.js
+ON('service', function(counter) {
+	if (counter % 5 === 0)
+		ACTION('Sites|check').callback(ERROR('Sites|check'));
+});
+```
+
+`counter % 5 === 0` je každých päť minút.
+
+## Ako spustím niečo v určitom čase dňa?
+
+Cez `CRON` a päť polí riadku cronu:
+
+```js
+// Every day at midnight
+CRON('0 0 * * *', function() {
+	MAIN.monitor.save();
+});
+```
+
+V Total.js 5 0.0.19 sa krok (`*/5`) spúšťa každú minútu; v 0.0.20 je to opravené. Pre „každých N minút“ použi `ON('service')`.
+
+## Mám na opakovanú prácu použiť setInterval?
+
+Nie. Použi `ON('service', function(counter) { ... })`: jeden poslucháč pre aplikáciu, s počtom minút, namiesto vlastného časovača.
+
+## Ako zavolám inú HTTP službu?
+
+Cez `RESTBuilder`, ktorý je vo frameworku:
+
+```js
+var response = await RESTBuilder.GET(CONF.serviceurl).promise($);
+```
+
+Pred odpoveďou o úspechu skontroluj stav a tvar odpovede.
+
+## Ako pošlem POST s JSON-om inej službe?
+
+```js
+RESTBuilder.POST(CONF.serviceurl, { name: 'Anna' }).header('x-token', CONF.servicetoken).callback(function(err, response) {
+	if (err)
+		$.invalid('@(The service did not answer)');
+	else
+		$.callback(response);
+});
+```
+
+## Ako prečítam HTTP stav vzdialenej odpovede?
+
+Cez `exec`, ktorý dá výstup s jeho stavom:
+
+```js
+RESTBuilder.GET(site.url).timeout(CONF.timeout).exec(function(err, response, output) {
+	site.status = output && output.status ? output.status : 0;
+});
+```
+
+Požiadavka, ktorá trvá dlhšie než časový limit, má stav 408, a adresa, kde nič nepočúva, má 0.
+
+## Ako deklarujem routu WebSocket?
+
+Cez `SOCKET` v kontroléri. Funkcia dostane kontrolér miestnosti:
+
+```js
+exports.install = function() {
+	ROUTE('SOCKET /chat/', socket);
+};
+
+function socket($) {
+
+	$.on('open', function(client) {
+		client.send({ TYPE: 'hello' });
+	});
+
+	$.on('message', function(client, message) {
+		$.send(message);
+	});
+
+	$.on('close', function(client) {
+	});
+}
+```
+
+## Ako pošlem správu cez WebSocket všetkým alebo jednému klientovi?
+
+`$.send(message)` ju pošle každému spojeniu routy, aj odosielateľovi. `client.send(message)` ju pošle jednému klientovi. Správy sú objekty: framework ich posiela ako JSON.
+
+## Ako prejdem spojenia routy WebSocket?
+
+Sú v `$.connections`:
+
+```js
+var names = [];
+for (var key in $.connections) {
+	var client = $.connections[key];
+	client.name && names.push(client.name);
+}
+```
+
+## Ako prečítam query string spojenia WebSocket?
+
+V `client.query`, vnútri `open`:
+
+```js
+$.on('open', function(client) {
+	var name = (client.query.name || '').trim().substring(0, 30);
+	client.name = name;
+});
+```
+
+## Ako zatvorím spojenie WebSocket, ktoré nie je povolené?
+
+`client.close(code)`, chvíľu po `open`, keď je spojenie úplne otvorené:
+
+```js
+if (!name) {
+	setTimeout(function(client) {
+		client.close(4001);
+	}, 500, client);
+	return;
+}
+```
+
+## Ako zalogujem chybu práce, ktorá nemá požiadavku?
+
+Cez `ERROR('kontext')` ako callback: zapíše chybu s týmto názvom.
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+`NOOP` použi iba pre výsledok, ktorý ignoruješ zámerne.
+
+## Ako prejdem zoznam s asynchrónnym volaním, jedno po druhom?
+
+Cez `wait` na poli:
+
+```js
+MAIN.monitor.sites.wait(function(site, next) {
+	RESTBuilder.GET(site.url).exec(function(err, response, output) {
+		site.status = output && output.status ? output.status : 0;
+		next();
+	});
+}, function() {
+	$.callback(MAIN.monitor.sites);
+});
+```
+
+## Ako zareagujem na zmenu konfigurácie?
+
+Cez `ON('configure', ...)`. Časť, ktorá mení nastavenia, ju vyšle cez `EMIT('configure')`. Nastavenia držané v tabuľke sa načítajú cez `LOADCONFIG(rows)`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/views.md
+
+# Pohľady a stránky: otázky a odpovede
+
+## Ako vykreslím stránku?
+
+Routa zavolá `$.view()` s názvom súboru z `views/`:
+
+```js
+// controllers/default.js
+exports.install = function() {
+	ROUTE('GET /', home);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+```html
+<!-- views/index.html -->
+@{title(CONF.name)}
+
+<h1>@(Fresh every morning)</h1>
+```
+
+## Ako pošlem údaje do pohľadu?
+
+Ako druhý argument `$.view()`. Pohľad ich číta ako `model`:
+
+```js
+$.view('product', item);
+```
+
+```html
+@{title(model.name)}
+
+<h1>@{model.name}</h1>
+<p>@{model.description}</p>
+```
+
+## Ako urobím layout pre všetky stránky?
+
+`views/layout.html` je layout každého pohľadu. `@{body}` je miesto, kam ide pohľad:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+	<main>
+		@{body}
+	</main>
+</body>
+</html>
+```
+
+## Ako v pohľade prejdem zoznam?
+
+Cez `@{foreach}` a `@{end}`:
+
+```html
+<ul class="products">
+@{foreach m in model}
+	<li>
+		<a href="/products/@{m.id}/">@{m.name}</a>
+		<span>@{m.price.format(2)} EUR</span>
+	</li>
+@{end}
+</ul>
+```
+
+## Ako v pohľade napíšem podmienku?
+
+Cez `@{if}` a `@{fi}`:
+
+```html
+@{if model.price}
+	<p class="price">@{model.price.format(2)} EUR</p>
+@{fi}
+```
+
+## Ako nastavím titulok stránky?
+
+Cez `@{title()}` na začiatku pohľadu. Layout ho vypíše cez `@{import('meta')}` a framework zaň pridá „ - “ a názov aplikácie:
+
+```html
+@{title('@(Products)')}
+```
+
+## Ako označím text na preklad?
+
+Obaľ ho do `@(...)`, v pohľadoch, v HTML pluginov aj v správach servera. Anglický text je kľúč:
+
+```html
+<a href="/products/">@(Products)</a>
+```
+
+```js
+$.invalid('@(The website is already in the list)');
+```
+
+Preklady sú v `resources/<jazyk>.resource`.
+
+## Ako v pohľade prečítam nastavenie?
+
+`@{CONF.name}`:
+
+```html
+<a href="/" class="logo">@{CONF.name}</a>
+<a href="mailto:@{CONF.email}">@{CONF.email}</a>
+```
+
+## Ako použijem pohľad bez layoutu?
+
+Daj `@{layout('')}` na začiatok pohľadu. Kostra aplikácie s jComponentom je taký pohľad: celý vlastný HTML dokument.
+
+## Ako v layoute načítam CSS a JavaScript aplikácie?
+
+Cez `@{import()}` v `<head>`. Súbory sú v `public/css/` a `public/js/`:
+
+```html
+@{import('meta', 'head', 'default.js + func.js', 'default.css', 'favicon.ico')}
+```
+
+## Je syntax pohľadov rovnaká ako Tangular?
+
+Nie. Pohľad z `views/` používa `@{...}` a vykresľuje sa na serveri. Tangular používa `{{ ... }}` a je pre šablóny, najmä v prehliadači. Nepíš jedno do druhého v očakávaní toho druhého nástroja.
+
+## Aké sú dva druhy stránok?
+
+Verejné stránky sú pohľady, ktoré kontrolér vráti cez `$.view('index')`. Obrazovky aplikácie (administrácia, nástroj) sú HTML pluginov, vložené do kostry a riadené cez `PLUGIN` s jComponentom.
+
+## Prečo v režime release nevidím svoju zmenu statického súboru?
+
+V režime release sa statické súbory posielajú z pamäte: po ich zmene aplikáciu reštartuj. Aj prehliadač si ich drží: pri testovaní vynúť znovunačítanie.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/tangular.md
+
+# Šablóny Tangular: otázky a odpovede
+
+## Čo je Tangular?
+
+Šablónovací nástroj Total.js: text s príkazmi `{{ ... }}`, ktorý sa naplní modelom. jComponent ho používa v prehliadači na to, čo obrazovka kreslí z údajov, a framework má ten istý nástroj na serveri.
+
+```js
+var html = Tangular.render('Hello {{ name }}!', { name: 'Anna' });
+```
+
+Výsledok je `Hello Anna!`.
+
+## Ako v Tangulare vypíšem hodnotu?
+
+`{{ name }}`. Hodnota sa zakóduje ako HTML, takže text používateľa sa dá zobraziť tak, ako je. Vlastnosť objektu je `{{ user.name }}` a funguje aj výraz: `{{ age + 1 }}`.
+
+## Ako v Tangulare vypíšem hodnotu bez kódovania HTML?
+
+Pomocníkom `raw`:
+
+```html
+{{ html | raw }}
+```
+
+Použi ho iba pre HTML, ktoré vytvorila sama aplikácia, nikdy pre text, ktorý napísal používateľ. `{{ !html }}` nie je raw: `!` je negácia JavaScriptu.
+
+## Ako v Tangulare napíšem podmienku?
+
+`{{ if }}`, `{{ else if }}`, `{{ else }}` a `{{ fi }}`:
+
+```html
+{{ if age > 40 }}old{{ else if age > 30 }}middle{{ else }}young{{ fi }}
+```
+
+Podmienka je výraz JavaScriptu. Končí sa `{{ fi }}`.
+
+## Ako v Tangulare prejdem zoznam?
+
+`{{ foreach m in items }}` a `{{ end }}`:
+
+```html
+{{ foreach m in items }}
+<div class="item">{{ m.name }}</div>
+{{ end }}
+```
+
+Cyklus sa končí `{{ end }}` a podmienka `{{ fi }}`: nie je to to isté slovo.
+
+## Ako v cykle Tangularu zistím pozíciu položky?
+
+`$index`, od 0:
+
+```html
+{{ foreach m in items }}{{ $index }}:{{ m.name }} {{ end }}
+```
+
+`{{ continue }}` prejde na ďalšiu položku a `{{ break }}` cyklus ukončí.
+
+## Ako v Tangulare naformátujem číslo alebo dátum?
+
+Pomocníkom `format`:
+
+```html
+{{ price | format(2) }}
+{{ date | format('yyyy-MM-dd') }}
+```
+
+`1234.5` bude `1 234.50` a dátum bude `2026-11-12`.
+
+## Ako v Tangulare zobrazím text, keď je hodnota prázdna?
+
+Cez `empty` alebo `def`:
+
+```html
+{{ name | empty('No name') }}
+{{ nothing | def('nothing here') }}
+```
+
+`{{ name | empty }}` bez textu napíše `---`. Hodnota, ktorá je `null` alebo neexistuje, je prázdny text, nie chyba.
+
+## Ako v Tangulare napíšem množné číslo?
+
+Cez `pluralize` a štyri texty: pre nulu, jeden, niekoľko a veľa. `#` je číslo:
+
+```html
+{{ count | pluralize('no items', '# item', '# items', '# items') }}
+```
+
+## Ako si urobím vlastného pomocníka Tangularu?
+
+```js
+Thelpers.upper = function(value) {
+	return Thelpers.encode((value || '').toUpperCase());
+};
+```
+
+```html
+{{ name | upper }}
+```
+
+Výsledok pomocníka sa zapíše bez kódovania: pomocník, ktorý vracia text používateľa, ho zakóduje cez `Thelpers.encode(value)`.
+
+## Ako na obrazovke vykreslím zoznam šablónou?
+
+Cez `ui-bind` a `config="template"`. Vykreslí svoju šablónu vždy, keď sa zmení jeho cesta k údajom, a vnútri šablóny sú údaje `value`:
+
+```html
+<ui-bind path="?.items" config="template" class="block">
+	<script type="text/html">
+		{{ foreach m in value }}
+		<div class="item{{ if m.isdone }} done{{ fi }}">{{ m.name }}</div>
+		{{ end }}
+	</script>
+</ui-bind>
+```
+
+Zmeň model a nechaj kresliť `ui-bind`; neskladaj HTML spájaním textov.
+
+## Ako skompilujem šablónu, aby som ju použil veľakrát?
+
+```js
+var template = Tangular.compile('Hello {{ name }}!');
+var html = template({ name: 'Zoe' });
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/interface.md
+
+# Rozhranie s jComponent 20: otázky a odpovede
+
+## Čo je plugin?
+
+Jedna funkcia aplikácie: priečinok so svojou serverovou časťou a obrazovkou, ktorý framework načíta a kostra aplikácie vloží.
+
+```
+plugins/redirects/
+	index.js              server: metadata and routes
+	schemas/redirects.js  actions
+	public/index.html     the screen
+	public/form.html      the form that opens over the screen
+```
+
+## Čo patrí do index.js pluginu?
+
+Jeho ikona, názov, pozícia v menu, kto ho vidí, a jeho routy:
+
+```js
+exports.icon = 'ti ti-check-circle';
+exports.name = '@(Tasks)';
+exports.position = 1;
+exports.visible = function() {
+	return true;
+};
+
+exports.install = function() {
+	ROUTE('+API    ?    -tasks                   --> Tasks|list');
+	ROUTE('+API    ?    +tasks_save              --> Tasks|save');
+	ROUTE('+API    ?    -tasks_remove/{id}       --> Tasks|remove');
+};
+```
+
+## Ako napíšem obrazovku pluginu?
+
+HTML s koreňom `<ui-plugin>` a jedným blokom `PLUGIN(function(exports) { ... })`, v `public/index.html`:
+
+```html
+<ui-plugin class="CLASS">
+	<button class="exec" data-exec="?/refresh">@(Refresh)</button>
+</ui-plugin>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('tasks', function(response) {
+				exports.set('items', response);
+			});
+		};
+
+	});
+</script>
+```
+
+`exports.reload` sa spustí pri každom otvorení obrazovky.
+
+## Ako obrazovka zavolá server?
+
+Cez `exports.tapi('endpoint_name', data, callback)`. Za názov pridaj `ERROR`, aby sa chybová správa ukázala používateľovi sama:
+
+```js
+exports.tapi('tasks_save ERROR', model, function(response) {
+	exports.refresh();
+});
+```
+
+Názov je endpoint routy: `+tasks_save`.
+
+## Čo znamená ? v ceste?
+
+„Tento plugin“. `?.items` sú údaje `items` pluginu a `?/create` je jeho funkcia `exports.create`:
+
+```html
+<ui-bind path="?.items" config="template"></ui-bind>
+<button class="exec" data-exec="?/create">@(Create)</button>
+```
+
+## Čo je CLASS?
+
+Slovo, ktoré sa nahradí triedou jedinečnou pre plugin. Použi ho v triede koreňa a v selektoroch štýlu, aby CSS jednej obrazovky nezasiahlo inú:
+
+```html
+<style>
+	.CLASS .task { padding: 10px 0; border-bottom: 1px solid #E8E8E8; }
+</style>
+
+<ui-plugin class="CLASS">
+</ui-plugin>
+```
+
+## Ako obslúžim kliknutie na tlačidlo?
+
+Triedou `exec` a atribútom `data-exec`. Nepridávaj `onclick` ani `addEventListener`:
+
+```html
+<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
+<div class="exec" data-exec="?/edit" data-id="{{ m.id }}">{{ m.name }}</div>
+```
+
+```js
+exports.edit = function(el) {
+	var id = ATTRD(el);
+};
+```
+
+`ATTRD(el)` prečíta `data-id` prvku.
+
+## Ako nastavím a prečítam údaje obrazovky?
+
+`exports.set('items', value)` ich nastaví a väzby ich znovu vykreslia. `exports.model` je model pluginu:
+
+```js
+exports.tapi('tasks', function(response) {
+	exports.set('items', response);
+});
+```
+
+## Ako na stránke načítam knižnicu jComponent 20?
+
+Z CDN, raz na dokument, pred komponentmi:
+
+```html
+<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+<script src="@{REPO.ui}"></script>
+```
+
+`@{REPO.ui}` je súbor komponentov, ktorý vytvoril `COMPONENTATOR()`.
+
+## Ako načítam komponenty?
+
+Cez `COMPONENTATOR()` v `definitions/init.js`: stiahne komponenty, ktoré vymenuješ, ako jeden súbor a layout ho načíta cez `@{REPO.ui}`.
+
+```js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,errorhandler,locale,input,validate,miniform,notify,approve', true);
+});
+```
+
+Vymenuj iba komponenty, ktoré aplikácia používa.
+
+## Ako dám komponent na obrazovku?
+
+Cez `<ui-component>`: jeho názov, cesta k jeho údajom a jeho konfigurácia.
+
+```html
+<ui-component name="input" path="?.url" config="required:1;placeholder:@(Relative URL address)">@(URL)</ui-component>
+```
+
+## Kde nájdem komponent?
+
+V Componentatore, katalógu komponentov jComponent: <https://componentator.com>. Pred ručným písaním časti rozhrania hľadaj existujúci komponent. `input` je jediný komponent pre každé pole formulára: jeho `type` vyberá druh.
+
+## Ako urobím formulár?
+
+Druhý súbor, `public/form.html`, s komponentom `miniform`, jeho vstupmi, komponentom `validate`, ktorý povolí tlačidlo odoslania, a funkciou `submit`:
+
+```html
+<ui-component name="miniform" path="common.form" config="if:CLASS;title:@(Redirect);reload:?/reload;submit:?/submit;width:400" class="hidden" plugin="CLASS">
+	<div class="padding">
+		<ui-component name="input" path="?.url" config="required:1">@(URL)</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+```
+
+## Ako otvorím formulár?
+
+Obrazovka ho načíta cez `importer`, dá mu model a zobrazí ho:
+
+```html
+<ui-component name="importer" path="common.form" config="if:formredirect;url:/~ID~/form.html"></ui-component>
+```
+
+```js
+exports.create = function() {
+	SET('formredirect @default', {});
+	SET('*form', 'formredirect');
+};
+```
+
+## Ako formulár uloží údaje a obnoví obrazovku, ktorá ho otvorila?
+
+Jeho `submit` zavolá server, po dobrej odpovedi formulár skryje a obnoví volajúceho:
+
+```js
+PLUGIN(function(exports) {
+
+	var caller;
+
+	exports.reload = function() {
+		caller = exports.caller;
+	};
+
+	exports.submit = function(hide) {
+		var model = exports.form;
+		exports.tapi('redirects_save ERROR', model, function() {
+			hide();
+			caller.exec('refresh');
+		});
+	};
+
+});
+```
+
+## Ako si pred zmazaním vyžiadam potvrdenie?
+
+Komponentom `approve`:
+
+```js
+SETTER('approve/show', '@(Are you sure you want to remove it?)', ':ti ti-trash: @(Remove)', function() {
+	exports.tapi('redirects_remove/ ERROR', { id: id }, function() {
+		exports.refresh();
+	});
+});
+```
+
+## Ako pomenujem pluginy, komponenty a ich funkcie?
+
+Malými písmenami. Názvy `exports`, `self`, `config` a `cls` nechaj tak, ako sú:
+
+```js
+// good
+PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
+```
+
+## Ako píšem CSS aplikácie?
+
+Jedno pravidlo na riadok, texty v `'`, bez prefixov prehliadačov (`/*auto*/` na začiatku súboru ich pridá), bez LESS a bez SASS:
+
+```css
+/*auto*/
+
+.class { key1: value; key2: value; key3: value; }
+.class > div { key1: value; key2: value; }
+```
+
+Štýl jednej obrazovky ide na začiatok jej HTML, ohraničený cez `CLASS`. Spoločné veci idú do `public/css/default.css`.
+
+## Aké ikony použijem?
+
+Total Icons: trieda `ti ti-name`, napríklad `ti ti-check-circle` alebo `ti ti-trash`.
+
+```html
+<i class="ti ti-plus-circle"></i>
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/sql.md
+
+# SQL skripty pre PostgreSQL: otázky a odpovede
+
+## Kam patrí schéma databázy?
+
+Do `database.sql`: celá aktuálna schéma, aby nová inštalácia potrebovala jeden súbor. Zmena v už nainštalovanej aplikácii ide do samostatného skriptu vedľa neho, pomenovaného dátumom: `database-2024-10-30.sql`.
+
+## Ako pomenujem tabuľky, pohľady a funkcie?
+
+Všetko malými písmenami, v jednotnom čísle, s prefixom:
+
+| Objekt | Prefix | Príklad |
+|---|---|---|
+| tabuľka | `tbl_` | `tbl_user`, `tbl_ticket_time` |
+| číselník | `cl_` | `cl_status` |
+| pohľad | `view_` | `view_ticket` |
+| uložená procedúra | `sp_` | `sp_user` |
+| funkcia | `fn_` | `fn_user` |
+
+## Ako pomenujem stĺpce?
+
+- `id` je primárny kľúč, `text`, ktorý kód naplní cez `UID()`.
+- Cudzí kľúč je tabuľka plus `id`: `userid`, `folderid`.
+- Dátumy sa začínajú na `dt`: `dtcreated`, `dtupdated`, `dtremoved`.
+- Booleovské hodnoty sa začínajú na `is`: `isremoved`, `ispublic`.
+- Rovnaký názov pre rovnakú vec v každej tabuľke: `name`, `body`, `search`, `sortindex`, `icon`, `color`.
+
+## Aké typy stĺpcov použijem?
+
+`text`, nie `varchar`. Zoznamy sú `_text`, štruktúrované údaje `json` alebo `jsonb`, malé čísla `int2`, dátumy `timestamp`, príznaky `bool`.
+
+## Ako napíšem tabuľku?
+
+Najprv identifikátory, potom hlavné polia, čísla, booleovské hodnoty a dátumy na konci. Potom obmedzenia a primárny kľúč:
+
+```sql
+CREATE TABLE "public"."tbl_ticket" (
+	"id" text NOT NULL,
+	"folderid" text,
+	"name" text,
+	"worked" int4 DEFAULT 0,
+	"isremoved" bool DEFAULT false,
+	"dtupdated" timestamp,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	CONSTRAINT "tbl_ticket_folderid_fkey" FOREIGN KEY ("folderid") REFERENCES "public"."tbl_folder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+```
+
+## Kto plní id a dátumy riadku?
+
+Akcia, nie databáza: `model.id = UID()` a `model.dtcreated = NOW` pred vložením. Stĺpec `dtcreated` má navyše predvolenú hodnotu `timezone('utc'::text, now())`.
+
+## Čo je číselník?
+
+Tabuľka `cl_` s voľbami aplikácie (stavy, typy). Mení sa zriedka a číta sa raz do pamäte:
+
+```sql
+CREATE TABLE "public"."cl_status" (
+	"id" text NOT NULL,
+	"name" text,
+	"icon" text,
+	"color" text,
+	"sortindex" int2 DEFAULT 0,
+	PRIMARY KEY ("id")
+);
+```
+
+## Ako usporiadam SQL skript?
+
+Tabuľky, potom pohľady, potom funkcie a uložené procedúry, potom indexy, každá časť pod komentárom (`-- TABLES`, `-- VIEWS`, `-- INDEXES`). Skript obaľ do `BEGIN;` a `COMMIT;`, aby sa použil celý alebo vôbec.
+
+## Ako pomenujem indexy a cudzie kľúče?
+
+Index je `<tabuľka>_idx<čo>`: `tbl_ticket_idxstatus`. Cudzí kľúč je `<tabuľka>_<stĺpec>_fkey`: `tbl_ticket_folderid_fkey`.
+
+## Ktoré stĺpce zaznamenávajú, kto zmenil riadok?
+
+`createdby`, `updatedby` a `removedby` ako `jsonb`, spolu s `dtcreated`, `dtupdated` a `dtremoved`. Sú konvenciou projektu: plní ich kód. Bez prihláseného používateľa ich nechaj prázdne namiesto vymýšľania.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/style-and-tests.md
+
+# Štýl, testy a verzie: otázky a odpovede
+
+## Aký štýl JavaScriptu používa kód Total.js?
+
+Najprv ES5 a funkcie frameworku pred akýmikoľvek inými: `var` a `function`, žiadne šípkové funkcie, žiadne šablónové reťazce, tabulátory, bodkočiarky a `'` pre texty.
+
+```js
+var item = items.findItem('id', id);
+var text = 'Hello {0}'.format(name);
+```
+
+`const` alebo `let` iba tam, kde to kód potrebuje, ako konštanta na začiatku súboru. `async` a `await` tam, kde kód čaká na databázu.
+
+## Ako prečítam súbor bez require('fs')?
+
+Moduly Node.js sú v `Total`: `Total.Fs`, `Total.Path`, `Total.Crypto`, `Total.Os`, `Total.Child`. Kód aplikácie ich nenačítava cez `require()`:
+
+```js
+var text = Total.Fs.readFileSync(Total.Path.join(__dirname, 'config'), 'utf8');
+```
+
+## Ako vložím hodnoty do textu?
+
+Metódou `format` textu, nie šablónovým reťazcom:
+
+```js
+var url = '/download/{0}.{1}'.format(item.id, item.ext);
+```
+
+## Ako nájdem položku poľa podľa poľa?
+
+Cez `findItem`, a `findIndex` pre jej pozíciu:
+
+```js
+var item = MAIN.products.findItem('id', $.params.id);
+var index = MAIN.monitor.sites.findIndex('id', $.params.id);
+```
+
+## Ako v akcii získam aktuálny dátum?
+
+`NOW`: framework ho udržiava. Použi ho pre `dtcreated` a `dtupdated`:
+
+```js
+model.dtcreated = NOW;
+```
+
+## Ako otestujem aplikáciu?
+
+Testovacou knižnicou frameworku, v súbore `test.js`:
+
+```js
+require('total5');
+require('total5/test');
+
+Test.push('Contract', function(next) {
+	var value = '<strong>'.encode();
+	Test.print('encodes HTML-like text', value === '&lt;strong&gt;' ? null : value);
+	next();
+});
+
+Test.run();
+```
+
+`Test.print(label, error)` zlyhá, keď druhý argument nie je prázdny. Spusti ho cez `node test.js`.
+
+## Ako majú testy spúšťať aplikáciu?
+
+Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <port>`, takže sa údajov aplikácie nikdy nedotknú. Pred prvou kontrolou počkajú, kým aplikácia odpovie, a kontrolujú aj chyby: bez tokenu, s nesprávnym poľom, s id, ktoré neexistuje.
+
+## Akú databázu používajú testy?
+
+Čistú, dočasnú databázu iba pre testy, nikdy tú z aplikácie. Pred čímkoľvek, čo maže, test skontroluje názov databázy, ku ktorej je pripojený, a zastaví sa, ak to nie je tá očakávaná.
+
+## Čo pridáva Total.js 5 0.0.20?
+
+Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Je to beta: niektorú z nich použi iba v projekte, ktorý závisí od `total5@beta` alebo od 0.0.20 a novšej, a povedz to.
+
+## Ako sprístupním akciu ako nástroj MCP?
+
+V Total.js 5 0.0.20 a novšom: `$mcp : true` v `config` otvorí routu `POST /$mcp/` a každá akcia s `mcp: true` je tam nástrojom.
+
+```js
+NEWACTION('Items|create', {
+	name: 'Create an item',
+	summary: 'Creates an item and returns it',
+	mcp: true,
+	input: '*name:String // The name of the item',
+	action: function($, model) {
+		$.callback({ name: model.name });
+	}
+});
+```
+
+Nástroj sa volá `Items_create`: názov nástroja nemôže obsahovať zvislú čiaru.
+
+## Ako uložím odpoveď akcie do cache?
+
+V Total.js 5 0.0.20 a novšom, cez `cache`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	cache: { query: true, expire: '1 minute' },
+	action: function($) {
+		$.callback(items);
+	}
+});
+```
+
+`query: true` drží jednu odpoveď pre každý odlišný query string.
+
+## Ako odpoviem CSV alebo iným typom obsahu?
+
+V Total.js 5 0.0.20 a novšom, cez `$.content(value, type)`:
+
+```js
+ROUTE('GET /export/', function($) {
+	$.content('id;name\n1;Anna\n', 'text/csv');
+});
+```
+
+## Ako v teste nahradím akciu?
+
+V Total.js 5 0.0.20 a novšom, cez `Test.fake(name, definition)`; `Test.restore()` vráti skutočné akcie:
+
+```js
+Test.fake('Mail|send', {
+	name: 'Fake',
+	action: function($) {
+		$.callback({ sent: 'fake' });
+	}
+});
+```
+
+## Kto vytvoril Total.js?
+
+Peter Širka. Total.js je open-source framework pre Node.js; jeho web je <https://www.totaljs.com>.
+
+## Čo urobím, keď si nie som istý, že funkcia existuje?
+
+Povedz to a over si to v zdrojovom kóde frameworku alebo v jeho dokumentácii namiesto hádania. Vymyslená funkcia vyzerá správne a zlyhá, keď aplikácia beží.
+
+## Je kód Total.js 5 rovnaký ako Total.js 4?
+
+Nie. Total.js 5 (`total5`) je aktuálny framework a Total.js 4 (`total4`) je predchádzajúci. Nemiešaj ich kód: príklad pre jeden nemusí fungovať v druhom.
 
 ---
 

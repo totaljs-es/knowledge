@@ -147,8 +147,9 @@ Test.push('the questions', function(next) {
 		var file = 'questions/' + name;
 		var en = read(file).split('\n## ');
 		var es = read('questions/es/' + name).split('\n## ');
+		var sk = read('questions/sk/' + name).split('\n## ');
 
-		check(file + ' has the same sections in Spanish', en.length === es.length && en.length > 1);
+		check(file + ' has the same sections in Spanish and in Slovak', en.length === es.length && en.length === sk.length && en.length > 1);
 		count += en.length - 1;
 
 		for (var i = 1; i < en.length; i++) {
@@ -159,6 +160,7 @@ Test.push('the questions', function(next) {
 			check(file + ': "' + title + '" is a question with an answer', title.endsWith('?') && body.length > 60);
 			check(file + ': "' + title + '" has its question in Spanish', !!es[i] && (/^¿.+\?$/).test(es[i].split('\n')[0]));
 			check(file + ': "' + title + '" has the same code in Spanish', !!es[i] && fences(en[i]).join('\n') === fences(es[i]).join('\n'));
+			check(file + ': "' + title + '" has its question and the same code in Slovak', !!sk[i] && sk[i].split('\n')[0].endsWith('?') && fences(en[i]).join('\n') === fences(sk[i]).join('\n'));
 
 			// The code of an answer follows the rules it teaches; a block that shows the form to leave says so
 			var blocks = fences(en[i]).filter(function(block) {

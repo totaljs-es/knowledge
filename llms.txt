@@ -90,6 +90,19 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [La interfaz con jComponent 20: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/interface.md): The same questions and answers in Spanish, with the same code
 - [Scripts SQL para PostgreSQL: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/sql.md): The same questions and answers in Spanish, with the same code
 - [Estilo, pruebas y versiones: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/style-and-tests.md): The same questions and answers in Spanish, with the same code
+## Questions in Slovak
+
+- [Aplikácia: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Akcie: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/actions.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Routy a autentifikácia: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/routes.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Údaje cez DATA: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/data.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Úložisko a súbory: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/storage.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Plánovaná práca, HTTP volania a WebSocket: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/services.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Pohľady a stránky: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/views.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Šablóny Tangular: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/tangular.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Rozhranie s jComponent 20: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/interface.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [SQL skripty pre PostgreSQL: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/sql.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
+- [Štýl, testy a verzie: otázky a odpovede](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/style-and-tests.md): The same questions and answers in Slovak, with the same code; a draft until a native speaker reviews it
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
