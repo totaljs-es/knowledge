@@ -1,0 +1,14 @@
+{
+	"name": "accounts",
+	"description": "Sign in with users and sessions, and notes that belong to each user, with Total.js 5",
+	"version": "1.0.0",
+	"main": "index.js",
+	"dependencies": {
+		"total5": ">=0.0.20-2"
+	},
+	"scripts": {
+		"start": "node index.js 8000",
+		"test": "node test.js"
+	},
+	"license": "MIT"
+}

@@ -4403,6 +4403,27 @@
 			]
 		},
 		{
+			"file": "apps/accounts/readme.md",
+			"symbols": [
+				"auth",
+				"blocked",
+				"data"
+			],
+			"tags": [
+				"account",
+				"accounts",
+				"belong",
+				"belongs",
+				"run",
+				"session",
+				"sessions",
+				"sign",
+				"take",
+				"test",
+				"user"
+			]
+		},
+		{
 			"file": "apps/board/readme.md",
 			"symbols": [
 				"auth",

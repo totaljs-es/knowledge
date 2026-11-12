@@ -118,6 +118,7 @@ var PAGES = [
 	['Applications', 'apps/monitor/readme.md', 'Monitor: work on a schedule', 'ON(service) and CRON, a request to another server with RESTBuilder, and a small state kept with MEMORIZE'],
 	['Applications', 'apps/website/readme.md', 'Website: views and a layout', 'Public pages rendered on the server, without plugins and without a database'],
 	['Applications', 'apps/chat/readme.md', 'Chat: a room over a WebSocket', 'A SOCKET route with its open, close and message events, and the websocket component in the browser'],
+	['Applications', 'apps/accounts/readme.md', 'Accounts: sign in, sessions and what belongs to each user', 'The object given to AUTH, authcookie and logout, the page to sign in for a request without a session, an administrator that the action checks, and notes that only their user sees'],
 	['Applications', 'apps/board/readme.md', 'Board: an application with plugins', 'Each feature with its routes, actions, screen and form, in jComponent 20']
 ];
 

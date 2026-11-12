@@ -1,0 +1,11 @@
+name                : Accounts
+
+// A password is kept as a hash made with this secret. Change it before the application is used: changing it later makes every password wrong.
+auth_secret         : change-this-secret
+
+// The cookie of the session and how long a sign in lasts
+auth_cookie         : session
+auth_cookie_expire  : 1 month
+
+// The first user, made when the application starts and has no users. Its password is "admin": change it after the first sign in.
+admin_email         : admin@example.com

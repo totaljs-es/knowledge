@@ -1,0 +1,94 @@
+@{layout('')}
+@{title(CONF.name)}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+	<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+	<script src="@{REPO.ui}"></script>
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+
+	<ui-component name="exec"></ui-component>
+	<ui-component name="errorhandler"></ui-component>
+	<ui-component name="locale"></ui-component>
+	<ui-component name="LAZY approve"></ui-component>
+
+	<ui-plugin path="notes" class="page">
+
+		<header>
+			<h1>@(My notes)</h1>
+			<span class="user">@{user.name}</span>
+			<span class="link exec" data-exec="?/logout">@(Sign out)</span>
+		</header>
+
+		<div class="add">
+			<div><ui-component name="input" path="?.body" config="placeholder:@(Write a note and press the button)" default="''"></ui-component></div>
+			<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle mr5"></i>@(Add)</button>
+		</div>
+
+		<ui-component name="empty" path="?.items" config="parent:auto">
+			<script type="text/html">
+				@(There are no notes yet)
+			</script>
+			<ui-bind path="?.items" config="template" class="block">
+				<script type="text/html">
+					{{ foreach m in value }}
+					<div class="note">
+						<div class="body">{{ m.body }}<div class="date">{{ m.dtcreated | format('yyyy-MM-dd HH:mm') }}</div></div>
+						<div class="remove exec" data-exec="?/remove" data-id="{{ m.id }}" title="@(Remove)"><i class="ti ti-trash"></i></div>
+					</div>
+					{{ end }}
+				</script>
+			</ui-bind>
+		</ui-component>
+
+	</ui-plugin>
+
+	<script>
+
+		DEF.api = '@{CONF.$api}';
+
+		PLUGIN('notes', function(exports) {
+
+			exports.refresh = function() {
+				exports.tapi('notes ERROR', function(response) {
+					exports.set('items', response);
+				});
+			};
+
+			exports.create = function() {
+				var body = (exports.model.body || '').trim();
+				if (!body)
+					return;
+				exports.tapi('notes_save ERROR', { body: body }, function() {
+					exports.set('body', '');
+					exports.refresh();
+				});
+			};
+
+			exports.remove = function(el) {
+				var id = ATTRD(el);
+				SETTER('approve/show', '@(Are you sure you want to remove the note?)', ':ti ti-trash: @(Remove)', function() {
+					exports.tapi('notes_remove/{0} ERROR'.format(id), exports.refresh);
+				});
+			};
+
+			exports.logout = function() {
+				exports.tapi('logout ERROR', function() {
+					location.href = '/';
+				});
+			};
+
+			exports.refresh();
+
+		});
+
+	</script>
+
+</body>
+</html>

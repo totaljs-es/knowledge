@@ -1,0 +1,52 @@
+@{layout('')}
+@{title('@(Sign in)')}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+	<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+	<script src="@{REPO.ui}"></script>
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+
+	<ui-component name="exec"></ui-component>
+	<ui-component name="errorhandler"></ui-component>
+	<ui-component name="locale"></ui-component>
+
+	<ui-plugin path="formlogin" class="box">
+		<h1>@{CONF.name}</h1>
+		<div class="m">
+			<ui-component name="input" path="?.email" config="required:1;type:email;autofocus:1" default="''">@(Email)</ui-component>
+		</div>
+		<div class="m">
+			<ui-component name="input" path="?.password" config="required:1;type:password" default="''">@(Password)</ui-component>
+		</div>
+		<ui-component name="validate" path="?">
+			<button name="submit" class="exec" data-exec="?/submit" disabled><i class="ti ti-lock mr5"></i>@(Sign in)</button>
+		</ui-component>
+	</ui-plugin>
+
+	<script>
+
+		DEF.api = '@{CONF.$api}';
+
+		PLUGIN('formlogin', function(exports) {
+
+			// The server answers with the cookie of the session, and the page is loaded again as the application
+			exports.submit = function() {
+				var model = exports.model;
+				exports.tapi('login ERROR', { email: model.email, password: model.password }, function() {
+					location.href = '/';
+				});
+			};
+
+		});
+
+	</script>
+
+</body>
+</html>

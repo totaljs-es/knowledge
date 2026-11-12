@@ -29,6 +29,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`apps/website`](apps/website) | A website without plugins: views and a layout rendered on the server | A list in memory |
 | [`apps/chat`](apps/chat) | A chat room over a WebSocket, with a page in jComponent 20 | In memory |
 | [`apps/board`](apps/board) | An application with plugins: each feature has its routes, actions, screen and form (jComponent 20) | `DATA` (QueryBuilder) on the embedded NoSQL database |
+| [`apps/accounts`](apps/accounts) | Sign in with users and sessions, an administrator, and notes that only their user sees | `DATA` (QueryBuilder) on the embedded NoSQL database |
 
 ## Use it
 
