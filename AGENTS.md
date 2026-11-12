@@ -12,6 +12,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 ## Rules that apply to every change
 
 - Total.js 5 only. Do not use Total.js 4 APIs. The interface is jComponent 20.
+- `"total5": "latest"` is the stable version. Before using something that only a beta has (see `reference/`), check the version the project depends on and say which version it needs.
 - ES5 first: `var`, `function`, classic loops, `'{0}'.format()` instead of template literals, no arrow functions. `const` or `let` only where the code needs it, as a constant at the top of a file; inside a function write `var`. `async` / `await` where the code waits for the database.
 - `index.js` is always the official start script of Total.js 5, whole and unchanged (see `conventions/general/project-structure.md`). It is the one file that keeps its own style.
 - Use Total.js prototypes (`findItem`, `format`, `parseJSON`, `slug`, `isEmail`...) in the backend and Tangular templates in the frontend before any other function.
@@ -32,6 +33,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 
 - `conventions/`: the pages, one folder per zone (`general/`, `backend/`, `database/`, `frontend/`).
 - `apps/`: small complete applications, each with its `readme.md` and its `test.js`.
+- `reference/`: what each version of Total.js 5 adds, tried with that version. A feature of a beta is used only in a project that depends on that version.
 - `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.
 - `skills/`: the skills to write and to review Total.js 5 code (`.claude/skills/` and `.agents/skills/` point to them).

@@ -35,6 +35,9 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [Binding and forms](https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/frontend/binding-and-forms.md): Connected screen/importer/form flow, binding, translations and lifecycle
 - [CMS widgets](https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/frontend/cms-widgets.md): Native single-file format, metadata, settings, scoped CSS, rendering and previews
 - [CSS](https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/frontend/css.md): Formatting, CLASS scoping, predefined classes
+## Reference
+
+- [What Total.js 5 0.0.20 adds](https://raw.githubusercontent.com/totaljs-es/knowledge/main/reference/total5-0.0.20.md): MCP tools from actions, the cache of an action, the types JSON and IP, $.content, the environment of an action, total5 test and fakes; each one tried with the beta
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
