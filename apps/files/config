@@ -1,0 +1,4 @@
+name              : Files
+
+// The requests that upload, list or remove files must send this value in the header "x-token". Change it before the application is used.
+token             : change-this-token

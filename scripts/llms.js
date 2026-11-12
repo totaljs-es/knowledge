@@ -43,6 +43,7 @@ var PAGES = [
 	['Reference', 'reference/total5-0.0.20.md', 'What Total.js 5 0.0.20 adds', 'MCP tools from actions, the cache of an action, the types JSON and IP, $.content, the environment of an action, total5 test and fakes; each one tried with the beta'],
 	['Applications', 'apps/contacts/readme.md', 'Contacts: an API without plugins', 'Actions, routes in controllers, a token and DATA on the embedded NoSQL database'],
 	['Applications', 'apps/contacts-postgresql/readme.md', 'Contacts on PostgreSQL', 'The same queries with DATA on PostgreSQL: the definition of the database and the table names without the prefix nosql/'],
+	['Applications', 'apps/files/readme.md', 'Files: upload and download', 'A multipart upload with a size limit, FILESTORAGE, a FILE route for the download and the removal'],
 	['Applications', 'apps/website/readme.md', 'Website: views and a layout', 'Public pages rendered on the server, without plugins and without a database'],
 	['Applications', 'apps/board/readme.md', 'Board: an application with plugins', 'Each feature with its routes, actions, screen and form, in jComponent 20']
 ];
