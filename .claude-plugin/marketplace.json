@@ -1,0 +1,14 @@
+{
+	"name": "totaljs-knowledge",
+	"owner": {
+		"name": "Total.js"
+	},
+	"plugins": [
+		{
+			"name": "totaljs",
+			"source": "./",
+			"description": "Total.js 5 knowledge: conventions, tested applications, skills to write and review code, and a check after each edit."
+		}
+	],
+	"description": "Total.js 5 knowledge for AI agents."
+}

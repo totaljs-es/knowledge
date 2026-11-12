@@ -1,0 +1,11 @@
+{
+	"name": "totaljs",
+	"version": "0.1.0",
+	"description": "Total.js 5 knowledge for agents: the conventions, tested example applications, skills to write and review code, and a check that runs after each edit.",
+	"license": "MIT",
+	"homepage": "https://github.com/totaljs-es/knowledge",
+	"repository": "https://github.com/totaljs-es/knowledge",
+	"author": {
+		"name": "Total.js"
+	}
+}

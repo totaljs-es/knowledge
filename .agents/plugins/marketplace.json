@@ -1,0 +1,20 @@
+{
+	"name": "totaljs-knowledge",
+	"interface": {
+		"displayName": "Total.js knowledge"
+	},
+	"plugins": [
+		{
+			"name": "totaljs",
+			"source": {
+				"source": "local",
+				"path": "./"
+			},
+			"policy": {
+				"installation": "AVAILABLE",
+				"authentication": "ON_INSTALL"
+			},
+			"category": "Developer Tools"
+		}
+	]
+}

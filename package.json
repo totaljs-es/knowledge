@@ -5,7 +5,9 @@
 	"private": true,
 	"license": "MIT",
 	"scripts": {
-		"test": "node tools/test.js"
+		"llms": "node scripts/llms.js --write",
+		"test": "node tests/kit.test.js && node tests/check.test.js && node tools/test.js",
+		"check": "node tools/check.js"
 	},
 	"dependencies": {
 		"total5": "latest"
