@@ -19,6 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
+| [`questions/`](questions) | One question and its short answer, 160 of them by subject, in English and in Spanish ([`questions/es/`](questions/es)) with the same code |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
 | [`skills/`](skills) | Two skills for agents: write Total.js 5 code, and review a change |
 | [`tools/`](tools) | `check.js` checks application files against the rules a script can decide, `rules.js` prints the rules, `test.js` runs the tests of every application |
@@ -117,6 +118,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 - `conventions/`: the pages, one folder per zone (`general/`, `backend/`, `database/`, `frontend/`).
 - `apps/`: small complete applications, each with its `readme.md` and its `test.js`.
 - `answers/`: short answers to common questions (how to start an application, where the routes go, which storage, plugins or not...), each with its question in English and in Spanish.
+- `questions/`: one question and its short answer, by subject (`actions.md`, `routes.md`, `data.md`...). `questions/es/` has the same pages in Spanish: the same sections in the same order and the same code, only the text is translated.
 - `reference/`: what each version of Total.js 5 adds, tried with that version, and `reference/jcomponent/`, the official guides of the interface library (copies, not edited here). A feature of a beta is used only in a project that depends on that version.
 - `llms.txt` (index) and `llms-full.txt` (every page in one file): for models. They are generated, do not edit them by hand.
 - `scripts/llms.js`: builds the two files above and lists the pages in order.
@@ -3891,6 +3893,3510 @@ Total.js 5 is the current framework. Total.js 4 (`total4`) is the previous one a
 What 0.0.20 adds is in [reference](../reference/total5-0.0.20.md): actions as MCP tools, the cache of an action, the field types `JSON` and `IP`, `$.content()`, `total5 test` and fakes for tests. Use one of those only in a project that depends on `total5@beta` or on 0.0.20 and later, and say which version it needs.
 
 When you are not sure that a function exists in the version of the project, say so and check it in the source of the framework instead of guessing.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/application.md
+
+# The application: questions and answers
+
+## Which folders does a Total.js 5 application have?
+
+The framework loads each folder by its name:
+
+```
+index.js            the official start script
+config              settings, one "key : value" per line
+package.json        "total5" is the dependency
+controllers/        routes
+definitions/        auth.js, init.js, func.js, db.js: loaded at start
+schemas/            actions
+modules/            integrations with other systems
+plugins/<name>/     a feature with its server part and its screen
+views/              layout and pages
+public/             static files for the browser
+```
+
+A small API needs only `index.js`, `config`, `package.json`, `controllers/`, `schemas/` and `definitions/`.
+
+## What goes in index.js?
+
+The official start script of Total.js 5, whole and unchanged: `helpers/index.js` of the framework. Its heart is this, and the commented options of the official file stay in it:
+
+```js
+require('total5');
+
+const options = {};
+
+options.release = process.argv.includes('--release');
+options.servicemode = process.argv.includes('--service') || process.argv.includes('--servicemode');
+
+Total.run(options);
+```
+
+Do not write a shorter one by hand and do not restyle it: it is the one file that keeps its own style.
+
+## How do I start a Total.js 5 application?
+
+```
+npm install
+node index.js 8000
+```
+
+The number is the port. Add `--release` for release mode: `node index.js 8000 --release`.
+
+## What does package.json need?
+
+Only `total5`. The framework has the server, the routes, the templates, the database builder and the tests inside:
+
+```json
+{
+	"name": "contacts",
+	"version": "1.0.0",
+	"private": true,
+	"dependencies": {
+		"total5": "latest"
+	}
+}
+```
+
+## How is the config file written?
+
+It is a plain file named `config`, without an extension, with one `key : value` per line. A line that starts with `//` is a comment:
+
+```
+name              : Contacts
+
+// The requests of the API must send this value in the header "x-token"
+token             : change-this-token
+```
+
+The code reads a value with `CONF.token`. It is not JSON and it is not a `.env` file.
+
+## Where do I read a setting in the code?
+
+In `CONF`, with the key of the file `config`:
+
+```js
+if (token === CONF.token)
+	$.success(BOT);
+```
+
+The settings that belong to the framework start with `$`, as `$api`. Keys and addresses of databases stay out of the repository.
+
+## Where do shared helper functions go?
+
+In `definitions/func.js`, as functions of `FUNC`, named in lowercase without separators:
+
+```js
+// definitions/func.js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+Actions and controllers call `FUNC.refreshtags()`.
+
+## Where do I keep state in memory?
+
+In `MAIN`, the object of the application, filled in a file of `definitions/`:
+
+```js
+// definitions/db.js
+MAIN.products = [
+	{ id: 'bread', name: 'Sourdough bread', price: 4.5 }
+];
+```
+
+`REPO` holds cached lookups that the interface also needs. Do not create new globals.
+
+## Where does the work of the start go?
+
+In `ON('ready', ...)` of `definitions/init.js`: it runs when the application is up.
+
+```js
+// definitions/init.js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,locale,input,form,validate', true);
+});
+```
+
+## How do I name files and folders?
+
+All lowercase, words separated by `-`, never `_`: `search-results.html`. Static files go by type in `public/`: `/img/`, `/js/`, `/css/`, `/fonts/`. One plugin per feature, named after it: `plugins/redirects`.
+
+## What is a module and how do I use it?
+
+A file of `modules/` is an integration with another system or a service of its own. The framework loads it and registers its exports in `MODS`, under the name of the file:
+
+```js
+var data = MODS.visitors.today();
+```
+
+Do not load an application module with `require(PATH.root('modules/...'))`. A name with a dash uses brackets: `MODS['knowledge-source']`.
+
+## Should a new application use plugins?
+
+It depends on the project. An application that will grow by features is made with plugins: each feature is a folder `plugins/<name>/` with its routes, its actions and its screen. A small service with one or two collections does not need them: `controllers/` and `schemas/` are enough.
+
+## Do I need Express or other packages?
+
+No. Total.js 5 is not built on Express and does not use its middleware. Routes, actions, validation, templates, WebSocket, the database builder and the tests are in `total5`. The only other package a common application adds is the adapter of its database, as `querybuilderpg` for PostgreSQL.
+
+## Which version of Total.js 5 do I install?
+
+`"total5": "latest"` in `package.json` is the stable version. The beta is `npm install total5@beta`. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/actions.md
+
+# Actions: questions and answers
+
+## What is an action?
+
+One unit of server logic: a name, the input it accepts, who may call it, and a function. It is defined with `NEWACTION` in a file of `schemas/`:
+
+```js
+NEWACTION('Contacts|create', {
+	name: 'Create a contact',
+	input: '*name:String, email:Email, phone:Phone',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_contact', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+## How do I name an action?
+
+`Collection|verb`: the collection in plural with a capital letter, a pipe, and the verb. `Tickets|list`, `Groups|create`, `Users|remove`. Never `/` between the parts.
+
+```js
+NEWACTION('Tickets|list', {
+	name: 'List of tickets',
+	action: function($) {
+		DATA.find('nosql/tbl_ticket').callback($);
+	}
+});
+```
+
+## Which verbs do actions use?
+
+| Verb | Does |
+|---|---|
+| `list` | returns a collection |
+| `read` | returns one record |
+| `create` | inserts and answers with the new id |
+| `update` | modifies one record |
+| `save` | creates or updates by `id` |
+| `remove` | deletes one record |
+
+## Where do I put the actions?
+
+In `schemas/`, one file per collection: `schemas/contacts.js`. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+
+## How do I declare the input of an action?
+
+With a text in `input`: the fields separated by commas, `*` before a required field and the type after `:`.
+
+```js
+input: '*name:String, email:Email, phone:Phone, isactive:Boolean, tags:[String]'
+```
+
+The body arrives validated as the second argument of the function: `action: function($, model)`.
+
+## Which types can a field have?
+
+`String`, `String(100)` with a maximum length, `Number`, `Boolean`, `Date`, `UID`, `Email`, `Phone`, `URL`, `Color`, `Icon`, and a list with brackets: `[String]`. A wrong value answers 400 with the name of the field.
+
+## How do I read the id of the address?
+
+Declare it in `params` and read it in `$.params`:
+
+```js
+NEWACTION('Contacts|read', {
+	name: 'Read a contact',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+The route has `{id}` in its address: `ROUTE('+API ? -contacts_read/{id} --> Contacts|read')`.
+
+## How do I read the query string in an action?
+
+Declare it in `query` and read it in `$.query`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	action: function($) {
+		$.callback($.query.search);
+	}
+});
+```
+
+## How does an action answer?
+
+| Call | Use |
+|---|---|
+| `$.callback(data)` | returns data: a record, a list |
+| `$.success()` or `$.success(id)` | the answer of success, with a value if you pass one |
+| `$.invalid(404)` | an error with that HTTP status |
+| `$.invalid('@(Text for the user)')` | a validation or business error |
+
+Answer once on each path, and `return` after an early answer.
+
+## How do I answer that a record does not exist?
+
+`$.invalid(404)`. With `DATA`, `.error(404)` does it when the query finds nothing:
+
+```js
+if (!item) {
+	$.invalid(404);
+	return;
+}
+```
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## How do I answer with an error message for the user?
+
+`$.invalid('@(text)')`. The `@(...)` marks the text for translation:
+
+```js
+if (MAIN.monitor.sites.findItem('url', model.url)) {
+	$.invalid('@(The website is already in the list)');
+	return;
+}
+```
+
+## How do I restrict an action to some users?
+
+With `permissions` or `user: true` in the action. The `+` of the route asks for a logged-in user; the check of the action also protects a call that does not come from that route.
+
+```js
+NEWACTION('Redirects|save', {
+	name: 'Save redirect',
+	input: 'id,*url,*target,permanent:Boolean',
+	permissions: 'redirects,admin',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## How do I reuse the fields of an input?
+
+With a named schema and `@`:
+
+```js
+NEWSCHEMA('@Group', '*name,color:Color,icon:Icon,reference,permissions:[String]');
+
+NEWACTION('Groups|create', {
+	name: 'Create group',
+	input: '@Group',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## How do I call one action from another?
+
+`$.action('Name').promise()` inside an action, and `ACTION('Name', model)` outside a request:
+
+```js
+var types = await $.action('Items|types').promise();
+```
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+## Why is my action async?
+
+Because it waits for the database. Pass `$` to `.promise($)`: an error of the query then answers the request by itself.
+
+```js
+action: async function($) {
+	var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+	$.callback(item);
+}
+```
+
+## Does every action need a name?
+
+Yes: `name` is a short text for people ("Save redirect"). Logs and tools use it. The first argument of `NEWACTION` is its identifier (`Redirects|save`).
+
+## Why does my required list reject an empty list?
+
+A field `*tags:[String]` is required, and an empty list counts as missing. If an empty list is valid, take the `*` away: `tags:[String]`.
+
+## Why is my Boolean false when the field was not sent?
+
+A `Boolean` that is absent is `false`. When the absence must mean "unchanged", declare the action with `partial: true`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/routes.md
+
+# Routes and authentication: questions and answers
+
+## Where do the routes go?
+
+In `exports.install` of a file of `controllers/`, or of the `index.js` of a plugin. One line per route:
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    -contacts                --> Contacts|list');
+	ROUTE('+API    ?    -contacts_read/{id}      --> Contacts|read');
+	ROUTE('+API    ?    +contacts_create         --> Contacts|create');
+	ROUTE('+API    ?    +contacts_update/{id}    --> Contacts|update');
+	ROUTE('+API    ?    -contacts_remove/{id}    --> Contacts|remove');
+};
+```
+
+## How do I read an API route?
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+- The first `+` is "only for logged-in users". Without it the route is public.
+- `?` is the address of the API: `/api/` by default.
+- `+tickets_create` is the name of the endpoint; its `+` says the request has a body, and `-` says it has none.
+- After `-->` goes the action.
+- The number is the maximum size of the body in bytes.
+
+## How does a client call an API route?
+
+With a `POST` to the address of the API (`/api/`), with the name of the endpoint in `schema` and the body in `data`:
+
+```
+POST /api/
+x-token: change-this-token
+content-type: application/json
+
+{ "schema": "contacts_create", "data": { "name": "Anna" } }
+```
+
+An endpoint with a parameter carries it in the name: `"schema": "contacts_read/ID"`.
+
+## How do I name an endpoint?
+
+In lowercase with `_`: `tickets_create`, `users_remove/{id}`. Use `-` before the name for reads and removals, and `+` for creates and updates. `{id}` fills `$.params.id`.
+
+## How do I make a route that returns a page?
+
+A `GET` route with a function that receives `$`:
+
+```js
+exports.install = function() {
+	ROUTE('GET /', home);
+	ROUTE('GET /products/{id}/', product);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+## How do I answer JSON from a route function?
+
+With `$.json(data)`. In a route function `$.callback(err, value)` takes the error first, so it is not the call of an action:
+
+```js
+ROUTE('GET /status/', function($) {
+	$.json({ ok: true });
+});
+```
+
+## How do I make a public route?
+
+Leave out the `+` before the method. `ROUTE('POST /notify/', notify)` is public; `ROUTE('+GET /setup/', setup)` is only for logged-in users.
+
+## How does the application know who the request is from?
+
+With one `AUTH` in `definitions/auth.js`. It calls `$.success(user)` or `$.invalid()`:
+
+```js
+const BOT = { id: 'bot', name: 'Bot', sa: true };
+
+AUTH(function($) {
+	var token = $.headers['x-token'];
+	if (token && token === CONF.token)
+		$.success(BOT);
+	else
+		$.invalid();
+});
+```
+
+Every route with `+` then needs that user.
+
+## How do I protect an API with a token?
+
+Put the token in `config`, check the header in `AUTH` and mark the routes with `+`:
+
+```js
+AUTH(function($) {
+
+	var token = $.headers['x-token'];
+
+	if (!token) {
+		$.invalid();
+		return;
+	}
+
+	if (BLOCKED($, 10)) {
+		$.invalid();
+		return;
+	}
+
+	if (token === CONF.token) {
+		BLOCKED($, -1);
+		$.success(BOT);
+	} else
+		$.invalid();
+});
+```
+
+## How do I limit wrong login tries?
+
+With `BLOCKED($, limit)`: it counts the tries of each client and returns `true` once the limit is passed. `BLOCKED($, -1)` forgets them after a good login.
+
+```js
+if (BLOCKED($, 10)) {
+	$.invalid();
+	return;
+}
+```
+
+## What does the user object look like?
+
+A small object: `{ id, name, sa, permissions }`. `sa` marks a super administrator. `AUTH` gives it with `$.success(user)` and actions read it in `$.user`.
+
+## How do I give a route a larger body limit?
+
+With the size in bytes as the second argument of `ROUTE`:
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+An upload says its size in the route itself: `<5MB`.
+
+## Can an action declare its own route?
+
+Yes: `route: '+API ?'` in `NEWACTION` registers the endpoint. In a new application write the routes in `controllers/` or in the `index.js` of the plugin, so that all of them are read in one place, and do not declare the same route twice.
+
+## Is $.ip safe for a security limit?
+
+No. `$.ip` is the first value of the header `X-Forwarded-For`, which a client can write. For a security limit use `$.req.socket.remoteAddress`, or trust the header only behind your own proxy.
+
+## How do I answer 404 from a page?
+
+With `$.fallback(404)`: it is the page 404 of the framework, as for an address without a route.
+
+```js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/data.md
+
+# Data with DATA: questions and answers
+
+## Where do I keep the records of a new application?
+
+In the embedded NoSQL database, through `DATA`, with the prefix `nosql/` before the name of the table. It needs no server, no definition and no dependency:
+
+```js
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+```
+
+The file is `databases/tbl_contact.nosql`.
+
+## How do I list records?
+
+```js
+NEWACTION('Contacts|list', {
+	name: 'List of contacts',
+	action: async function($) {
+		var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+		$.callback(items);
+	}
+});
+```
+
+## How do I read one record?
+
+`DATA.read()` with `.id()`. `.error(404)` answers 404 when it does not exist:
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## How do I insert a record?
+
+Fill the id with `UID()` and the date with `NOW` in the action:
+
+```js
+model.id = UID();
+model.dtcreated = NOW;
+await DATA.insert('nosql/tbl_contact', model).promise($);
+$.success(model.id);
+```
+
+## How do I update a record?
+
+```js
+model.dtupdated = NOW;
+await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## How do I remove a record?
+
+```js
+await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## How do I make a unique id?
+
+`UID()`. It is a function of the framework: no package and no `require`.
+
+```js
+model.id = UID();
+```
+
+## How do I filter a query?
+
+With conditions on the builder: `where(field, value)`, `in(field, array)`, `notin(field, array)`, `search(field, keyword)`.
+
+```js
+var items = await DATA.find('tbl_tag').fields('id,search').where('folderid', id).promise($);
+```
+
+## How do I choose the fields a query returns?
+
+`.fields('a,b')`. Name them; do not read everything:
+
+```js
+var item = await DATA.read('tbl_user').fields('id,name').id(params.id).error('@(User not found)').promise($);
+```
+
+## How do I make a list with paging, sorting and filters from the query string?
+
+With `autoquery`: it reads `?page=`, `limit`, `sort` and the fields you allow, with a default sort and a maximum page size.
+
+```js
+NEWACTION('Groups|list', {
+	name: 'List of groups',
+	action: function($) {
+		DATA.find('op.view_group').autoquery($.query, 'id:UID,name,color,icon,users:Number,dtcreated:Date,dtupdated:Date', 'dtcreated_desc', 100).callback($);
+	}
+});
+```
+
+## How do I connect the application to PostgreSQL?
+
+Add the package `querybuilderpg`, put the address of the database in `config` and write one definition:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+The queries are the same `DATA` calls, with the name of the table without a prefix: `DATA.find('tbl_contact')`.
+
+## How do I move from the embedded database to PostgreSQL?
+
+Take the prefix `nosql/` away from the table names, add the definition of `querybuilderpg` and create the tables with `database.sql`. The queries do not change:
+
+```js
+// before
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+
+// after
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+## How do I run raw SQL?
+
+`DATA.query()` with parameters:
+
+```js
+await DATA.query('UPDATE tbl_ticket SET worked=worked+1 WHERE id=$1', [id]).promise($);
+```
+
+Prefer parameters (`$1`). When a value must go into the text, escape it with `PG_ESCAPE(value)`. Never concatenate what a user sent.
+
+## How do I answer with success after a write without async?
+
+`.callback($.done(id))` answers with the success of the application and that value:
+
+```js
+DATA.remove('tbl_tag').id($.params.id).error(404).callback($.done($.params.id));
+```
+
+`.callback($)` answers with the raw result of the query instead.
+
+## How do I use DATA outside a request?
+
+`.promise()` without `$`, with its own error handling, or a callback with the error first:
+
+```js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+## How do I search by text in several fields?
+
+With `or` and `search`:
+
+```js
+builder.or(function(b) {
+	b.search('name', text);
+	b.search('email', text);
+});
+```
+
+## Do I need to set up QueryBuilder for the embedded database?
+
+No. QueryBuilder comes loaded with Total.js 5 and the prefix `nosql/` sends the query to the embedded database. Only a database server needs its adapter, as `querybuilderpg`.
+
+## How do I name tables and fields in the embedded database?
+
+As in SQL from the first day, so the application can move to PostgreSQL later: tables `tbl_contact`, dates `dtcreated` and `dtupdated`, flags `isdone`, a foreign key as the table plus `id` (`userid`).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/storage.md
+
+# Storage and files: questions and answers
+
+## Which storage do I choose for a new application?
+
+By what the data is:
+
+| The data | Use |
+|---|---|
+| The records of the application (contacts, tasks, orders) | `DATA` on the embedded database: `DATA.find('nosql/tbl_contact')` |
+| An embedded store that will never be SQL (a log, a queue) | `NOSQL('name')` |
+| A small object that is kept by itself (settings, counters) | `MEMORIZE('name')` |
+| Files | `FILESTORAGE('name')` |
+
+## How do I keep a small object between restarts without a database?
+
+With `MEMORIZE`: the framework keeps the object in a file by itself.
+
+```js
+// definitions/db.js
+MAIN.monitor = MEMORIZE('monitor', 1000);
+
+if (!MAIN.monitor.sites)
+	MAIN.monitor.sites = [];
+```
+
+The second argument is the delay of the save in milliseconds. After a change call `MAIN.monitor.save()`.
+
+## How do I save a change of a MEMORIZE object?
+
+Change the object and call its `save()`:
+
+```js
+MAIN.monitor.sites.push(model);
+MAIN.monitor.save();
+$.success(model.id);
+```
+
+## When do I use NOSQL() directly?
+
+For an embedded store that will never be SQL: a log, a queue, a cache on disk. The records of the application go through `DATA` with the prefix `nosql/`, which reads the same file and lets the application move to PostgreSQL later.
+
+```js
+NOSQL('logs').insert({ id: UID(), message: 'Started', dtcreated: NOW });
+```
+
+## How do I receive an uploaded file?
+
+A `POST` route with `@upload` and the maximum size, and an action that reads `$.files`:
+
+```js
+ROUTE('+POST   /upload/    @upload <5MB    --> Files|upload');
+```
+
+```js
+NEWACTION('Files|upload', {
+	name: 'Upload files',
+	action: async function($) {
+
+		if (!$.files.length) {
+			$.invalid('@(No file was sent)');
+			return;
+		}
+
+		var response = [];
+
+		for (var i = 0; i < $.files.length; i++) {
+			var meta = await $.files[i].fs('files', UID());
+			response.push(meta);
+		}
+
+		$.callback(response);
+	}
+});
+```
+
+## Where are uploaded files kept?
+
+In a `FILESTORAGE`. `$.files[i].fs('files', UID())` moves the uploaded file to the storage named `files` with a new id, and returns its metadata. The folder is `databases/fs-files`.
+
+## How do I list the files of a storage?
+
+```js
+var items = await FILESTORAGE('files').browse().promise($);
+```
+
+Each item has its `id`, its name, its extension (`ext`) and its size.
+
+## How do I send a stored file to the browser?
+
+With a `FILE` route and the `http()` of the storage:
+
+```js
+ROUTE('FILE /download/*.*', download);
+
+function download($) {
+	var name = $.split[1];
+	var opt = {};
+	opt.id = name.substring(0, name.lastIndexOf('.'));
+	opt.download = $.query.download === '1';
+	FILESTORAGE('files').http($, opt);
+}
+```
+
+## How do I remove a stored file?
+
+```js
+FILESTORAGE('files').remove($.params.id, function(err) {
+	if (err)
+		$.invalid(404);
+	else
+		$.success($.params.id);
+});
+```
+
+## What happens when an upload is larger than the limit of the route?
+
+The framework rejects the request with the status 431 and the action does not run. The limit is in the route: `@upload <5MB`.
+
+## Should an existing application change its storage?
+
+No. A feature keeps the model it already has: metadata in memory saved to a file, SQL through `DATA`, or a `MEMORIZE` object. Do not switch the storage during a cleanup.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/services.md
+
+# Scheduled work, HTTP calls and WebSocket: questions and answers
+
+## How do I run something every minute?
+
+The framework emits `service` every minute, with the number of minutes since the start. No timer and no package:
+
+```js
+// definitions/init.js
+ON('service', function(counter) {
+	if (counter % 5 === 0)
+		ACTION('Sites|check').callback(ERROR('Sites|check'));
+});
+```
+
+`counter % 5 === 0` is every five minutes.
+
+## How do I run something at a time of the day?
+
+With `CRON` and the five fields of a cron line:
+
+```js
+// Every day at midnight
+CRON('0 0 * * *', function() {
+	MAIN.monitor.save();
+});
+```
+
+In Total.js 5 0.0.19 a step (`*/5`) runs every minute; it is fixed in 0.0.20. For "every N minutes" use `ON('service')`.
+
+## Should I use setInterval for repeated work?
+
+No. Use `ON('service', function(counter) { ... })`: one listener for the application, with the count of minutes, instead of a timer of your own.
+
+## How do I call another HTTP service?
+
+With `RESTBuilder`, which is in the framework:
+
+```js
+var response = await RESTBuilder.GET(CONF.serviceurl).promise($);
+```
+
+Check the status and the shape of the answer before you answer with success.
+
+## How do I send a POST with JSON to another service?
+
+```js
+RESTBuilder.POST(CONF.serviceurl, { name: 'Anna' }).header('x-token', CONF.servicetoken).callback(function(err, response) {
+	if (err)
+		$.invalid('@(The service did not answer)');
+	else
+		$.callback(response);
+});
+```
+
+## How do I read the HTTP status of a remote answer?
+
+With `exec`, which gives the output with its status:
+
+```js
+RESTBuilder.GET(site.url).timeout(CONF.timeout).exec(function(err, response, output) {
+	site.status = output && output.status ? output.status : 0;
+});
+```
+
+A request that takes longer than the timeout has the status 408, and an address where nothing listens has 0.
+
+## How do I declare a WebSocket route?
+
+With `SOCKET` in a controller. The function receives the controller of the room:
+
+```js
+exports.install = function() {
+	ROUTE('SOCKET /chat/', socket);
+};
+
+function socket($) {
+
+	$.on('open', function(client) {
+		client.send({ TYPE: 'hello' });
+	});
+
+	$.on('message', function(client, message) {
+		$.send(message);
+	});
+
+	$.on('close', function(client) {
+	});
+}
+```
+
+## How do I send a WebSocket message to everybody or to one client?
+
+`$.send(message)` sends it to every connection of the route, the sender too. `client.send(message)` sends it to one client. The messages are objects: the framework sends them as JSON.
+
+## How do I go through the connections of a WebSocket route?
+
+They are in `$.connections`:
+
+```js
+var names = [];
+for (var key in $.connections) {
+	var client = $.connections[key];
+	client.name && names.push(client.name);
+}
+```
+
+## How do I read the query string of a WebSocket connection?
+
+In `client.query`, inside `open`:
+
+```js
+$.on('open', function(client) {
+	var name = (client.query.name || '').trim().substring(0, 30);
+	client.name = name;
+});
+```
+
+## How do I close a WebSocket connection that is not allowed?
+
+`client.close(code)`, a moment after `open`, when the connection is completely open:
+
+```js
+if (!name) {
+	setTimeout(function(client) {
+		client.close(4001);
+	}, 500, client);
+	return;
+}
+```
+
+## How do I log an error of work that has no request?
+
+With `ERROR('context')` as the callback: it writes the error with that name.
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+Use `NOOP` only for a result that you ignore on purpose.
+
+## How do I go through a list with an asynchronous call, one after another?
+
+With `wait` of the array:
+
+```js
+MAIN.monitor.sites.wait(function(site, next) {
+	RESTBuilder.GET(site.url).exec(function(err, response, output) {
+		site.status = output && output.status ? output.status : 0;
+		next();
+	});
+}, function() {
+	$.callback(MAIN.monitor.sites);
+});
+```
+
+## How do I react to a change of the configuration?
+
+With `ON('configure', ...)`. The part that changes the settings emits it with `EMIT('configure')`. Settings kept in a table are loaded with `LOADCONFIG(rows)`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/views.md
+
+# Views and pages: questions and answers
+
+## How do I render a page?
+
+A route calls `$.view()` with the name of a file of `views/`:
+
+```js
+// controllers/default.js
+exports.install = function() {
+	ROUTE('GET /', home);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+```html
+<!-- views/index.html -->
+@{title(CONF.name)}
+
+<h1>@(Fresh every morning)</h1>
+```
+
+## How do I pass data to a view?
+
+As the second argument of `$.view()`. The view reads it as `model`:
+
+```js
+$.view('product', item);
+```
+
+```html
+@{title(model.name)}
+
+<h1>@{model.name}</h1>
+<p>@{model.description}</p>
+```
+
+## How do I make a layout for all the pages?
+
+`views/layout.html` is the layout of every view. `@{body}` is where the view goes:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+	<main>
+		@{body}
+	</main>
+</body>
+</html>
+```
+
+## How do I loop over a list in a view?
+
+With `@{foreach}` and `@{end}`:
+
+```html
+<ul class="products">
+@{foreach m in model}
+	<li>
+		<a href="/products/@{m.id}/">@{m.name}</a>
+		<span>@{m.price.format(2)} EUR</span>
+	</li>
+@{end}
+</ul>
+```
+
+## How do I write a condition in a view?
+
+With `@{if}` and `@{fi}`:
+
+```html
+@{if model.price}
+	<p class="price">@{model.price.format(2)} EUR</p>
+@{fi}
+```
+
+## How do I set the title of a page?
+
+With `@{title()}` at the top of the view. The layout prints it through `@{import('meta')}`, and the framework adds " - " and the name of the application after it:
+
+```html
+@{title('@(Products)')}
+```
+
+## How do I mark a text for translation?
+
+Wrap it in `@(...)`, in views, in the HTML of plugins and in the messages of the server. The text in English is the key:
+
+```html
+<a href="/products/">@(Products)</a>
+```
+
+```js
+$.invalid('@(The website is already in the list)');
+```
+
+The translations are in `resources/<language>.resource`.
+
+## How do I read a setting in a view?
+
+`@{CONF.name}`:
+
+```html
+<a href="/" class="logo">@{CONF.name}</a>
+<a href="mailto:@{CONF.email}">@{CONF.email}</a>
+```
+
+## How do I use a view without the layout?
+
+Put `@{layout('')}` at the top of the view. The shell of an application with jComponent is a view like that: a whole HTML document of its own.
+
+## How do I load the CSS and JavaScript of the application in the layout?
+
+With `@{import()}` in the `<head>`. The files are in `public/css/` and `public/js/`:
+
+```html
+@{import('meta', 'head', 'default.js + func.js', 'default.css', 'favicon.ico')}
+```
+
+## Is the syntax of the views the same as Tangular?
+
+No. A view of `views/` uses `@{...}` and is rendered on the server. Tangular uses `{{ ... }}` and is for templates, mostly in the browser. Do not write one inside the other expecting the other engine.
+
+## What are the two kinds of pages?
+
+Public pages are views that a controller returns with `$.view('index')`. Application screens (an admin, a tool) are the HTML of plugins, mounted in a shell and driven by `PLUGIN` with jComponent.
+
+## Why do I not see my change of a static file in release mode?
+
+In release mode static files are served from memory: restart the application after changing them. The browser also keeps them: force a reload while testing.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/tangular.md
+
+# Tangular templates: questions and answers
+
+## What is Tangular?
+
+The template engine of Total.js: text with `{{ ... }}` commands that is filled with a model. jComponent uses it in the browser for what a screen draws from data, and the framework has the same engine on the server.
+
+```js
+var html = Tangular.render('Hello {{ name }}!', { name: 'Anna' });
+```
+
+The result is `Hello Anna!`.
+
+## How do I print a value in Tangular?
+
+`{{ name }}`. The value is HTML-encoded, so the text of a user can be shown as it is. A property of an object is `{{ user.name }}`, and an expression works too: `{{ age + 1 }}`.
+
+## How do I print a value without HTML encoding in Tangular?
+
+With the helper `raw`:
+
+```html
+{{ html | raw }}
+```
+
+Use it only for HTML that the application made itself, never for text that a user wrote. `{{ !html }}` is not raw: `!` is the negation of JavaScript.
+
+## How do I write a condition in Tangular?
+
+`{{ if }}`, `{{ else if }}`, `{{ else }}` and `{{ fi }}`:
+
+```html
+{{ if age > 40 }}old{{ else if age > 30 }}middle{{ else }}young{{ fi }}
+```
+
+The condition is a JavaScript expression. It ends with `{{ fi }}`.
+
+## How do I loop over a list in Tangular?
+
+`{{ foreach m in items }}` and `{{ end }}`:
+
+```html
+{{ foreach m in items }}
+<div class="item">{{ m.name }}</div>
+{{ end }}
+```
+
+A loop ends with `{{ end }}` and a condition with `{{ fi }}`: they are not the same word.
+
+## How do I get the position of an item in a Tangular loop?
+
+`$index`, from 0:
+
+```html
+{{ foreach m in items }}{{ $index }}:{{ m.name }} {{ end }}
+```
+
+`{{ continue }}` goes to the next item and `{{ break }}` ends the loop.
+
+## How do I format a number or a date in Tangular?
+
+With the helper `format`:
+
+```html
+{{ price | format(2) }}
+{{ date | format('yyyy-MM-dd') }}
+```
+
+`1234.5` becomes `1 234.50`, and the date becomes `2026-11-12`.
+
+## How do I show a text when a value is empty in Tangular?
+
+With `empty` or `def`:
+
+```html
+{{ name | empty('No name') }}
+{{ nothing | def('nothing here') }}
+```
+
+`{{ name | empty }}` without a text writes `---`. A value that is `null` or does not exist is an empty text, not an error.
+
+## How do I write a plural in Tangular?
+
+With `pluralize` and four texts: for zero, one, a few and many. `#` is the number:
+
+```html
+{{ count | pluralize('no items', '# item', '# items', '# items') }}
+```
+
+## How do I make my own Tangular helper?
+
+```js
+Thelpers.upper = function(value) {
+	return Thelpers.encode((value || '').toUpperCase());
+};
+```
+
+```html
+{{ name | upper }}
+```
+
+The result of a helper is written without encoding: a helper that returns text of a user encodes it with `Thelpers.encode(value)`.
+
+## How do I draw a list on a screen with a template?
+
+With a `ui-bind` and `config="template"`. It draws its template every time its path changes, and inside the template the data is `value`:
+
+```html
+<ui-bind path="?.items" config="template" class="block">
+	<script type="text/html">
+		{{ foreach m in value }}
+		<div class="item{{ if m.isdone }} done{{ fi }}">{{ m.name }}</div>
+		{{ end }}
+	</script>
+</ui-bind>
+```
+
+Change the model and let the `ui-bind` draw; do not build the HTML by joining texts.
+
+## How do I compile a template to use it many times?
+
+```js
+var template = Tangular.compile('Hello {{ name }}!');
+var html = template({ name: 'Zoe' });
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/interface.md
+
+# The interface with jComponent 20: questions and answers
+
+## What is a plugin?
+
+A feature of an application: a folder with its server part and its screen, which the framework loads and the shell of the application mounts.
+
+```
+plugins/redirects/
+	index.js              server: metadata and routes
+	schemas/redirects.js  actions
+	public/index.html     the screen
+	public/form.html      the form that opens over the screen
+```
+
+## What goes in the index.js of a plugin?
+
+Its icon, its name, its position in the menu, who sees it, and its routes:
+
+```js
+exports.icon = 'ti ti-check-circle';
+exports.name = '@(Tasks)';
+exports.position = 1;
+exports.visible = function() {
+	return true;
+};
+
+exports.install = function() {
+	ROUTE('+API    ?    -tasks                   --> Tasks|list');
+	ROUTE('+API    ?    +tasks_save              --> Tasks|save');
+	ROUTE('+API    ?    -tasks_remove/{id}       --> Tasks|remove');
+};
+```
+
+## How do I write the screen of a plugin?
+
+HTML with a `<ui-plugin>` root and one `PLUGIN(function(exports) { ... })` block, in `public/index.html`:
+
+```html
+<ui-plugin class="CLASS">
+	<button class="exec" data-exec="?/refresh">@(Refresh)</button>
+</ui-plugin>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('tasks', function(response) {
+				exports.set('items', response);
+			});
+		};
+
+	});
+</script>
+```
+
+`exports.reload` runs every time the screen opens.
+
+## How does a screen call the server?
+
+With `exports.tapi('endpoint_name', data, callback)`. Add `ERROR` after the name to show an error message to the user by itself:
+
+```js
+exports.tapi('tasks_save ERROR', model, function(response) {
+	exports.refresh();
+});
+```
+
+The name is the endpoint of the route: `+tasks_save`.
+
+## What does ? mean in a path?
+
+"This plugin". `?.items` is the data `items` of the plugin, and `?/create` is its function `exports.create`:
+
+```html
+<ui-bind path="?.items" config="template"></ui-bind>
+<button class="exec" data-exec="?/create">@(Create)</button>
+```
+
+## What is CLASS?
+
+A word that is replaced with a class unique to the plugin. Use it in the class of the root and in the selectors of the style, so the CSS of one screen cannot reach another:
+
+```html
+<style>
+	.CLASS .task { padding: 10px 0; border-bottom: 1px solid #E8E8E8; }
+</style>
+
+<ui-plugin class="CLASS">
+</ui-plugin>
+```
+
+## How do I handle the click of a button?
+
+With the class `exec` and `data-exec`. Do not add `onclick` or `addEventListener`:
+
+```html
+<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
+<div class="exec" data-exec="?/edit" data-id="{{ m.id }}">{{ m.name }}</div>
+```
+
+```js
+exports.edit = function(el) {
+	var id = ATTRD(el);
+};
+```
+
+`ATTRD(el)` reads the `data-id` of the element.
+
+## How do I set and read the data of a screen?
+
+`exports.set('items', value)` sets it and the bindings draw it again. `exports.model` is the model of the plugin:
+
+```js
+exports.tapi('tasks', function(response) {
+	exports.set('items', response);
+});
+```
+
+## How do I load the jComponent 20 library in a page?
+
+From the CDN, once per document, before the components:
+
+```html
+<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+<script src="@{REPO.ui}"></script>
+```
+
+`@{REPO.ui}` is the file of components that `COMPONENTATOR()` made.
+
+## How do I load components?
+
+With `COMPONENTATOR()` in `definitions/init.js`: it downloads the components you name as one file, and the layout loads it with `@{REPO.ui}`.
+
+```js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,errorhandler,locale,input,validate,miniform,notify,approve', true);
+});
+```
+
+List only the components the application uses.
+
+## How do I put a component on a screen?
+
+With `<ui-component>`: its name, the path of its data and its configuration.
+
+```html
+<ui-component name="input" path="?.url" config="required:1;placeholder:@(Relative URL address)">@(URL)</ui-component>
+```
+
+## Where do I find a component?
+
+In Componentator, the catalogue of jComponent components: <https://componentator.com>. Look for an existing component before writing a piece of interface by hand. `input` is the one component for every field of a form: its `type` chooses the kind.
+
+## How do I make a form?
+
+A second file, `public/form.html`, with a `miniform`, its inputs, a `validate` that enables the submit button, and a `submit` function:
+
+```html
+<ui-component name="miniform" path="common.form" config="if:CLASS;title:@(Redirect);reload:?/reload;submit:?/submit;width:400" class="hidden" plugin="CLASS">
+	<div class="padding">
+		<ui-component name="input" path="?.url" config="required:1">@(URL)</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+```
+
+## How do I open a form?
+
+The screen loads it with an `importer`, gives it a model and shows it:
+
+```html
+<ui-component name="importer" path="common.form" config="if:formredirect;url:/~ID~/form.html"></ui-component>
+```
+
+```js
+exports.create = function() {
+	SET('formredirect @default', {});
+	SET('*form', 'formredirect');
+};
+```
+
+## How does a form save and refresh the screen that opened it?
+
+Its `submit` calls the server, hides the form after a good answer and refreshes the caller:
+
+```js
+PLUGIN(function(exports) {
+
+	var caller;
+
+	exports.reload = function() {
+		caller = exports.caller;
+	};
+
+	exports.submit = function(hide) {
+		var model = exports.form;
+		exports.tapi('redirects_save ERROR', model, function() {
+			hide();
+			caller.exec('refresh');
+		});
+	};
+
+});
+```
+
+## How do I ask for a confirmation before removing?
+
+With the component `approve`:
+
+```js
+SETTER('approve/show', '@(Are you sure you want to remove it?)', ':ti ti-trash: @(Remove)', function() {
+	exports.tapi('redirects_remove/ ERROR', { id: id }, function() {
+		exports.refresh();
+	});
+});
+```
+
+## How do I name plugins, components and their functions?
+
+In lowercase. Keep the names `exports`, `self`, `config` and `cls` as they are:
+
+```js
+// good
+PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
+```
+
+## How do I write the CSS of an application?
+
+One rule per line, texts in `'`, no vendor prefixes (`/*auto*/` at the top of the file adds them), no LESS and no SASS:
+
+```css
+/*auto*/
+
+.class { key1: value; key2: value; key3: value; }
+.class > div { key1: value; key2: value; }
+```
+
+The style of one screen goes at the top of its HTML, scoped with `CLASS`. What is shared goes in `public/css/default.css`.
+
+## Which icons do I use?
+
+Total Icons: the class `ti ti-name`, as `ti ti-check-circle` or `ti ti-trash`.
+
+```html
+<i class="ti ti-plus-circle"></i>
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sql.md
+
+# SQL scripts for PostgreSQL: questions and answers
+
+## Where does the schema of the database go?
+
+In `database.sql`: the whole current schema, so a new installation needs one file. A change to an installed application goes in a separate script next to it, named with its date: `database-2024-10-30.sql`.
+
+## How do I name tables, views and functions?
+
+All lowercase, singular, with a prefix:
+
+| Object | Prefix | Example |
+|---|---|---|
+| table | `tbl_` | `tbl_user`, `tbl_ticket_time` |
+| code list | `cl_` | `cl_status` |
+| view | `view_` | `view_ticket` |
+| stored procedure | `sp_` | `sp_user` |
+| function | `fn_` | `fn_user` |
+
+## How do I name columns?
+
+- `id` is the primary key, a `text` filled in the code with `UID()`.
+- A foreign key is the table plus `id`: `userid`, `folderid`.
+- Dates start with `dt`: `dtcreated`, `dtupdated`, `dtremoved`.
+- Booleans start with `is`: `isremoved`, `ispublic`.
+- The same name for the same thing in every table: `name`, `body`, `search`, `sortindex`, `icon`, `color`.
+
+## Which column types do I use?
+
+`text`, not `varchar`. Lists are `_text`, structured data `json` or `jsonb`, small numbers `int2`, dates `timestamp`, flags `bool`.
+
+## How do I write a table?
+
+Identifiers first, then the main fields, numbers, booleans, and dates last. Then the constraints and the primary key:
+
+```sql
+CREATE TABLE "public"."tbl_ticket" (
+	"id" text NOT NULL,
+	"folderid" text,
+	"name" text,
+	"worked" int4 DEFAULT 0,
+	"isremoved" bool DEFAULT false,
+	"dtupdated" timestamp,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	CONSTRAINT "tbl_ticket_folderid_fkey" FOREIGN KEY ("folderid") REFERENCES "public"."tbl_folder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+```
+
+## Who fills the id and the dates of a row?
+
+The action, not the database: `model.id = UID()` and `model.dtcreated = NOW` before the insert. The column `dtcreated` also has the default `timezone('utc'::text, now())`.
+
+## What is a code list?
+
+A `cl_` table with the choices of the application (statuses, types). It rarely changes and is read once into memory:
+
+```sql
+CREATE TABLE "public"."cl_status" (
+	"id" text NOT NULL,
+	"name" text,
+	"icon" text,
+	"color" text,
+	"sortindex" int2 DEFAULT 0,
+	PRIMARY KEY ("id")
+);
+```
+
+## How do I order a SQL script?
+
+Tables, then views, then functions and stored procedures, then indexes, each part under a comment (`-- TABLES`, `-- VIEWS`, `-- INDEXES`). Wrap the script in `BEGIN;` and `COMMIT;` so that it applies completely or not at all.
+
+## How do I name indexes and foreign keys?
+
+An index is `<table>_idx<what>`: `tbl_ticket_idxstatus`. A foreign key is `<table>_<column>_fkey`: `tbl_ticket_folderid_fkey`.
+
+## Which columns record who changed a row?
+
+`createdby`, `updatedby` and `removedby` as `jsonb`, with `dtcreated`, `dtupdated` and `dtremoved`. They are a convention of the project: the code fills them. Without a logged-in user leave them empty instead of inventing one.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/style-and-tests.md
+
+# Style, tests and versions: questions and answers
+
+## Which JavaScript style does Total.js code use?
+
+ES5 first, and the functions of the framework before any other: `var` and `function`, no arrow functions, no template literals, tabs, semicolons and `'` for texts.
+
+```js
+var item = items.findItem('id', id);
+var text = 'Hello {0}'.format(name);
+```
+
+`const` or `let` only where the code needs it, as a constant at the top of a file. `async` and `await` where the code waits for the database.
+
+## How do I read a file without require('fs')?
+
+The modules of Node.js are in `Total`: `Total.Fs`, `Total.Path`, `Total.Crypto`, `Total.Os`, `Total.Child`. Application code does not `require()` them:
+
+```js
+var text = Total.Fs.readFileSync(Total.Path.join(__dirname, 'config'), 'utf8');
+```
+
+## How do I put values into a text?
+
+With `format` of the text, not with a template literal:
+
+```js
+var url = '/download/{0}.{1}'.format(item.id, item.ext);
+```
+
+## How do I find an item of an array by a field?
+
+With `findItem`, and `findIndex` for its position:
+
+```js
+var item = MAIN.products.findItem('id', $.params.id);
+var index = MAIN.monitor.sites.findIndex('id', $.params.id);
+```
+
+## How do I get the current date in an action?
+
+`NOW`: the framework keeps it. Use it for `dtcreated` and `dtupdated`:
+
+```js
+model.dtcreated = NOW;
+```
+
+## How do I test an application?
+
+With the test library of the framework, in a `test.js`:
+
+```js
+require('total5');
+require('total5/test');
+
+Test.push('Contract', function(next) {
+	var value = '<strong>'.encode();
+	Test.print('encodes HTML-like text', value === '&lt;strong&gt;' ? null : value);
+	next();
+});
+
+Test.run();
+```
+
+`Test.print(label, error)` fails when the second argument is not empty. Run it with `node test.js`.
+
+## How should the tests start the application?
+
+They copy it to a disposable folder and start it there with `node index.js <port>`, so the data of the application is never touched. They wait until the application answers before the first check, and they check the errors too: without the token, with a wrong field, with an id that does not exist.
+
+## Which database do the tests use?
+
+A clean, disposable database only for tests, never the one of the application. Before anything that deletes, the test checks the name of the database it is connected to and stops if it is not the expected one.
+
+## What does Total.js 5 0.0.20 add?
+
+Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. It is the beta: use one of them only in a project that depends on `total5@beta` or on 0.0.20 and later, and say so.
+
+## How do I expose an action as an MCP tool?
+
+In Total.js 5 0.0.20 and later: `$mcp : true` in `config` opens the route `POST /$mcp/`, and every action with `mcp: true` is a tool there.
+
+```js
+NEWACTION('Items|create', {
+	name: 'Create an item',
+	summary: 'Creates an item and returns it',
+	mcp: true,
+	input: '*name:String // The name of the item',
+	action: function($, model) {
+		$.callback({ name: model.name });
+	}
+});
+```
+
+The tool is named `Items_create`: the name of a tool cannot have the pipe.
+
+## How do I cache the answer of an action?
+
+In Total.js 5 0.0.20 and later, with `cache`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	cache: { query: true, expire: '1 minute' },
+	action: function($) {
+		$.callback(items);
+	}
+});
+```
+
+`query: true` keeps one answer for each different query string.
+
+## How do I answer with CSV or another content type?
+
+In Total.js 5 0.0.20 and later, with `$.content(value, type)`:
+
+```js
+ROUTE('GET /export/', function($) {
+	$.content('id;name\n1;Anna\n', 'text/csv');
+});
+```
+
+## How do I replace an action in a test?
+
+In Total.js 5 0.0.20 and later, with `Test.fake(name, definition)`; `Test.restore()` puts the real actions back:
+
+```js
+Test.fake('Mail|send', {
+	name: 'Fake',
+	action: function($) {
+		$.callback({ sent: 'fake' });
+	}
+});
+```
+
+## Who created Total.js?
+
+Peter Širka. Total.js is an open-source framework for Node.js; its website is <https://www.totaljs.com>.
+
+## What do I do when I am not sure that a function exists?
+
+Say so and check it in the source of the framework or in its documentation instead of guessing. A function that is invented looks right and fails when the application runs.
+
+## Is Total.js 5 code the same as Total.js 4?
+
+No. Total.js 5 (`total5`) is the current framework and Total.js 4 (`total4`) is the previous one. Do not mix their code: an example for one may not work in the other.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md
+
+# La aplicación: preguntas y respuestas
+
+## ¿Qué carpetas tiene una aplicación Total.js 5?
+
+El framework carga cada carpeta por su nombre:
+
+```
+index.js            the official start script
+config              settings, one "key : value" per line
+package.json        "total5" is the dependency
+controllers/        routes
+definitions/        auth.js, init.js, func.js, db.js: loaded at start
+schemas/            actions
+modules/            integrations with other systems
+plugins/<name>/     a feature with its server part and its screen
+views/              layout and pages
+public/             static files for the browser
+```
+
+Una API pequeña solo necesita `index.js`, `config`, `package.json`, `controllers/`, `schemas/` y `definitions/`.
+
+## ¿Qué va en index.js?
+
+El script de arranque oficial de Total.js 5, entero y sin cambios: `helpers/index.js` del framework. Su núcleo es este, y las opciones comentadas del archivo oficial se quedan en él:
+
+```js
+require('total5');
+
+const options = {};
+
+options.release = process.argv.includes('--release');
+options.servicemode = process.argv.includes('--service') || process.argv.includes('--servicemode');
+
+Total.run(options);
+```
+
+No escribas uno más corto a mano ni le cambies el estilo: es el único archivo que conserva su propio estilo.
+
+## ¿Cómo arranco una aplicación Total.js 5?
+
+```
+npm install
+node index.js 8000
+```
+
+El número es el puerto. Añade `--release` para el modo release: `node index.js 8000 --release`.
+
+## ¿Qué necesita package.json?
+
+Solo `total5`. El framework lleva dentro el servidor, las rutas, las plantillas, el constructor de consultas y las pruebas:
+
+```json
+{
+	"name": "contacts",
+	"version": "1.0.0",
+	"private": true,
+	"dependencies": {
+		"total5": "latest"
+	}
+}
+```
+
+## ¿Cómo se escribe el archivo config?
+
+Es un archivo de texto llamado `config`, sin extensión, con un `clave : valor` por línea. Una línea que empieza por `//` es un comentario:
+
+```
+name              : Contacts
+
+// The requests of the API must send this value in the header "x-token"
+token             : change-this-token
+```
+
+El código lee un valor con `CONF.token`. No es JSON y no es un archivo `.env`.
+
+## ¿Dónde leo un ajuste en el código?
+
+En `CONF`, con la clave del archivo `config`:
+
+```js
+if (token === CONF.token)
+	$.success(BOT);
+```
+
+Los ajustes que son del framework empiezan por `$`, como `$api`. Las claves y las direcciones de las bases de datos se quedan fuera del repositorio.
+
+## ¿Dónde van las funciones de ayuda compartidas?
+
+En `definitions/func.js`, como funciones de `FUNC`, con el nombre en minúsculas y sin separadores:
+
+```js
+// definitions/func.js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+Las acciones y los controladores llaman a `FUNC.refreshtags()`.
+
+## ¿Dónde guardo estado en memoria?
+
+En `MAIN`, el objeto de la aplicación, que se rellena en un archivo de `definitions/`:
+
+```js
+// definitions/db.js
+MAIN.products = [
+	{ id: 'bread', name: 'Sourdough bread', price: 4.5 }
+];
+```
+
+`REPO` guarda consultas en caché que la interfaz también necesita. No crees globales nuevas.
+
+## ¿Dónde va el trabajo del arranque?
+
+En `ON('ready', ...)` de `definitions/init.js`: se ejecuta cuando la aplicación está en marcha.
+
+```js
+// definitions/init.js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,locale,input,form,validate', true);
+});
+```
+
+## ¿Cómo nombro los archivos y las carpetas?
+
+Todo en minúsculas, las palabras separadas por `-`, nunca `_`: `search-results.html`. Los archivos estáticos van por tipo en `public/`: `/img/`, `/js/`, `/css/`, `/fonts/`. Un plugin por funcionalidad, con su nombre: `plugins/redirects`.
+
+## ¿Qué es un módulo y cómo lo uso?
+
+Un archivo de `modules/` es una integración con otro sistema o un servicio propio. El framework lo carga y registra lo que exporta en `MODS`, con el nombre del archivo:
+
+```js
+var data = MODS.visitors.today();
+```
+
+No cargues un módulo de la aplicación con `require(PATH.root('modules/...'))`. Un nombre con guion usa corchetes: `MODS['knowledge-source']`.
+
+## ¿Una aplicación nueva debe usar plugins?
+
+Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hace con plugins: cada funcionalidad es una carpeta `plugins/<nombre>/` con sus rutas, sus acciones y su pantalla. Un servicio pequeño con una o dos colecciones no los necesita: bastan `controllers/` y `schemas/`.
+
+## ¿Necesito Express u otros paquetes?
+
+No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. El único paquete más que añade una aplicación corriente es el adaptador de su base de datos, como `querybuilderpg` para PostgreSQL.
+
+## ¿Qué versión de Total.js 5 instalo?
+
+`"total5": "latest"` en `package.json` es la versión estable. La beta es `npm install total5@beta`. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/actions.md
+
+# Acciones: preguntas y respuestas
+
+## ¿Qué es una acción?
+
+Una unidad de lógica del servidor: un nombre, la entrada que acepta, quién puede llamarla y una función. Se define con `NEWACTION` en un archivo de `schemas/`:
+
+```js
+NEWACTION('Contacts|create', {
+	name: 'Create a contact',
+	input: '*name:String, email:Email, phone:Phone',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_contact', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+## ¿Cómo nombro una acción?
+
+`Colección|verbo`: la colección en plural con mayúscula inicial, una barra vertical y el verbo. `Tickets|list`, `Groups|create`, `Users|remove`. Nunca `/` entre las partes.
+
+```js
+NEWACTION('Tickets|list', {
+	name: 'List of tickets',
+	action: function($) {
+		DATA.find('nosql/tbl_ticket').callback($);
+	}
+});
+```
+
+## ¿Qué verbos usan las acciones?
+
+| Verbo | Qué hace |
+|---|---|
+| `list` | devuelve una colección |
+| `read` | devuelve un registro |
+| `create` | inserta y responde con el id nuevo |
+| `update` | modifica un registro |
+| `save` | crea o actualiza según el `id` |
+| `remove` | borra un registro |
+
+## ¿Dónde pongo las acciones?
+
+En `schemas/`, un archivo por colección: `schemas/contacts.js`. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+
+## ¿Cómo declaro la entrada de una acción?
+
+Con un texto en `input`: los campos separados por comas, `*` delante de un campo obligatorio y el tipo después de `:`.
+
+```js
+input: '*name:String, email:Email, phone:Phone, isactive:Boolean, tags:[String]'
+```
+
+El cuerpo llega validado como segundo argumento de la función: `action: function($, model)`.
+
+## ¿Qué tipos puede tener un campo?
+
+`String`, `String(100)` con una longitud máxima, `Number`, `Boolean`, `Date`, `UID`, `Email`, `Phone`, `URL`, `Color`, `Icon`, y una lista con corchetes: `[String]`. Un valor incorrecto responde 400 con el nombre del campo.
+
+## ¿Cómo leo el id de la dirección?
+
+Decláralo en `params` y léelo en `$.params`:
+
+```js
+NEWACTION('Contacts|read', {
+	name: 'Read a contact',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+La ruta lleva `{id}` en su dirección: `ROUTE('+API ? -contacts_read/{id} --> Contacts|read')`.
+
+## ¿Cómo leo la query string en una acción?
+
+Declárala en `query` y léela en `$.query`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	action: function($) {
+		$.callback($.query.search);
+	}
+});
+```
+
+## ¿Cómo responde una acción?
+
+| Llamada | Uso |
+|---|---|
+| `$.callback(data)` | devuelve datos: un registro, una lista |
+| `$.success()` o `$.success(id)` | la respuesta de éxito, con un valor si lo pasas |
+| `$.invalid(404)` | un error con ese estado HTTP |
+| `$.invalid('@(Text for the user)')` | un error de validación o de negocio |
+
+Responde una sola vez en cada camino, y pon `return` después de una respuesta anticipada.
+
+## ¿Cómo respondo que un registro no existe?
+
+`$.invalid(404)`. Con `DATA`, `.error(404)` lo hace cuando la consulta no encuentra nada:
+
+```js
+if (!item) {
+	$.invalid(404);
+	return;
+}
+```
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## ¿Cómo respondo con un mensaje de error para el usuario?
+
+`$.invalid('@(texto)')`. El `@(...)` marca el texto para traducirlo; el texto se escribe en inglés, que es la clave:
+
+```js
+if (MAIN.monitor.sites.findItem('url', model.url)) {
+	$.invalid('@(The website is already in the list)');
+	return;
+}
+```
+
+## ¿Cómo restrinjo una acción a algunos usuarios?
+
+Con `permissions` o `user: true` en la acción. El `+` de la ruta pide un usuario con sesión; la comprobación de la acción también protege una llamada que no viene de esa ruta.
+
+```js
+NEWACTION('Redirects|save', {
+	name: 'Save redirect',
+	input: 'id,*url,*target,permanent:Boolean',
+	permissions: 'redirects,admin',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## ¿Cómo reutilizo los campos de una entrada?
+
+Con un esquema con nombre y `@`:
+
+```js
+NEWSCHEMA('@Group', '*name,color:Color,icon:Icon,reference,permissions:[String]');
+
+NEWACTION('Groups|create', {
+	name: 'Create group',
+	input: '@Group',
+	action: function($, model) {
+		$.success();
+	}
+});
+```
+
+## ¿Cómo llamo a una acción desde otra?
+
+`$.action('Nombre').promise()` dentro de una acción, y `ACTION('Nombre', model)` fuera de una petición:
+
+```js
+var types = await $.action('Items|types').promise();
+```
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+## ¿Por qué mi acción es async?
+
+Porque espera a la base de datos. Pasa `$` a `.promise($)`: así un error de la consulta responde la petición por sí solo.
+
+```js
+action: async function($) {
+	var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+	$.callback(item);
+}
+```
+
+## ¿Toda acción necesita un nombre?
+
+Sí: `name` es un texto corto para personas ("Save redirect"). Lo usan los registros y las herramientas. El primer argumento de `NEWACTION` es su identificador (`Redirects|save`).
+
+## ¿Por qué mi lista obligatoria rechaza una lista vacía?
+
+Un campo `*tags:[String]` es obligatorio, y una lista vacía cuenta como ausente. Si una lista vacía es válida, quita el `*`: `tags:[String]`.
+
+## ¿Por qué mi Boolean es false cuando no se envió el campo?
+
+Un `Boolean` ausente es `false`. Cuando la ausencia debe significar «sin cambios», declara la acción con `partial: true`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/routes.md
+
+# Rutas y autenticación: preguntas y respuestas
+
+## ¿Dónde van las rutas?
+
+En `exports.install` de un archivo de `controllers/`, o del `index.js` de un plugin. Una línea por ruta:
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    -contacts                --> Contacts|list');
+	ROUTE('+API    ?    -contacts_read/{id}      --> Contacts|read');
+	ROUTE('+API    ?    +contacts_create         --> Contacts|create');
+	ROUTE('+API    ?    +contacts_update/{id}    --> Contacts|update');
+	ROUTE('+API    ?    -contacts_remove/{id}    --> Contacts|remove');
+};
+```
+
+## ¿Cómo leo una ruta de la API?
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+- El primer `+` es «solo para usuarios con sesión». Sin él la ruta es pública.
+- `?` es la dirección de la API: `/api/` por defecto.
+- `+tickets_create` es el nombre del endpoint; su `+` dice que la petición lleva cuerpo, y `-` que no lo lleva.
+- Después de `-->` va la acción.
+- El número es el tamaño máximo del cuerpo en bytes.
+
+## ¿Cómo llama un cliente a una ruta de la API?
+
+Con un `POST` a la dirección de la API (`/api/`), con el nombre del endpoint en `schema` y el cuerpo en `data`:
+
+```
+POST /api/
+x-token: change-this-token
+content-type: application/json
+
+{ "schema": "contacts_create", "data": { "name": "Anna" } }
+```
+
+Un endpoint con parámetro lo lleva en el nombre: `"schema": "contacts_read/ID"`.
+
+## ¿Cómo nombro un endpoint?
+
+En minúsculas con `_`: `tickets_create`, `users_remove/{id}`. Usa `-` delante del nombre para leer y borrar, y `+` para crear y actualizar. `{id}` rellena `$.params.id`.
+
+## ¿Cómo hago una ruta que devuelve una página?
+
+Una ruta `GET` con una función que recibe `$`:
+
+```js
+exports.install = function() {
+	ROUTE('GET /', home);
+	ROUTE('GET /products/{id}/', product);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+## ¿Cómo respondo JSON desde la función de una ruta?
+
+Con `$.json(data)`. En la función de una ruta `$.callback(err, value)` recibe primero el error, así que no es la llamada de una acción:
+
+```js
+ROUTE('GET /status/', function($) {
+	$.json({ ok: true });
+});
+```
+
+## ¿Cómo hago una ruta pública?
+
+Quita el `+` de delante del método. `ROUTE('POST /notify/', notify)` es pública; `ROUTE('+GET /setup/', setup)` es solo para usuarios con sesión.
+
+## ¿Cómo sabe la aplicación de quién es la petición?
+
+Con un único `AUTH` en `definitions/auth.js`. Llama a `$.success(user)` o a `$.invalid()`:
+
+```js
+const BOT = { id: 'bot', name: 'Bot', sa: true };
+
+AUTH(function($) {
+	var token = $.headers['x-token'];
+	if (token && token === CONF.token)
+		$.success(BOT);
+	else
+		$.invalid();
+});
+```
+
+Toda ruta con `+` necesita entonces ese usuario.
+
+## ¿Cómo protejo una API con un token?
+
+Pon el token en `config`, comprueba la cabecera en `AUTH` y marca las rutas con `+`:
+
+```js
+AUTH(function($) {
+
+	var token = $.headers['x-token'];
+
+	if (!token) {
+		$.invalid();
+		return;
+	}
+
+	if (BLOCKED($, 10)) {
+		$.invalid();
+		return;
+	}
+
+	if (token === CONF.token) {
+		BLOCKED($, -1);
+		$.success(BOT);
+	} else
+		$.invalid();
+});
+```
+
+## ¿Cómo limito los intentos de acceso fallidos?
+
+Con `BLOCKED($, limit)`: cuenta los intentos de cada cliente y devuelve `true` cuando se pasa el límite. `BLOCKED($, -1)` los olvida después de un acceso correcto.
+
+```js
+if (BLOCKED($, 10)) {
+	$.invalid();
+	return;
+}
+```
+
+## ¿Cómo es el objeto del usuario?
+
+Un objeto pequeño: `{ id, name, sa, permissions }`. `sa` marca a un superadministrador. `AUTH` lo entrega con `$.success(user)` y las acciones lo leen en `$.user`.
+
+## ¿Cómo doy a una ruta un límite de cuerpo mayor?
+
+Con el tamaño en bytes como segundo argumento de `ROUTE`:
+
+```js
+ROUTE('+API    ?    +tickets_create    --> Tickets|create', 1024 * 10);
+```
+
+Una subida de archivos dice su tamaño en la propia ruta: `<5MB`.
+
+## ¿Puede una acción declarar su propia ruta?
+
+Sí: `route: '+API ?'` en `NEWACTION` registra el endpoint. En una aplicación nueva escribe las rutas en `controllers/` o en el `index.js` del plugin, para que todas se lean en un sitio, y no declares la misma ruta dos veces.
+
+## ¿Es seguro $.ip para un límite de seguridad?
+
+No. `$.ip` es el primer valor de la cabecera `X-Forwarded-For`, que un cliente puede escribir. Para un límite de seguridad usa `$.req.socket.remoteAddress`, o fíate de la cabecera solo detrás de tu propio proxy.
+
+## ¿Cómo respondo 404 desde una página?
+
+Con `$.fallback(404)`: es la página 404 del framework, como para una dirección sin ruta.
+
+```js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/data.md
+
+# Datos con DATA: preguntas y respuestas
+
+## ¿Dónde guardo los registros de una aplicación nueva?
+
+En la base de datos NoSQL embebida, a través de `DATA`, con el prefijo `nosql/` delante del nombre de la tabla. No necesita servidor, ni definición, ni dependencia:
+
+```js
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+```
+
+El archivo es `databases/tbl_contact.nosql`.
+
+## ¿Cómo listo registros?
+
+```js
+NEWACTION('Contacts|list', {
+	name: 'List of contacts',
+	action: async function($) {
+		var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+		$.callback(items);
+	}
+});
+```
+
+## ¿Cómo leo un registro?
+
+`DATA.read()` con `.id()`. `.error(404)` responde 404 cuando no existe:
+
+```js
+var item = await DATA.read('nosql/tbl_contact').id($.params.id).error(404).promise($);
+```
+
+## ¿Cómo inserto un registro?
+
+Rellena el id con `UID()` y la fecha con `NOW` en la acción:
+
+```js
+model.id = UID();
+model.dtcreated = NOW;
+await DATA.insert('nosql/tbl_contact', model).promise($);
+$.success(model.id);
+```
+
+## ¿Cómo actualizo un registro?
+
+```js
+model.dtupdated = NOW;
+await DATA.modify('nosql/tbl_contact', model).id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## ¿Cómo borro un registro?
+
+```js
+await DATA.remove('nosql/tbl_contact').id($.params.id).error(404).promise($);
+$.success($.params.id);
+```
+
+## ¿Cómo genero un id único?
+
+`UID()`. Es una función del framework: sin paquete y sin `require`.
+
+```js
+model.id = UID();
+```
+
+## ¿Cómo filtro una consulta?
+
+Con condiciones en el constructor: `where(field, value)`, `in(field, array)`, `notin(field, array)`, `search(field, keyword)`.
+
+```js
+var items = await DATA.find('tbl_tag').fields('id,search').where('folderid', id).promise($);
+```
+
+## ¿Cómo elijo los campos que devuelve una consulta?
+
+`.fields('a,b')`. Nómbralos; no lo leas todo:
+
+```js
+var item = await DATA.read('tbl_user').fields('id,name').id(params.id).error('@(User not found)').promise($);
+```
+
+## ¿Cómo hago una lista con paginación, orden y filtros desde la query string?
+
+Con `autoquery`: lee `?page=`, `limit`, `sort` y los campos que permitas, con un orden por defecto y un tamaño máximo de página.
+
+```js
+NEWACTION('Groups|list', {
+	name: 'List of groups',
+	action: function($) {
+		DATA.find('op.view_group').autoquery($.query, 'id:UID,name,color,icon,users:Number,dtcreated:Date,dtupdated:Date', 'dtcreated_desc', 100).callback($);
+	}
+});
+```
+
+## ¿Cómo conecto la aplicación a PostgreSQL?
+
+Añade el paquete `querybuilderpg`, pon la dirección de la base de datos en `config` y escribe una definición:
+
+```js
+// definitions/db.js
+require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+```
+
+Las consultas son las mismas llamadas a `DATA`, con el nombre de la tabla sin prefijo: `DATA.find('tbl_contact')`.
+
+## ¿Cómo paso de la base de datos embebida a PostgreSQL?
+
+Quita el prefijo `nosql/` de los nombres de las tablas, añade la definición de `querybuilderpg` y crea las tablas con `database.sql`. Las consultas no cambian:
+
+```js
+// before
+var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
+
+// after
+var items = await DATA.find('tbl_contact').sort('name').promise($);
+```
+
+## ¿Cómo ejecuto SQL directo?
+
+`DATA.query()` con parámetros:
+
+```js
+await DATA.query('UPDATE tbl_ticket SET worked=worked+1 WHERE id=$1', [id]).promise($);
+```
+
+Prefiere los parámetros (`$1`). Cuando un valor tiene que ir en el texto, escápalo con `PG_ESCAPE(value)`. Nunca concatenes lo que envió un usuario.
+
+## ¿Cómo respondo con éxito después de escribir, sin async?
+
+`.callback($.done(id))` responde con el éxito de la aplicación y ese valor:
+
+```js
+DATA.remove('tbl_tag').id($.params.id).error(404).callback($.done($.params.id));
+```
+
+`.callback($)` responde en cambio con el resultado directo de la consulta.
+
+## ¿Cómo uso DATA fuera de una petición?
+
+`.promise()` sin `$`, con su propio control de errores, o un callback con el error primero:
+
+```js
+FUNC.refreshtags = async function() {
+	REPO.tags = await DATA.find('tbl_tag').fields('id,search').promise();
+};
+```
+
+## ¿Cómo busco un texto en varios campos?
+
+Con `or` y `search`:
+
+```js
+builder.or(function(b) {
+	b.search('name', text);
+	b.search('email', text);
+});
+```
+
+## ¿Tengo que configurar QueryBuilder para la base de datos embebida?
+
+No. QueryBuilder viene cargado con Total.js 5 y el prefijo `nosql/` envía la consulta a la base de datos embebida. Solo un servidor de base de datos necesita su adaptador, como `querybuilderpg`.
+
+## ¿Cómo nombro las tablas y los campos en la base de datos embebida?
+
+Como en SQL desde el primer día, para que la aplicación pueda pasar después a PostgreSQL: tablas `tbl_contact`, fechas `dtcreated` y `dtupdated`, indicadores `isdone`, una clave ajena como la tabla más `id` (`userid`).
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/storage.md
+
+# Almacenamiento y archivos: preguntas y respuestas
+
+## ¿Qué almacenamiento elijo para una aplicación nueva?
+
+Según lo que sean los datos:
+
+| Los datos | Usa |
+|---|---|
+| Los registros de la aplicación (contactos, tareas, pedidos) | `DATA` sobre la base de datos embebida: `DATA.find('nosql/tbl_contact')` |
+| Un almacén embebido que nunca será SQL (un registro, una cola) | `NOSQL('name')` |
+| Un objeto pequeño que se guarda solo (ajustes, contadores) | `MEMORIZE('name')` |
+| Archivos | `FILESTORAGE('name')` |
+
+## ¿Cómo conservo un objeto pequeño entre reinicios sin base de datos?
+
+Con `MEMORIZE`: el framework guarda el objeto en un archivo por sí solo.
+
+```js
+// definitions/db.js
+MAIN.monitor = MEMORIZE('monitor', 1000);
+
+if (!MAIN.monitor.sites)
+	MAIN.monitor.sites = [];
+```
+
+El segundo argumento es el retraso del guardado en milisegundos. Después de un cambio llama a `MAIN.monitor.save()`.
+
+## ¿Cómo guardo un cambio de un objeto MEMORIZE?
+
+Cambia el objeto y llama a su `save()`:
+
+```js
+MAIN.monitor.sites.push(model);
+MAIN.monitor.save();
+$.success(model.id);
+```
+
+## ¿Cuándo uso NOSQL() directamente?
+
+Para un almacén embebido que nunca será SQL: un registro, una cola, una caché en disco. Los registros de la aplicación van por `DATA` con el prefijo `nosql/`, que lee el mismo archivo y deja que la aplicación pase después a PostgreSQL.
+
+```js
+NOSQL('logs').insert({ id: UID(), message: 'Started', dtcreated: NOW });
+```
+
+## ¿Cómo recibo un archivo subido?
+
+Una ruta `POST` con `@upload` y el tamaño máximo, y una acción que lee `$.files`:
+
+```js
+ROUTE('+POST   /upload/    @upload <5MB    --> Files|upload');
+```
+
+```js
+NEWACTION('Files|upload', {
+	name: 'Upload files',
+	action: async function($) {
+
+		if (!$.files.length) {
+			$.invalid('@(No file was sent)');
+			return;
+		}
+
+		var response = [];
+
+		for (var i = 0; i < $.files.length; i++) {
+			var meta = await $.files[i].fs('files', UID());
+			response.push(meta);
+		}
+
+		$.callback(response);
+	}
+});
+```
+
+## ¿Dónde se guardan los archivos subidos?
+
+En un `FILESTORAGE`. `$.files[i].fs('files', UID())` mueve el archivo subido al almacén llamado `files` con un id nuevo, y devuelve sus metadatos. La carpeta es `databases/fs-files`.
+
+## ¿Cómo listo los archivos de un almacén?
+
+```js
+var items = await FILESTORAGE('files').browse().promise($);
+```
+
+Cada elemento tiene su `id`, su nombre, su extensión (`ext`) y su tamaño.
+
+## ¿Cómo envío al navegador un archivo guardado?
+
+Con una ruta `FILE` y el `http()` del almacén:
+
+```js
+ROUTE('FILE /download/*.*', download);
+
+function download($) {
+	var name = $.split[1];
+	var opt = {};
+	opt.id = name.substring(0, name.lastIndexOf('.'));
+	opt.download = $.query.download === '1';
+	FILESTORAGE('files').http($, opt);
+}
+```
+
+## ¿Cómo borro un archivo guardado?
+
+```js
+FILESTORAGE('files').remove($.params.id, function(err) {
+	if (err)
+		$.invalid(404);
+	else
+		$.success($.params.id);
+});
+```
+
+## ¿Qué pasa cuando una subida supera el límite de la ruta?
+
+El framework rechaza la petición con el estado 431 y la acción no se ejecuta. El límite está en la ruta: `@upload <5MB`.
+
+## ¿Debe una aplicación existente cambiar su almacenamiento?
+
+No. Una funcionalidad conserva el modelo que ya tiene: metadatos en memoria guardados en un archivo, SQL a través de `DATA`, o un objeto `MEMORIZE`. No cambies el almacenamiento durante una limpieza.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/services.md
+
+# Trabajo programado, llamadas HTTP y WebSocket: preguntas y respuestas
+
+## ¿Cómo ejecuto algo cada minuto?
+
+El framework emite `service` cada minuto, con el número de minutos desde el arranque. Sin temporizador y sin paquete:
+
+```js
+// definitions/init.js
+ON('service', function(counter) {
+	if (counter % 5 === 0)
+		ACTION('Sites|check').callback(ERROR('Sites|check'));
+});
+```
+
+`counter % 5 === 0` es cada cinco minutos.
+
+## ¿Cómo ejecuto algo a una hora del día?
+
+Con `CRON` y los cinco campos de una línea de cron:
+
+```js
+// Every day at midnight
+CRON('0 0 * * *', function() {
+	MAIN.monitor.save();
+});
+```
+
+En Total.js 5 0.0.19 un paso (`*/5`) se ejecuta cada minuto; está corregido en 0.0.20. Para «cada N minutos» usa `ON('service')`.
+
+## ¿Debo usar setInterval para trabajo repetido?
+
+No. Usa `ON('service', function(counter) { ... })`: un único oyente para la aplicación, con la cuenta de minutos, en lugar de un temporizador propio.
+
+## ¿Cómo llamo a otro servicio HTTP?
+
+Con `RESTBuilder`, que está en el framework:
+
+```js
+var response = await RESTBuilder.GET(CONF.serviceurl).promise($);
+```
+
+Comprueba el estado y la forma de la respuesta antes de responder con éxito.
+
+## ¿Cómo envío un POST con JSON a otro servicio?
+
+```js
+RESTBuilder.POST(CONF.serviceurl, { name: 'Anna' }).header('x-token', CONF.servicetoken).callback(function(err, response) {
+	if (err)
+		$.invalid('@(The service did not answer)');
+	else
+		$.callback(response);
+});
+```
+
+## ¿Cómo leo el estado HTTP de una respuesta remota?
+
+Con `exec`, que entrega la salida con su estado:
+
+```js
+RESTBuilder.GET(site.url).timeout(CONF.timeout).exec(function(err, response, output) {
+	site.status = output && output.status ? output.status : 0;
+});
+```
+
+Una petición que tarda más que el tiempo límite tiene el estado 408, y una dirección donde nada escucha tiene 0.
+
+## ¿Cómo declaro una ruta WebSocket?
+
+Con `SOCKET` en un controlador. La función recibe el controlador de la sala:
+
+```js
+exports.install = function() {
+	ROUTE('SOCKET /chat/', socket);
+};
+
+function socket($) {
+
+	$.on('open', function(client) {
+		client.send({ TYPE: 'hello' });
+	});
+
+	$.on('message', function(client, message) {
+		$.send(message);
+	});
+
+	$.on('close', function(client) {
+	});
+}
+```
+
+## ¿Cómo envío un mensaje WebSocket a todos o a un cliente?
+
+`$.send(message)` lo envía a todas las conexiones de la ruta, también al remitente. `client.send(message)` lo envía a un cliente. Los mensajes son objetos: el framework los envía como JSON.
+
+## ¿Cómo recorro las conexiones de una ruta WebSocket?
+
+Están en `$.connections`:
+
+```js
+var names = [];
+for (var key in $.connections) {
+	var client = $.connections[key];
+	client.name && names.push(client.name);
+}
+```
+
+## ¿Cómo leo la query string de una conexión WebSocket?
+
+En `client.query`, dentro de `open`:
+
+```js
+$.on('open', function(client) {
+	var name = (client.query.name || '').trim().substring(0, 30);
+	client.name = name;
+});
+```
+
+## ¿Cómo cierro una conexión WebSocket que no está permitida?
+
+`client.close(code)`, un momento después de `open`, cuando la conexión está abierta del todo:
+
+```js
+if (!name) {
+	setTimeout(function(client) {
+		client.close(4001);
+	}, 500, client);
+	return;
+}
+```
+
+## ¿Cómo registro un error de un trabajo que no tiene petición?
+
+Con `ERROR('contexto')` como callback: escribe el error con ese nombre.
+
+```js
+ACTION('Sites|check').callback(ERROR('Sites|check'));
+```
+
+Usa `NOOP` solo para un resultado que ignoras a propósito.
+
+## ¿Cómo recorro una lista con una llamada asíncrona, una detrás de otra?
+
+Con `wait` del array:
+
+```js
+MAIN.monitor.sites.wait(function(site, next) {
+	RESTBuilder.GET(site.url).exec(function(err, response, output) {
+		site.status = output && output.status ? output.status : 0;
+		next();
+	});
+}, function() {
+	$.callback(MAIN.monitor.sites);
+});
+```
+
+## ¿Cómo reacciono a un cambio de la configuración?
+
+Con `ON('configure', ...)`. La parte que cambia los ajustes lo emite con `EMIT('configure')`. Los ajustes guardados en una tabla se cargan con `LOADCONFIG(rows)`.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/views.md
+
+# Vistas y páginas: preguntas y respuestas
+
+## ¿Cómo muestro una página?
+
+Una ruta llama a `$.view()` con el nombre de un archivo de `views/`:
+
+```js
+// controllers/default.js
+exports.install = function() {
+	ROUTE('GET /', home);
+};
+
+function home($) {
+	$.view('index');
+}
+```
+
+```html
+<!-- views/index.html -->
+@{title(CONF.name)}
+
+<h1>@(Fresh every morning)</h1>
+```
+
+## ¿Cómo paso datos a una vista?
+
+Como segundo argumento de `$.view()`. La vista los lee como `model`:
+
+```js
+$.view('product', item);
+```
+
+```html
+@{title(model.name)}
+
+<h1>@{model.name}</h1>
+<p>@{model.description}</p>
+```
+
+## ¿Cómo hago un layout para todas las páginas?
+
+`views/layout.html` es el layout de todas las vistas. `@{body}` es donde va la vista:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	@{import('meta', 'head', 'default.css')}
+</head>
+<body>
+	<main>
+		@{body}
+	</main>
+</body>
+</html>
+```
+
+## ¿Cómo recorro una lista en una vista?
+
+Con `@{foreach}` y `@{end}`:
+
+```html
+<ul class="products">
+@{foreach m in model}
+	<li>
+		<a href="/products/@{m.id}/">@{m.name}</a>
+		<span>@{m.price.format(2)} EUR</span>
+	</li>
+@{end}
+</ul>
+```
+
+## ¿Cómo escribo una condición en una vista?
+
+Con `@{if}` y `@{fi}`:
+
+```html
+@{if model.price}
+	<p class="price">@{model.price.format(2)} EUR</p>
+@{fi}
+```
+
+## ¿Cómo pongo el título de una página?
+
+Con `@{title()}` al principio de la vista. El layout lo imprime con `@{import('meta')}`, y el framework añade detrás « - » y el nombre de la aplicación:
+
+```html
+@{title('@(Products)')}
+```
+
+## ¿Cómo marco un texto para traducirlo?
+
+Envuélvelo en `@(...)`, en las vistas, en el HTML de los plugins y en los mensajes del servidor. El texto en inglés es la clave:
+
+```html
+<a href="/products/">@(Products)</a>
+```
+
+```js
+$.invalid('@(The website is already in the list)');
+```
+
+Las traducciones están en `resources/<idioma>.resource`.
+
+## ¿Cómo leo un ajuste en una vista?
+
+`@{CONF.name}`:
+
+```html
+<a href="/" class="logo">@{CONF.name}</a>
+<a href="mailto:@{CONF.email}">@{CONF.email}</a>
+```
+
+## ¿Cómo uso una vista sin el layout?
+
+Pon `@{layout('')}` al principio de la vista. El armazón de una aplicación con jComponent es una vista así: un documento HTML entero y propio.
+
+## ¿Cómo cargo el CSS y el JavaScript de la aplicación en el layout?
+
+Con `@{import()}` en el `<head>`. Los archivos están en `public/css/` y `public/js/`:
+
+```html
+@{import('meta', 'head', 'default.js + func.js', 'default.css', 'favicon.ico')}
+```
+
+## ¿La sintaxis de las vistas es la misma que la de Tangular?
+
+No. Una vista de `views/` usa `@{...}` y se genera en el servidor. Tangular usa `{{ ... }}` y es para plantillas, sobre todo en el navegador. No escribas una dentro de la otra esperando el otro motor.
+
+## ¿Cuáles son los dos tipos de páginas?
+
+Las páginas públicas son vistas que un controlador devuelve con `$.view('index')`. Las pantallas de una aplicación (un panel, una herramienta) son el HTML de los plugins, montado en un armazón y gobernado por `PLUGIN` con jComponent.
+
+## ¿Por qué no veo mi cambio de un archivo estático en modo release?
+
+En modo release los archivos estáticos se sirven desde memoria: reinicia la aplicación después de cambiarlos. El navegador también los guarda: fuerza una recarga mientras pruebas.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/tangular.md
+
+# Plantillas Tangular: preguntas y respuestas
+
+## ¿Qué es Tangular?
+
+El motor de plantillas de Total.js: texto con comandos `{{ ... }}` que se rellena con un modelo. jComponent lo usa en el navegador para lo que una pantalla dibuja a partir de datos, y el framework tiene el mismo motor en el servidor.
+
+```js
+var html = Tangular.render('Hello {{ name }}!', { name: 'Anna' });
+```
+
+El resultado es `Hello Anna!`.
+
+## ¿Cómo imprimo un valor en Tangular?
+
+`{{ name }}`. El valor se codifica como HTML, así que el texto de un usuario se puede mostrar tal cual. Una propiedad de un objeto es `{{ user.name }}`, y una expresión también funciona: `{{ age + 1 }}`.
+
+## ¿Cómo imprimo un valor sin codificar el HTML en Tangular?
+
+Con el helper `raw`:
+
+```html
+{{ html | raw }}
+```
+
+Úsalo solo para HTML que hizo la propia aplicación, nunca para texto que escribió un usuario. `{{ !html }}` no es raw: `!` es la negación de JavaScript.
+
+## ¿Cómo escribo una condición en Tangular?
+
+`{{ if }}`, `{{ else if }}`, `{{ else }}` y `{{ fi }}`:
+
+```html
+{{ if age > 40 }}old{{ else if age > 30 }}middle{{ else }}young{{ fi }}
+```
+
+La condición es una expresión de JavaScript. Termina con `{{ fi }}`.
+
+## ¿Cómo recorro una lista en Tangular?
+
+`{{ foreach m in items }}` y `{{ end }}`:
+
+```html
+{{ foreach m in items }}
+<div class="item">{{ m.name }}</div>
+{{ end }}
+```
+
+Un bucle termina con `{{ end }}` y una condición con `{{ fi }}`: no son la misma palabra.
+
+## ¿Cómo obtengo la posición de un elemento en un bucle de Tangular?
+
+`$index`, desde 0:
+
+```html
+{{ foreach m in items }}{{ $index }}:{{ m.name }} {{ end }}
+```
+
+`{{ continue }}` pasa al siguiente elemento y `{{ break }}` termina el bucle.
+
+## ¿Cómo doy formato a un número o a una fecha en Tangular?
+
+Con el helper `format`:
+
+```html
+{{ price | format(2) }}
+{{ date | format('yyyy-MM-dd') }}
+```
+
+`1234.5` queda como `1 234.50`, y la fecha como `2026-11-12`.
+
+## ¿Cómo muestro un texto cuando un valor está vacío en Tangular?
+
+Con `empty` o `def`:
+
+```html
+{{ name | empty('No name') }}
+{{ nothing | def('nothing here') }}
+```
+
+`{{ name | empty }}` sin texto escribe `---`. Un valor que es `null` o no existe es un texto vacío, no un error.
+
+## ¿Cómo escribo un plural en Tangular?
+
+Con `pluralize` y cuatro textos: para cero, uno, unos pocos y muchos. `#` es el número:
+
+```html
+{{ count | pluralize('no items', '# item', '# items', '# items') }}
+```
+
+## ¿Cómo hago mi propio helper de Tangular?
+
+```js
+Thelpers.upper = function(value) {
+	return Thelpers.encode((value || '').toUpperCase());
+};
+```
+
+```html
+{{ name | upper }}
+```
+
+El resultado de un helper se escribe sin codificar: un helper que devuelve texto de un usuario lo codifica con `Thelpers.encode(value)`.
+
+## ¿Cómo dibujo una lista en una pantalla con una plantilla?
+
+Con un `ui-bind` y `config="template"`. Dibuja su plantilla cada vez que cambia su ruta de datos, y dentro de la plantilla los datos son `value`:
+
+```html
+<ui-bind path="?.items" config="template" class="block">
+	<script type="text/html">
+		{{ foreach m in value }}
+		<div class="item{{ if m.isdone }} done{{ fi }}">{{ m.name }}</div>
+		{{ end }}
+	</script>
+</ui-bind>
+```
+
+Cambia el modelo y deja que el `ui-bind` dibuje; no construyas el HTML uniendo textos.
+
+## ¿Cómo compilo una plantilla para usarla muchas veces?
+
+```js
+var template = Tangular.compile('Hello {{ name }}!');
+var html = template({ name: 'Zoe' });
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/interface.md
+
+# La interfaz con jComponent 20: preguntas y respuestas
+
+## ¿Qué es un plugin?
+
+Una funcionalidad de una aplicación: una carpeta con su parte de servidor y su pantalla, que el framework carga y el armazón de la aplicación monta.
+
+```
+plugins/redirects/
+	index.js              server: metadata and routes
+	schemas/redirects.js  actions
+	public/index.html     the screen
+	public/form.html      the form that opens over the screen
+```
+
+## ¿Qué va en el index.js de un plugin?
+
+Su icono, su nombre, su posición en el menú, quién lo ve y sus rutas:
+
+```js
+exports.icon = 'ti ti-check-circle';
+exports.name = '@(Tasks)';
+exports.position = 1;
+exports.visible = function() {
+	return true;
+};
+
+exports.install = function() {
+	ROUTE('+API    ?    -tasks                   --> Tasks|list');
+	ROUTE('+API    ?    +tasks_save              --> Tasks|save');
+	ROUTE('+API    ?    -tasks_remove/{id}       --> Tasks|remove');
+};
+```
+
+## ¿Cómo escribo la pantalla de un plugin?
+
+HTML con una raíz `<ui-plugin>` y un bloque `PLUGIN(function(exports) { ... })`, en `public/index.html`:
+
+```html
+<ui-plugin class="CLASS">
+	<button class="exec" data-exec="?/refresh">@(Refresh)</button>
+</ui-plugin>
+
+<script>
+	PLUGIN(function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			exports.tapi('tasks', function(response) {
+				exports.set('items', response);
+			});
+		};
+
+	});
+</script>
+```
+
+`exports.reload` se ejecuta cada vez que se abre la pantalla.
+
+## ¿Cómo llama una pantalla al servidor?
+
+Con `exports.tapi('endpoint_name', data, callback)`. Añade `ERROR` detrás del nombre para que el mensaje de error se muestre al usuario por sí solo:
+
+```js
+exports.tapi('tasks_save ERROR', model, function(response) {
+	exports.refresh();
+});
+```
+
+El nombre es el endpoint de la ruta: `+tasks_save`.
+
+## ¿Qué significa ? en una ruta de datos?
+
+«Este plugin». `?.items` son los datos `items` del plugin, y `?/create` es su función `exports.create`:
+
+```html
+<ui-bind path="?.items" config="template"></ui-bind>
+<button class="exec" data-exec="?/create">@(Create)</button>
+```
+
+## ¿Qué es CLASS?
+
+Una palabra que se sustituye por una clase única del plugin. Úsala en la clase de la raíz y en los selectores del estilo, para que el CSS de una pantalla no alcance a otra:
+
+```html
+<style>
+	.CLASS .task { padding: 10px 0; border-bottom: 1px solid #E8E8E8; }
+</style>
+
+<ui-plugin class="CLASS">
+</ui-plugin>
+```
+
+## ¿Cómo atiendo el clic de un botón?
+
+Con la clase `exec` y `data-exec`. No añadas `onclick` ni `addEventListener`:
+
+```html
+<button class="exec" data-exec="?/create"><i class="ti ti-plus-circle"></i>@(Create)</button>
+<div class="exec" data-exec="?/edit" data-id="{{ m.id }}">{{ m.name }}</div>
+```
+
+```js
+exports.edit = function(el) {
+	var id = ATTRD(el);
+};
+```
+
+`ATTRD(el)` lee el `data-id` del elemento.
+
+## ¿Cómo pongo y leo los datos de una pantalla?
+
+`exports.set('items', value)` los pone y los enlaces los vuelven a dibujar. `exports.model` es el modelo del plugin:
+
+```js
+exports.tapi('tasks', function(response) {
+	exports.set('items', response);
+});
+```
+
+## ¿Cómo cargo la librería jComponent 20 en una página?
+
+Desde la CDN, una vez por documento, antes de los componentes:
+
+```html
+<link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" />
+<script src="https://cdn.componentator.com/spa.min@20.js"></script>
+<script src="@{REPO.ui}"></script>
+```
+
+`@{REPO.ui}` es el archivo de componentes que hizo `COMPONENTATOR()`.
+
+## ¿Cómo cargo componentes?
+
+Con `COMPONENTATOR()` en `definitions/init.js`: descarga los componentes que nombres como un solo archivo, y el layout lo carga con `@{REPO.ui}`.
+
+```js
+ON('ready', function() {
+	COMPONENTATOR('ui', 'exec,errorhandler,locale,input,validate,miniform,notify,approve', true);
+});
+```
+
+Pon en la lista solo los componentes que usa la aplicación.
+
+## ¿Cómo pongo un componente en una pantalla?
+
+Con `<ui-component>`: su nombre, la ruta de sus datos y su configuración.
+
+```html
+<ui-component name="input" path="?.url" config="required:1;placeholder:@(Relative URL address)">@(URL)</ui-component>
+```
+
+## ¿Dónde encuentro un componente?
+
+En Componentator, el catálogo de componentes de jComponent: <https://componentator.com>. Busca un componente que ya exista antes de escribir a mano una pieza de la interfaz. `input` es el único componente para todos los campos de un formulario: su `type` elige el tipo.
+
+## ¿Cómo hago un formulario?
+
+Un segundo archivo, `public/form.html`, con un `miniform`, sus campos, un `validate` que activa el botón de envío y una función `submit`:
+
+```html
+<ui-component name="miniform" path="common.form" config="if:CLASS;title:@(Redirect);reload:?/reload;submit:?/submit;width:400" class="hidden" plugin="CLASS">
+	<div class="padding">
+		<ui-component name="input" path="?.url" config="required:1">@(URL)</ui-component>
+	</div>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
+	</nav>
+</ui-component>
+```
+
+## ¿Cómo abro un formulario?
+
+La pantalla lo carga con un `importer`, le da un modelo y lo muestra:
+
+```html
+<ui-component name="importer" path="common.form" config="if:formredirect;url:/~ID~/form.html"></ui-component>
+```
+
+```js
+exports.create = function() {
+	SET('formredirect @default', {});
+	SET('*form', 'formredirect');
+};
+```
+
+## ¿Cómo guarda un formulario y refresca la pantalla que lo abrió?
+
+Su `submit` llama al servidor, oculta el formulario después de una respuesta correcta y refresca a quien lo abrió:
+
+```js
+PLUGIN(function(exports) {
+
+	var caller;
+
+	exports.reload = function() {
+		caller = exports.caller;
+	};
+
+	exports.submit = function(hide) {
+		var model = exports.form;
+		exports.tapi('redirects_save ERROR', model, function() {
+			hide();
+			caller.exec('refresh');
+		});
+	};
+
+});
+```
+
+## ¿Cómo pido una confirmación antes de borrar?
+
+Con el componente `approve`:
+
+```js
+SETTER('approve/show', '@(Are you sure you want to remove it?)', ':ti ti-trash: @(Remove)', function() {
+	exports.tapi('redirects_remove/ ERROR', { id: id }, function() {
+		exports.refresh();
+	});
+});
+```
+
+## ¿Cómo nombro los plugins, los componentes y sus funciones?
+
+En minúsculas. Deja los nombres `exports`, `self`, `config` y `cls` como están:
+
+```js
+// good
+PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
+```
+
+## ¿Cómo escribo el CSS de una aplicación?
+
+Una regla por línea, textos entre `'`, sin prefijos de navegador (`/*auto*/` al principio del archivo los añade), sin LESS y sin SASS:
+
+```css
+/*auto*/
+
+.class { key1: value; key2: value; key3: value; }
+.class > div { key1: value; key2: value; }
+```
+
+El estilo de una pantalla va al principio de su HTML, acotado con `CLASS`. Lo compartido va en `public/css/default.css`.
+
+## ¿Qué iconos uso?
+
+Total Icons: la clase `ti ti-name`, como `ti ti-check-circle` o `ti ti-trash`.
+
+```html
+<i class="ti ti-plus-circle"></i>
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/sql.md
+
+# Scripts SQL para PostgreSQL: preguntas y respuestas
+
+## ¿Dónde va el esquema de la base de datos?
+
+En `database.sql`: el esquema actual entero, para que una instalación nueva necesite un solo archivo. Un cambio en una aplicación ya instalada va en un script aparte a su lado, con la fecha en el nombre: `database-2024-10-30.sql`.
+
+## ¿Cómo nombro las tablas, las vistas y las funciones?
+
+Todo en minúsculas, en singular, con un prefijo:
+
+| Objeto | Prefijo | Ejemplo |
+|---|---|---|
+| tabla | `tbl_` | `tbl_user`, `tbl_ticket_time` |
+| lista de códigos | `cl_` | `cl_status` |
+| vista | `view_` | `view_ticket` |
+| procedimiento almacenado | `sp_` | `sp_user` |
+| función | `fn_` | `fn_user` |
+
+## ¿Cómo nombro las columnas?
+
+- `id` es la clave primaria, un `text` que el código rellena con `UID()`.
+- Una clave ajena es la tabla más `id`: `userid`, `folderid`.
+- Las fechas empiezan por `dt`: `dtcreated`, `dtupdated`, `dtremoved`.
+- Los booleanos empiezan por `is`: `isremoved`, `ispublic`.
+- El mismo nombre para lo mismo en todas las tablas: `name`, `body`, `search`, `sortindex`, `icon`, `color`.
+
+## ¿Qué tipos de columna uso?
+
+`text`, no `varchar`. Las listas son `_text`, los datos estructurados `json` o `jsonb`, los números pequeños `int2`, las fechas `timestamp`, los indicadores `bool`.
+
+## ¿Cómo escribo una tabla?
+
+Primero los identificadores, después los campos principales, los números, los booleanos, y las fechas al final. Después las restricciones y la clave primaria:
+
+```sql
+CREATE TABLE "public"."tbl_ticket" (
+	"id" text NOT NULL,
+	"folderid" text,
+	"name" text,
+	"worked" int4 DEFAULT 0,
+	"isremoved" bool DEFAULT false,
+	"dtupdated" timestamp,
+	"dtcreated" timestamp DEFAULT timezone('utc'::text, now()),
+	CONSTRAINT "tbl_ticket_folderid_fkey" FOREIGN KEY ("folderid") REFERENCES "public"."tbl_folder"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY ("id")
+);
+```
+
+## ¿Quién rellena el id y las fechas de una fila?
+
+La acción, no la base de datos: `model.id = UID()` y `model.dtcreated = NOW` antes de insertar. La columna `dtcreated` tiene además el valor por defecto `timezone('utc'::text, now())`.
+
+## ¿Qué es una lista de códigos?
+
+Una tabla `cl_` con las opciones de la aplicación (estados, tipos). Cambia pocas veces y se lee una vez a memoria:
+
+```sql
+CREATE TABLE "public"."cl_status" (
+	"id" text NOT NULL,
+	"name" text,
+	"icon" text,
+	"color" text,
+	"sortindex" int2 DEFAULT 0,
+	PRIMARY KEY ("id")
+);
+```
+
+## ¿Cómo ordeno un script SQL?
+
+Tablas, después vistas, después funciones y procedimientos almacenados, después índices, cada parte bajo un comentario (`-- TABLES`, `-- VIEWS`, `-- INDEXES`). Envuelve el script en `BEGIN;` y `COMMIT;` para que se aplique entero o no se aplique.
+
+## ¿Cómo nombro los índices y las claves ajenas?
+
+Un índice es `<tabla>_idx<qué>`: `tbl_ticket_idxstatus`. Una clave ajena es `<tabla>_<columna>_fkey`: `tbl_ticket_folderid_fkey`.
+
+## ¿Qué columnas registran quién cambió una fila?
+
+`createdby`, `updatedby` y `removedby` como `jsonb`, con `dtcreated`, `dtupdated` y `dtremoved`. Son una convención del proyecto: las rellena el código. Sin un usuario con sesión déjalas vacías en lugar de inventar uno.
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/style-and-tests.md
+
+# Estilo, pruebas y versiones: preguntas y respuestas
+
+## ¿Qué estilo de JavaScript usa el código de Total.js?
+
+ES5 primero, y las funciones del framework antes que cualquier otra: `var` y `function`, sin funciones flecha, sin plantillas literales, tabuladores, punto y coma y `'` para los textos.
+
+```js
+var item = items.findItem('id', id);
+var text = 'Hello {0}'.format(name);
+```
+
+`const` o `let` solo donde el código lo necesita, como una constante al principio de un archivo. `async` y `await` donde el código espera a la base de datos.
+
+## ¿Cómo leo un archivo sin require('fs')?
+
+Los módulos de Node.js están en `Total`: `Total.Fs`, `Total.Path`, `Total.Crypto`, `Total.Os`, `Total.Child`. El código de la aplicación no los carga con `require()`:
+
+```js
+var text = Total.Fs.readFileSync(Total.Path.join(__dirname, 'config'), 'utf8');
+```
+
+## ¿Cómo meto valores en un texto?
+
+Con `format` del texto, no con una plantilla literal:
+
+```js
+var url = '/download/{0}.{1}'.format(item.id, item.ext);
+```
+
+## ¿Cómo busco un elemento de un array por un campo?
+
+Con `findItem`, y `findIndex` para su posición:
+
+```js
+var item = MAIN.products.findItem('id', $.params.id);
+var index = MAIN.monitor.sites.findIndex('id', $.params.id);
+```
+
+## ¿Cómo obtengo la fecha actual en una acción?
+
+`NOW`: el framework la mantiene. Úsala para `dtcreated` y `dtupdated`:
+
+```js
+model.dtcreated = NOW;
+```
+
+## ¿Cómo pruebo una aplicación?
+
+Con la librería de pruebas del framework, en un `test.js`:
+
+```js
+require('total5');
+require('total5/test');
+
+Test.push('Contract', function(next) {
+	var value = '<strong>'.encode();
+	Test.print('encodes HTML-like text', value === '&lt;strong&gt;' ? null : value);
+	next();
+});
+
+Test.run();
+```
+
+`Test.print(label, error)` falla cuando el segundo argumento no está vacío. Ejecútalo con `node test.js`.
+
+## ¿Cómo deben arrancar las pruebas la aplicación?
+
+La copian a una carpeta desechable y la arrancan allí con `node index.js <puerto>`, para que los datos de la aplicación no se toquen nunca. Esperan a que la aplicación responda antes de la primera comprobación, y comprueban también los errores: sin el token, con un campo incorrecto, con un id que no existe.
+
+## ¿Qué base de datos usan las pruebas?
+
+Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicación. Antes de cualquier cosa que borre, la prueba comprueba el nombre de la base de datos a la que está conectada y se detiene si no es la esperada.
+
+## ¿Qué añade Total.js 5 0.0.20?
+
+Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Es la beta: usa una de ellas solo en un proyecto que dependa de `total5@beta` o de 0.0.20 y posteriores, y dilo.
+
+## ¿Cómo expongo una acción como herramienta MCP?
+
+En Total.js 5 0.0.20 y posteriores: `$mcp : true` en `config` abre la ruta `POST /$mcp/`, y cada acción con `mcp: true` es allí una herramienta.
+
+```js
+NEWACTION('Items|create', {
+	name: 'Create an item',
+	summary: 'Creates an item and returns it',
+	mcp: true,
+	input: '*name:String // The name of the item',
+	action: function($, model) {
+		$.callback({ name: model.name });
+	}
+});
+```
+
+La herramienta se llama `Items_create`: el nombre de una herramienta no puede llevar la barra vertical.
+
+## ¿Cómo guardo en caché la respuesta de una acción?
+
+En Total.js 5 0.0.20 y posteriores, con `cache`:
+
+```js
+NEWACTION('Items|list', {
+	name: 'List of items',
+	query: 'search:String',
+	cache: { query: true, expire: '1 minute' },
+	action: function($) {
+		$.callback(items);
+	}
+});
+```
+
+`query: true` guarda una respuesta por cada query string distinta.
+
+## ¿Cómo respondo con CSV u otro tipo de contenido?
+
+En Total.js 5 0.0.20 y posteriores, con `$.content(value, type)`:
+
+```js
+ROUTE('GET /export/', function($) {
+	$.content('id;name\n1;Anna\n', 'text/csv');
+});
+```
+
+## ¿Cómo sustituyo una acción en una prueba?
+
+En Total.js 5 0.0.20 y posteriores, con `Test.fake(name, definition)`; `Test.restore()` vuelve a poner las acciones reales:
+
+```js
+Test.fake('Mail|send', {
+	name: 'Fake',
+	action: function($) {
+		$.callback({ sent: 'fake' });
+	}
+});
+```
+
+## ¿Quién creó Total.js?
+
+Peter Širka. Total.js es un framework de código abierto para Node.js; su web es <https://www.totaljs.com>.
+
+## ¿Qué hago cuando no estoy seguro de que una función existe?
+
+Dilo y compruébalo en el código fuente del framework o en su documentación en lugar de adivinar. Una función inventada parece correcta y falla cuando la aplicación se ejecuta.
+
+## ¿El código de Total.js 5 es el mismo que el de Total.js 4?
+
+No. Total.js 5 (`total5`) es el framework actual y Total.js 4 (`total4`) es el anterior. No mezcles su código: un ejemplo de uno puede no funcionar en el otro.
 
 ---
 

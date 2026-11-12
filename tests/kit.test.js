@@ -129,6 +129,51 @@ Test.push('the answers', function(next) {
 	next();
 });
 
+Test.push('the questions', function(next) {
+
+	var files = Total.Fs.readdirSync(Total.Path.join(ROOT, 'questions')).filter(function(name) {
+		return name.endsWith('.md');
+	});
+
+	var fences = function(text) {
+		return text.match(/```\w*\n[\s\S]*?```/g) || [];
+	};
+
+	var count = 0;
+	check('there are pages of questions', files.length >= 10);
+
+	files.forEach(function(name) {
+
+		var file = 'questions/' + name;
+		var en = read(file).split('\n## ');
+		var es = read('questions/es/' + name).split('\n## ');
+
+		check(file + ' has the same sections in Spanish', en.length === es.length && en.length > 1);
+		count += en.length - 1;
+
+		for (var i = 1; i < en.length; i++) {
+
+			var title = en[i].split('\n')[0];
+			var body = en[i].substring(title.length).trim();
+
+			check(file + ': "' + title + '" is a question with an answer', title.endsWith('?') && body.length > 60);
+			check(file + ': "' + title + '" has its question in Spanish', !!es[i] && (/^¿.+\?$/).test(es[i].split('\n')[0]));
+			check(file + ': "' + title + '" has the same code in Spanish', !!es[i] && fences(en[i]).join('\n') === fences(es[i]).join('\n'));
+
+			// The code of an answer follows the rules it teaches; a block that shows the form to leave says so
+			var blocks = fences(en[i]).filter(function(block) {
+				return block.startsWith('```js') && block.indexOf('// avoid') === -1 && block.indexOf('// before') === -1;
+			});
+			check(file + ': "' + title + '" has no arrow function, no template literal and no Node.js module in its code', blocks.every(function(block) {
+				return !(/=>/).test(block) && !(/`[^`\n]*\$\{/).test(block.replace(/^```js\n|```$/g, '')) && !(/require\('(fs|path|crypto|os|http|https|zlib)'\)/).test(block);
+			}));
+		}
+	});
+
+	check('there are at least 150 questions', count >= 150);
+	next();
+});
+
 Test.push('the pages', function(next) {
 
 	var all = pages('').concat(['CLAUDE.md', 'GEMINI.md']);

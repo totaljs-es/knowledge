@@ -64,6 +64,32 @@ Read the general rules, then the pages of the zone you work in, and look at the 
 - [Which JavaScript style does Total.js 5 code use?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/javascript-style.md): A short answer with its code and the application that shows it
 - [Is Total.js like Express? Which packages do I need?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/not-express.md): A short answer with its code and the application that shows it
 - [Which version of Total.js 5 should I use, and what does the beta add?](https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/versions.md): A short answer with its code and the application that shows it
+## Questions
+
+- [The application: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/application.md): Folders, the start script, config, helpers, state, modules, plugins or not, packages and versions
+- [Actions: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/actions.md): NEWACTION: names, input, params, query, answers, errors, permissions and calls between actions
+- [Routes and authentication: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/routes.md): API routes, pages, AUTH, a token, BLOCKED, body limits and 404
+- [Data with DATA: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/data.md): The embedded database with the prefix nosql/, read and write, filters, autoquery, PostgreSQL and raw SQL
+- [Storage and files: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/storage.md): Which storage, MEMORIZE, NOSQL, uploads and FILESTORAGE
+- [Scheduled work, HTTP calls and WebSocket: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/services.md): ON(service), CRON, RESTBuilder, SOCKET routes and errors without a request
+- [Views and pages: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/views.md): $.view, the layout, loops and conditions, the title, translations and static files
+- [Tangular templates: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/tangular.md): Values, raw, conditions, loops, helpers and templates in a ui-bind
+- [The interface with jComponent 20: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/interface.md): Plugins, screens, tapi, exec, CLASS, components, COMPONENTATOR, forms and CSS
+- [SQL scripts for PostgreSQL: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sql.md): database.sql, names of tables and columns, types, code lists and the order of a script
+- [Style, tests and versions: questions and answers](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/style-and-tests.md): ES5 first, Total.Fs, format, tests, what 0.0.20 adds and what to do when not sure
+## Questions in Spanish
+
+- [La aplicación: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md): The same questions and answers in Spanish, with the same code
+- [Acciones: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/actions.md): The same questions and answers in Spanish, with the same code
+- [Rutas y autenticación: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/routes.md): The same questions and answers in Spanish, with the same code
+- [Datos con DATA: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/data.md): The same questions and answers in Spanish, with the same code
+- [Almacenamiento y archivos: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/storage.md): The same questions and answers in Spanish, with the same code
+- [Trabajo programado, llamadas HTTP y WebSocket: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/services.md): The same questions and answers in Spanish, with the same code
+- [Vistas y páginas: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/views.md): The same questions and answers in Spanish, with the same code
+- [Plantillas Tangular: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/tangular.md): The same questions and answers in Spanish, with the same code
+- [La interfaz con jComponent 20: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/interface.md): The same questions and answers in Spanish, with the same code
+- [Scripts SQL para PostgreSQL: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/sql.md): The same questions and answers in Spanish, with the same code
+- [Estilo, pruebas y versiones: preguntas y respuestas](https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/style-and-tests.md): The same questions and answers in Spanish, with the same code
 ## Applications
 
 - [Contacts: an API without plugins](https://raw.githubusercontent.com/totaljs-es/knowledge/main/apps/contacts/readme.md): Actions, routes in controllers, a token and DATA on the embedded NoSQL database
