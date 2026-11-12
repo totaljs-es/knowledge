@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 208 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 220 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -6695,6 +6695,189 @@ var id = GUID(8);
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/operations.md
+
+# Sessions, Markdown, a cache on disk, templates, backups, maintenance, commands and audit: questions and answers
+
+## How do I sign users in with a session and a cookie?
+
+Give `AUTH` an object instead of a function: the framework keeps the sessions and reads the cookie, and `onread` loads the user of a session the first time. Keep the object to sign users in and out:
+
+```js
+// definitions/auth.js
+var opt = {};
+
+opt.secret = CONF.secret;
+opt.cookie = 'session';
+opt.expire = '5 minutes';
+opt.strict = false;
+
+opt.onread = async function(meta, next) {
+	var user = await DATA.read('nosql/tbl_user').id(meta.userid).promise();
+	if (user)
+		next(null, { id: user.id, name: user.name });
+	else
+		next(404);
+};
+
+AUTH(opt);
+MAIN.session = opt;
+```
+
+`expire` is how long the framework keeps a session in memory before it reads it again with `onread`, not how long the cookie lives. A route with `+` then needs a signed-in user, who is in `$.user`.
+
+## How do I sign a user in and out?
+
+After checking the password, `authcookie` of the session object sets the cookie; `logout` removes the session and the cookie:
+
+```js
+NEWACTION('Account|login', {
+	name: 'Sign in',
+	input: '*email:Email, *password:String',
+	action: async function($, model) {
+		var user = await DATA.read('nosql/tbl_user').where('email', model.email).promise($);
+		if (!user || user.password !== model.password.sha256(CONF.secret)) {
+			$.invalid('@(Invalid credentials)');
+			return;
+		}
+		MAIN.session.authcookie($, UID(), user.id, '1 month');
+		$.success();
+	}
+});
+
+NEWACTION('Account|logout', {
+	name: 'Sign out',
+	action: function($) {
+		MAIN.session.logout($);
+		$.success();
+	}
+});
+```
+
+```js
+ROUTE('-POST /api/login/   --> Account|login');
+ROUTE('+GET  /api/logout/  --> Account|logout');
+```
+
+The arguments of `authcookie` are the id of the new session, the id of the user and how long the cookie lives.
+
+## How do I convert Markdown to HTML?
+
+With `markdown` of the text. No package:
+
+```js
+var html = '# Title\n\nSome **bold** text.'.markdown();
+```
+
+The result is inside a `<div class="markdown">`.
+
+## How do I cache a slow result on disk?
+
+With `FILECACHE`: an id, how long it is good, the callback that gets the value and the function that makes it when there is none. Unlike `CACHE`, it stays after a restart:
+
+```js
+FILECACHE('rates', '1 hour', function(err, rates) {
+	$.callback(rates);
+}, function(next) {
+	RESTBuilder.GET(CONF.ratesurl).callback(next);
+});
+```
+
+## How do I render a text template on the server?
+
+With `TEMPLATE(text, model)`, which returns a promise. The template is Tangular and the model is `value`:
+
+```js
+var html = await TEMPLATE('<b>{{ value.name }}</b> has {{ value.count }} items', { name: 'Anna', count: 3 });
+```
+
+## How do I back up a folder and restore it?
+
+`BACKUP(file, folder, callback)` writes the folder into one file, and `RESTORE(file, folder, callback)` writes it back:
+
+```js
+BACKUP(PATH.root('backup.package'), PATH.root('databases'), function(err, meta) {
+	// meta.files and meta.size
+});
+
+RESTORE(PATH.root('backup.package'), PATH.root('restored'), function(err, meta) {
+});
+```
+
+## How do I put the application in maintenance?
+
+With `PAUSESERVER(name, true)`: every request is answered with 503 until `PAUSESERVER(name, false)`. The name is the reason, so that two reasons do not cancel each other:
+
+```js
+PAUSESERVER('import', true);
+
+importrows(function() {
+	PAUSESERVER('import', false);
+});
+```
+
+## How do I run a command of the system?
+
+With `SHELL(command, callback)`; the callback gets the error and the output. Never put text of a user in the command:
+
+```js
+SHELL('df -h', function(err, output) {
+	console.log(output);
+});
+```
+
+## How do I compare the list of a form with the list in the database?
+
+With `DIFFARR(field, db, form)`: it says what to add, what to update and which ids to remove.
+
+```js
+var diff = DIFFARR('id', db, model.items);
+
+// diff.add: the items that are only in the form
+// diff.upd: [{ db: item, form: item }] for the items in both
+// diff.rem: the ids that are only in the database
+```
+
+## How do I download a file from another server?
+
+With `DOWNLOAD(url, filename, callback)`: it saves the answer to the file.
+
+```js
+DOWNLOAD(CONF.reporturl, PATH.root('report.pdf'), function(err, response) {
+	if (err || response.status !== 200)
+		return;
+	// response.size is the size of the file
+});
+```
+
+## How do I mail myself an error or a note?
+
+With `LOGMAIL(email, subject, text)`: a plain message, without a view. It uses the mail server of `config`.
+
+```js
+LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
+```
+
+In Total.js 5 0.0.19 give it a text: an object as the body fails.
+
+## How do I record who did what?
+
+With `$.audit(message)` in an action: it writes a line to `logs/audit.log` with the user, the address of the client, the URL, the action and its data.
+
+```js
+NEWACTION('Orders|remove', {
+	name: 'Remove an order',
+	params: '*id:UID',
+	action: async function($) {
+		await DATA.remove('nosql/tbl_order').id($.params.id).error(404).promise($);
+		$.audit('order removed');
+		$.success($.params.id);
+	}
+});
+```
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md
 
 # La aplicación: preguntas y respuestas
@@ -9055,6 +9238,189 @@ var id = GUID(8);
 
 ---
 
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/operations.md
+
+# Sesiones, Markdown, caché en disco, plantillas, copias, mantenimiento, comandos y auditoría: preguntas y respuestas
+
+## ¿Cómo inicio la sesión de los usuarios con una sesión y una cookie?
+
+Pasa a `AUTH` un objeto en vez de una función: el framework guarda las sesiones y lee la cookie, y `onread` carga el usuario de una sesión la primera vez. Guarda el objeto para iniciar y cerrar sesiones:
+
+```js
+// definitions/auth.js
+var opt = {};
+
+opt.secret = CONF.secret;
+opt.cookie = 'session';
+opt.expire = '5 minutes';
+opt.strict = false;
+
+opt.onread = async function(meta, next) {
+	var user = await DATA.read('nosql/tbl_user').id(meta.userid).promise();
+	if (user)
+		next(null, { id: user.id, name: user.name });
+	else
+		next(404);
+};
+
+AUTH(opt);
+MAIN.session = opt;
+```
+
+`expire` es cuánto guarda el framework una sesión en memoria antes de volver a leerla con `onread`, no cuánto dura la cookie. Una ruta con `+` necesita entonces un usuario con sesión, que está en `$.user`.
+
+## ¿Cómo inicio y cierro la sesión de un usuario?
+
+Tras comprobar la contraseña, `authcookie` del objeto de sesión pone la cookie; `logout` quita la sesión y la cookie:
+
+```js
+NEWACTION('Account|login', {
+	name: 'Sign in',
+	input: '*email:Email, *password:String',
+	action: async function($, model) {
+		var user = await DATA.read('nosql/tbl_user').where('email', model.email).promise($);
+		if (!user || user.password !== model.password.sha256(CONF.secret)) {
+			$.invalid('@(Invalid credentials)');
+			return;
+		}
+		MAIN.session.authcookie($, UID(), user.id, '1 month');
+		$.success();
+	}
+});
+
+NEWACTION('Account|logout', {
+	name: 'Sign out',
+	action: function($) {
+		MAIN.session.logout($);
+		$.success();
+	}
+});
+```
+
+```js
+ROUTE('-POST /api/login/   --> Account|login');
+ROUTE('+GET  /api/logout/  --> Account|logout');
+```
+
+Los argumentos de `authcookie` son el id de la sesión nueva, el id del usuario y cuánto dura la cookie.
+
+## ¿Cómo convierto Markdown en HTML?
+
+Con `markdown` del texto. Sin paquete:
+
+```js
+var html = '# Title\n\nSome **bold** text.'.markdown();
+```
+
+El resultado está dentro de un `<div class="markdown">`.
+
+## ¿Cómo guardo en disco un resultado lento?
+
+Con `FILECACHE`: un id, cuánto vale, el callback que recibe el valor y la función que lo crea cuando no hay. A diferencia de `CACHE`, sigue ahí tras un reinicio:
+
+```js
+FILECACHE('rates', '1 hour', function(err, rates) {
+	$.callback(rates);
+}, function(next) {
+	RESTBuilder.GET(CONF.ratesurl).callback(next);
+});
+```
+
+## ¿Cómo pinto una plantilla de texto en el servidor?
+
+Con `TEMPLATE(texto, modelo)`, que devuelve una promesa. La plantilla es Tangular y el modelo es `value`:
+
+```js
+var html = await TEMPLATE('<b>{{ value.name }}</b> has {{ value.count }} items', { name: 'Anna', count: 3 });
+```
+
+## ¿Cómo hago una copia de una carpeta y la restauro?
+
+`BACKUP(archivo, carpeta, callback)` escribe la carpeta en un archivo, y `RESTORE(archivo, carpeta, callback)` la vuelve a escribir:
+
+```js
+BACKUP(PATH.root('backup.package'), PATH.root('databases'), function(err, meta) {
+	// meta.files and meta.size
+});
+
+RESTORE(PATH.root('backup.package'), PATH.root('restored'), function(err, meta) {
+});
+```
+
+## ¿Cómo pongo la aplicación en mantenimiento?
+
+Con `PAUSESERVER(nombre, true)`: cada petición se responde con 503 hasta `PAUSESERVER(nombre, false)`. El nombre es el motivo, para que dos motivos no se anulen entre sí:
+
+```js
+PAUSESERVER('import', true);
+
+importrows(function() {
+	PAUSESERVER('import', false);
+});
+```
+
+## ¿Cómo ejecuto un comando del sistema?
+
+Con `SHELL(comando, callback)`; el callback recibe el error y la salida. Nunca pongas texto de un usuario en el comando:
+
+```js
+SHELL('df -h', function(err, output) {
+	console.log(output);
+});
+```
+
+## ¿Cómo comparo la lista de un formulario con la lista de la base de datos?
+
+Con `DIFFARR(campo, db, formulario)`: dice qué añadir, qué actualizar y qué ids quitar.
+
+```js
+var diff = DIFFARR('id', db, model.items);
+
+// diff.add: the items that are only in the form
+// diff.upd: [{ db: item, form: item }] for the items in both
+// diff.rem: the ids that are only in the database
+```
+
+## ¿Cómo descargo un archivo de otro servidor?
+
+Con `DOWNLOAD(url, archivo, callback)`: guarda la respuesta en el archivo.
+
+```js
+DOWNLOAD(CONF.reporturl, PATH.root('report.pdf'), function(err, response) {
+	if (err || response.status !== 200)
+		return;
+	// response.size is the size of the file
+});
+```
+
+## ¿Cómo me envío por correo un error o una nota?
+
+Con `LOGMAIL(correo, asunto, texto)`: un mensaje sencillo, sin vista. Usa el servidor de correo de `config`.
+
+```js
+LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
+```
+
+En Total.js 5 0.0.19 pásale un texto: un objeto como cuerpo falla.
+
+## ¿Cómo registro quién hizo qué?
+
+Con `$.audit(mensaje)` en una acción: escribe una línea en `logs/audit.log` con el usuario, la dirección del cliente, la URL, la acción y sus datos.
+
+```js
+NEWACTION('Orders|remove', {
+	name: 'Remove an order',
+	params: '*id:UID',
+	action: async function($) {
+		await DATA.remove('nosql/tbl_order').id($.params.id).error(404).promise($);
+		$.audit('order removed');
+		$.success($.params.id);
+	}
+});
+```
+
+---
+
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md
 
 # Aplikácia: otázky a odpovede
@@ -11411,6 +11777,189 @@ var price = (1234.5).format(2);                  // 1 234.50
 var day = NOW.format('yyyy-MM-dd');
 var url = QUERIFY('/api/', { q: 'a b' });        // /api/?q=a%20b
 var id = GUID(8);
+```
+
+---
+
+Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/operations.md
+
+# Relácie, Markdown, cache na disku, šablóny, zálohy, údržba, príkazy a audit: otázky a odpovede
+
+## Ako prihlásim používateľov cez reláciu a cookie?
+
+Odovzdaj `AUTH` objekt namiesto funkcie: framework si drží relácie a číta cookie a `onread` načíta používateľa relácie prvýkrát. Objekt si ulož na prihlasovanie a odhlasovanie:
+
+```js
+// definitions/auth.js
+var opt = {};
+
+opt.secret = CONF.secret;
+opt.cookie = 'session';
+opt.expire = '5 minutes';
+opt.strict = false;
+
+opt.onread = async function(meta, next) {
+	var user = await DATA.read('nosql/tbl_user').id(meta.userid).promise();
+	if (user)
+		next(null, { id: user.id, name: user.name });
+	else
+		next(404);
+};
+
+AUTH(opt);
+MAIN.session = opt;
+```
+
+`expire` je, ako dlho si framework drží reláciu v pamäti, kým ju znova načíta cez `onread`, nie ako dlho žije cookie. Routa s `+` potom potrebuje prihláseného používateľa, ktorý je v `$.user`.
+
+## Ako prihlásim a odhlásim používateľa?
+
+Po overení hesla nastaví `authcookie` objektu relácie cookie; `logout` odstráni reláciu aj cookie:
+
+```js
+NEWACTION('Account|login', {
+	name: 'Sign in',
+	input: '*email:Email, *password:String',
+	action: async function($, model) {
+		var user = await DATA.read('nosql/tbl_user').where('email', model.email).promise($);
+		if (!user || user.password !== model.password.sha256(CONF.secret)) {
+			$.invalid('@(Invalid credentials)');
+			return;
+		}
+		MAIN.session.authcookie($, UID(), user.id, '1 month');
+		$.success();
+	}
+});
+
+NEWACTION('Account|logout', {
+	name: 'Sign out',
+	action: function($) {
+		MAIN.session.logout($);
+		$.success();
+	}
+});
+```
+
+```js
+ROUTE('-POST /api/login/   --> Account|login');
+ROUTE('+GET  /api/logout/  --> Account|logout');
+```
+
+Argumenty `authcookie` sú id novej relácie, id používateľa a ako dlho žije cookie.
+
+## Ako prevediem Markdown na HTML?
+
+Cez `markdown` textu. Bez balíčka:
+
+```js
+var html = '# Title\n\nSome **bold** text.'.markdown();
+```
+
+Výsledok je vnútri `<div class="markdown">`.
+
+## Ako uložím pomalý výsledok do cache na disku?
+
+Cez `FILECACHE`: id, ako dlho platí, callback, ktorý dostane hodnotu, a funkcia, ktorá ju vytvorí, keď žiadna nie je. Na rozdiel od `CACHE` ostane aj po reštarte:
+
+```js
+FILECACHE('rates', '1 hour', function(err, rates) {
+	$.callback(rates);
+}, function(next) {
+	RESTBuilder.GET(CONF.ratesurl).callback(next);
+});
+```
+
+## Ako vykreslím textovú šablónu na serveri?
+
+Cez `TEMPLATE(text, model)`, ktorý vráti promise. Šablóna je Tangular a model je `value`:
+
+```js
+var html = await TEMPLATE('<b>{{ value.name }}</b> has {{ value.count }} items', { name: 'Anna', count: 3 });
+```
+
+## Ako zálohujem priečinok a obnovím ho?
+
+`BACKUP(súbor, priečinok, callback)` zapíše priečinok do jedného súboru a `RESTORE(súbor, priečinok, callback)` ho zapíše späť:
+
+```js
+BACKUP(PATH.root('backup.package'), PATH.root('databases'), function(err, meta) {
+	// meta.files and meta.size
+});
+
+RESTORE(PATH.root('backup.package'), PATH.root('restored'), function(err, meta) {
+});
+```
+
+## Ako prepnem aplikáciu do údržby?
+
+Cez `PAUSESERVER(názov, true)`: každá požiadavka dostane 503 až do `PAUSESERVER(názov, false)`. Názov je dôvod, aby sa dva dôvody navzájom nezrušili:
+
+```js
+PAUSESERVER('import', true);
+
+importrows(function() {
+	PAUSESERVER('import', false);
+});
+```
+
+## Ako spustím príkaz systému?
+
+Cez `SHELL(príkaz, callback)`; callback dostane chybu a výstup. Nikdy nedávaj do príkazu text od používateľa:
+
+```js
+SHELL('df -h', function(err, output) {
+	console.log(output);
+});
+```
+
+## Ako porovnám zoznam z formulára so zoznamom v databáze?
+
+Cez `DIFFARR(políčko, db, formulár)`: povie, čo pridať, čo upraviť a ktoré id odstrániť.
+
+```js
+var diff = DIFFARR('id', db, model.items);
+
+// diff.add: the items that are only in the form
+// diff.upd: [{ db: item, form: item }] for the items in both
+// diff.rem: the ids that are only in the database
+```
+
+## Ako stiahnem súbor z iného servera?
+
+Cez `DOWNLOAD(url, súbor, callback)`: uloží odpoveď do súboru.
+
+```js
+DOWNLOAD(CONF.reporturl, PATH.root('report.pdf'), function(err, response) {
+	if (err || response.status !== 200)
+		return;
+	// response.size is the size of the file
+});
+```
+
+## Ako si pošlem e-mailom chybu alebo poznámku?
+
+Cez `LOGMAIL(e-mail, predmet, text)`: jednoduchá správa bez view. Používa poštový server z `config`.
+
+```js
+LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
+```
+
+V Total.js 5 0.0.19 mu daj text: objekt ako telo zlyhá.
+
+## Ako zaznamenám, kto čo urobil?
+
+Cez `$.audit(správa)` v akcii: zapíše riadok do `logs/audit.log` s používateľom, adresou klienta, URL, akciou a jej dátami.
+
+```js
+NEWACTION('Orders|remove', {
+	name: 'Remove an order',
+	params: '*id:UID',
+	action: async function($) {
+		await DATA.remove('nosql/tbl_order').id($.params.id).error(404).promise($);
+		$.audit('order removed');
+		$.success($.params.id);
+	}
+});
 ```
 
 ---
