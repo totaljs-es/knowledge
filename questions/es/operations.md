@@ -176,3 +176,42 @@ NEWACTION('Orders|remove', {
 	}
 });
 ```
+
+## ¿Cómo uno varios scripts en un archivo?
+
+Con `MERGE` en una definición: la dirección del resultado y los archivos, que se buscan en `public/js/`. El resultado va minificado:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## ¿Necesito un paso de compilación para minificar CSS y JavaScript?
+
+No. El framework minifica los archivos `.js` y `.css` de `public/` al servirlos: quita comentarios y espacios. Sin empaquetador y sin paquete.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+El segundo bloque es lo que recibe el navegador.
+
+## ¿Cómo reenvío las peticiones de una ruta a otro servidor?
+
+Con `PROXY(ruta, destino)` en una definición. `.copy('replace')` conserva el resto de la dirección: `/remote/hello/` llega al otro servidor como `/hello/`, con su cadena de consulta:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Sin `.copy('replace')` todas las direcciones bajo la ruta van a la raíz del destino. El otro servidor recibe la dirección del cliente en la cabecera `x-forwarded-for`.

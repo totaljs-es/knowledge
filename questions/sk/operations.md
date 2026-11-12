@@ -176,3 +176,42 @@ NEWACTION('Orders|remove', {
 	}
 });
 ```
+
+## Ako spojím viac skriptov do jedného súboru?
+
+Cez `MERGE` v definícii: adresa výsledku a súbory, ktoré sa hľadajú v `public/js/`. Výsledok je minifikovaný:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## Potrebujem build krok na minifikáciu CSS a JavaScriptu?
+
+Nie. Framework minifikuje súbory `.js` a `.css` z `public/` pri ich servírovaní: odstráni komentáre a medzery. Bez bundlera a bez balíčka.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+Druhý blok je to, čo dostane prehliadač.
+
+## Ako presmerujem požiadavky z cesty na iný server?
+
+Cez `PROXY(cesta, cieľ)` v definícii. `.copy('replace')` zachová zvyšok adresy: `/remote/hello/` príde na druhý server ako `/hello/`, aj s query stringom:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Bez `.copy('replace')` idú všetky adresy pod cestou na koreň cieľa. Druhý server dostane adresu klienta v hlavičke `x-forwarded-for`.

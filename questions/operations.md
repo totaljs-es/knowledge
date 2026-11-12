@@ -176,3 +176,42 @@ NEWACTION('Orders|remove', {
 	}
 });
 ```
+
+## How do I join several scripts into one file?
+
+With `MERGE` in a definition: the address of the result and the files, which are looked for in `public/js/`. The result is minified:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## Do I need a build step to minify CSS and JavaScript?
+
+No. The framework minifies the `.js` and `.css` files of `public/` when it serves them: comments and spaces are removed. No bundler and no package.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+The second block is what the browser receives.
+
+## How do I forward the requests of a path to another server?
+
+With `PROXY(path, target)` in a definition. `.copy('replace')` keeps the rest of the address: `/remote/hello/` reaches the other server as `/hello/`, with its query string:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Without `.copy('replace')` every address under the path goes to the root of the target. The other server gets the address of the client in the header `x-forwarded-for`.

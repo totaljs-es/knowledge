@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 220 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 223 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -6876,6 +6876,45 @@ NEWACTION('Orders|remove', {
 });
 ```
 
+## How do I join several scripts into one file?
+
+With `MERGE` in a definition: the address of the result and the files, which are looked for in `public/js/`. The result is minified:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## Do I need a build step to minify CSS and JavaScript?
+
+No. The framework minifies the `.js` and `.css` files of `public/` when it serves them: comments and spaces are removed. No bundler and no package.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+The second block is what the browser receives.
+
+## How do I forward the requests of a path to another server?
+
+With `PROXY(path, target)` in a definition. `.copy('replace')` keeps the rest of the address: `/remote/hello/` reaches the other server as `/hello/`, with its query string:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Without `.copy('replace')` every address under the path goes to the root of the target. The other server gets the address of the client in the header `x-forwarded-for`.
+
 ---
 
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/application.md
@@ -9419,6 +9458,45 @@ NEWACTION('Orders|remove', {
 });
 ```
 
+## ¿Cómo uno varios scripts en un archivo?
+
+Con `MERGE` en una definición: la dirección del resultado y los archivos, que se buscan en `public/js/`. El resultado va minificado:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## ¿Necesito un paso de compilación para minificar CSS y JavaScript?
+
+No. El framework minifica los archivos `.js` y `.css` de `public/` al servirlos: quita comentarios y espacios. Sin empaquetador y sin paquete.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+El segundo bloque es lo que recibe el navegador.
+
+## ¿Cómo reenvío las peticiones de una ruta a otro servidor?
+
+Con `PROXY(ruta, destino)` en una definición. `.copy('replace')` conserva el resto de la dirección: `/remote/hello/` llega al otro servidor como `/hello/`, con su cadena de consulta:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Sin `.copy('replace')` todas las direcciones bajo la ruta van a la raíz del destino. El otro servidor recibe la dirección del cliente en la cabecera `x-forwarded-for`.
+
 ---
 
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk/application.md
@@ -11961,6 +12039,45 @@ NEWACTION('Orders|remove', {
 	}
 });
 ```
+
+## Ako spojím viac skriptov do jedného súboru?
+
+Cez `MERGE` v definícii: adresa výsledku a súbory, ktoré sa hľadajú v `public/js/`. Výsledok je minifikovaný:
+
+```js
+// definitions/init.js
+MERGE('/js/all.js', 'first.js', 'second.js');
+```
+
+```html
+<script src="/js/all.js"></script>
+```
+
+## Potrebujem build krok na minifikáciu CSS a JavaScriptu?
+
+Nie. Framework minifikuje súbory `.js` a `.css` z `public/` pri ich servírovaní: odstráni komentáre a medzery. Bez bundlera a bez balíčka.
+
+```css
+.box { display: flex; border-radius: 4px; }
+.box > div { transition: all 0.2s; }
+```
+
+```css
+.box{display:flex;border-radius:4px}.box>div{transition:all 0.2s}
+```
+
+Druhý blok je to, čo dostane prehliadač.
+
+## Ako presmerujem požiadavky z cesty na iný server?
+
+Cez `PROXY(cesta, cieľ)` v definícii. `.copy('replace')` zachová zvyšok adresy: `/remote/hello/` príde na druhý server ako `/hello/`, aj s query stringom:
+
+```js
+// definitions/init.js
+PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
+```
+
+Bez `.copy('replace')` idú všetky adresy pod cestou na koreň cieľa. Druhý server dostane adresu klienta v hlavičke `x-forwarded-for`.
 
 ---
 
