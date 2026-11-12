@@ -73,7 +73,7 @@ Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <po
 
 ## Čo pridáva Total.js 5 0.0.20?
 
-Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Je to beta: niektorú z nich použi iba v projekte, ktorý závisí od `total5@beta` alebo od 0.0.20 a novšej, a povedz to.
+Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Nový projekt ich má s `"total5": ">=0.0.20-2"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
 
 ## Ako sprístupním akciu ako nástroj MCP?
 

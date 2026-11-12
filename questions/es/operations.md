@@ -159,7 +159,7 @@ Con `LOGMAIL(correo, asunto, texto)`: un mensaje sencillo, sin vista. Usa el ser
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-En Total.js 5 0.0.19 pásale un texto: un objeto como cuerpo falla.
+El cuerpo también puede ser un objeto desde Total.js 5 0.0.20; en la 0.0.19 un objeto falla.
 
 ## ¿Cómo registro quién hizo qué?
 
@@ -252,4 +252,4 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. En Total.js 5 0.0.19 crea el token con `$.csrf()`: la directiva `@{csrf}` de una vista falla ahí.
+Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. Una vista puede escribir el token con `@{csrf}` desde Total.js 5 0.0.20; en la 0.0.19 esa directiva falla, así que créalo con `$.csrf()`.

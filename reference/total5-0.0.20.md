@@ -1,6 +1,6 @@
 # Total.js 5: what 0.0.20 adds
 
-The stable version of `total5` on npm is `0.0.19` (`latest`). Version `0.0.20` is the beta (`npm install total5@beta`, `0.0.20-3` when this page was written). An application with `"total5": "latest"` does not have what is on this page until 0.0.20 is the stable version: use a feature of this page only in a project that depends on `total5@beta` or on `0.0.20` and later, and say so.
+Version `0.0.20` of `total5` is the beta on npm (`0.0.20-3` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-2"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
 
 Every example here was run with `0.0.20-3`. The source of the list is the `changelog.txt` of the framework.
 

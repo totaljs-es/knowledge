@@ -24,7 +24,7 @@ public/         the static files
 	"version": "1.0.0",
 	"main": "index.js",
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	},
 	"scripts": {
 		"start": "node index.js 8000"

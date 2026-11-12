@@ -159,7 +159,7 @@ Cez `LOGMAIL(e-mail, predmet, text)`: jednoduchá správa bez view. Používa po
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-V Total.js 5 0.0.19 mu daj text: objekt ako telo zlyhá.
+Telo môže byť od Total.js 5 0.0.20 aj objekt; vo verzii 0.0.19 objekt zlyhá.
 
 ## Ako zaznamenám, kto čo urobil?
 
@@ -252,4 +252,4 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. V Total.js 5 0.0.19 vytvor token cez `$.csrf()`: direktíva `@{csrf}` vo view tam zlyhá.
+Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. View môže zapísať token cez `@{csrf}` od Total.js 5 0.0.20; vo verzii 0.0.19 táto direktíva zlyhá, preto ho vytvor cez `$.csrf()`.

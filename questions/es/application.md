@@ -55,7 +55,7 @@ Solo `total5`. El framework lleva dentro el servidor, las rutas, las plantillas,
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	}
 }
 ```
@@ -145,4 +145,4 @@ No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, l
 
 ## ¿Qué versión de Total.js 5 instalo?
 
-`"total5": "latest"` en `package.json` es la versión estable. La beta es `npm install total5@beta`. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+`"total5": ">=0.0.20-2"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.

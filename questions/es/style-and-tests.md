@@ -73,7 +73,7 @@ Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicaci
 
 ## ¿Qué añade Total.js 5 0.0.20?
 
-Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Es la beta: usa una de ellas solo en un proyecto que dependa de `total5@beta` o de 0.0.20 y posteriores, y dilo.
+Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Un proyecto nuevo las tiene con `"total5": ">=0.0.20-2"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
 
 ## ¿Cómo expongo una acción como herramienta MCP?
 

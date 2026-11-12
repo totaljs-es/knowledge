@@ -1219,7 +1219,9 @@
 		{
 			"file": "answers/versions.md",
 			"symbols": [
-				"json"
+				"cron",
+				"json",
+				"logmail"
 			],
 			"tags": [
 				"add",

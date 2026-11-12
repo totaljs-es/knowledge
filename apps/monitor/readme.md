@@ -35,7 +35,7 @@ CRON('0 0 * * *', function() {
 
 - The work itself is an action, `Sites|check`. The schedule only calls it, and the API can call it too (`sites_check`): the same code runs at its time and when someone asks, and it can be tested without waiting.
 - `ON('service')` is for "every N minutes". `CRON` is for a time of the day or of the week: `minute hour day month weekday`.
-- In Total.js 5 0.0.19 the step form of `CRON` (`*/5 * * * *`) runs every minute, not every five: it is fixed in 0.0.20. With the stable version write the list (`0,15,30,45 * * * *`) or use `ON('service')`.
+- The step form of `CRON` (`*/5 * * * *`) works from Total.js 5 0.0.20. In 0.0.19 it runs every minute, not every five: there write the list (`0,15,30,45 * * * *`) or use `ON('service')`.
 - No `setInterval` and no package for schedules.
 
 ## A request to another server

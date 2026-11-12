@@ -99,7 +99,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 ## Rules that apply to every change
 
 - Total.js 5 only. Do not use Total.js 4 APIs. The interface is jComponent 20.
-- `"total5": "latest"` is the stable version. Before using something that only a beta has (see `reference/`), check the version the project depends on and say which version it needs.
+- `"total5": ">=0.0.20-2"` is the version of a new project: 0.0.20 or later (its beta today, the stable version when it is published), because it fixes problems of 0.0.19. In a project that depends on another version, check it before using something of `reference/` and say which version it needs.
 - ES5 first: `var`, `function`, classic loops, `'{0}'.format()` instead of template literals, no arrow functions. `const` or `let` only where the code needs it, as a constant at the top of a file; inside a function write `var`. `async` / `await` where the code waits for the database.
 - `index.js` is always the official start script of Total.js 5, whole and unchanged (see `conventions/general/project-structure.md`). It is the one file that keeps its own style.
 - Use Total.js prototypes (`findItem`, `format`, `parseJSON`, `slug`, `isEmail`...) in the backend and Tangular templates in the frontend before any other function.
@@ -3671,7 +3671,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/reference/to
 
 # Total.js 5: what 0.0.20 adds
 
-The stable version of `total5` on npm is `0.0.19` (`latest`). Version `0.0.20` is the beta (`npm install total5@beta`, `0.0.20-3` when this page was written). An application with `"total5": "latest"` does not have what is on this page until 0.0.20 is the stable version: use a feature of this page only in a project that depends on `total5@beta` or on `0.0.20` and later, and say so.
+Version `0.0.20` of `total5` is the beta on npm (`0.0.20-3` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-2"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
 
 Every example here was run with `0.0.20-3`. The source of the list is the `changelog.txt` of the framework.
 
@@ -3826,7 +3826,7 @@ public/         the static files
 	"version": "1.0.0",
 	"main": "index.js",
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	},
 	"scripts": {
 		"start": "node index.js 8000"
@@ -4157,7 +4157,7 @@ CRON('0 0 * * *', function() {
 
 Put the work in an action and let the schedule only call it: the API can call it too, and it can be tested without waiting.
 
-Write the minutes of a `CRON` as a list (`0,15,30,45 * * * *`). The step form (`*/15 * * * *`) runs every minute in Total.js 5 0.0.19; it works as a step from 0.0.20.
+The step form of a `CRON` (`*/15 * * * *`) works from Total.js 5 0.0.20. In 0.0.19 it runs every minute: there write the minutes as a list (`0,15,30,45 * * * *`).
 
 Do not use `setInterval` or a package for schedules. The complete application: [`apps/monitor`](../apps/monitor).
 
@@ -4325,11 +4325,11 @@ question_es: ¿Qué versión de Total.js 5 debo usar y qué añade la beta?
 
 # Which version of Total.js 5 should I use, and what does the beta add?
 
-Use `"total5": "latest"` in `package.json`: it is the stable version. When this was written the stable version was `0.0.19` and the beta was `0.0.20`; `npm view total5 dist-tags` says which they are today.
+Use `"total5": ">=0.0.20-2"` in `package.json`: version 0.0.20 or later. The stable version on npm is still `0.0.19`, and 0.0.20 is its beta: it fixes several problems of 0.0.19 (the step of `CRON`, `LOGMAIL` with an object, `@{csrf}` in a view) and adds new things. That line installs the beta now and the stable 0.0.20 when it is published, with no change, and it never installs 0.0.19. `npm view total5 dist-tags` says which versions they are today.
 
 Total.js 5 is the current framework. Total.js 4 (`total4`) is the previous one and its code is not the same: do not mix them.
 
-What 0.0.20 adds is in [reference](../reference/total5-0.0.20.md): actions as MCP tools, the cache of an action, the field types `JSON` and `IP`, `$.content()`, `total5 test` and fakes for tests. Use one of those only in a project that depends on `total5@beta` or on 0.0.20 and later, and say which version it needs.
+What 0.0.20 adds is in [reference](../reference/total5-0.0.20.md): actions as MCP tools, the cache of an action, the field types `JSON` and `IP`, `$.content()`, `total5 test` and fakes for tests. A project with `"total5": "latest"` may still have 0.0.19: check its version before using one of those there, and say which version it needs.
 
 When you are not sure that a function exists in the version of the project, say so and check it in the source of the framework instead of guessing.
 
@@ -4394,7 +4394,7 @@ Only `total5`. The framework has the server, the routes, the templates, the data
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	}
 }
 ```
@@ -4484,7 +4484,7 @@ No. Total.js 5 is not built on Express and does not use its middleware. Routes, 
 
 ## Which version of Total.js 5 do I install?
 
-`"total5": "latest"` in `package.json` is the stable version. The beta is `npm install total5@beta`. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
+`"total5": ">=0.0.20-2"` in `package.json`: version 0.0.20 or later. Today it installs the beta of 0.0.20, which fixes several problems of 0.0.19, and the stable 0.0.20 when it is published. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
 
 ---
 
@@ -5186,7 +5186,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-In Total.js 5 0.0.19 a step (`*/5`) runs every minute; it is fixed in 0.0.20. For "every N minutes" use `ON('service')`.
+A step (`*/5`) works from Total.js 5 0.0.20; in 0.0.19 it runs every minute. For "every N minutes" `ON('service')` works in both.
 
 ## Should I use setInterval for repeated work?
 
@@ -6013,7 +6013,7 @@ A clean, disposable database only for tests, never the one of the application. B
 
 ## What does Total.js 5 0.0.20 add?
 
-Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. It is the beta: use one of them only in a project that depends on `total5@beta` or on 0.0.20 and later, and say so.
+Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. A new project has them with `"total5": ">=0.0.20-2"`. In a project that still has 0.0.19, check the version first and say which one it needs.
 
 ## How do I expose an action as an MCP tool?
 
@@ -6858,7 +6858,7 @@ With `LOGMAIL(email, subject, text)`: a plain message, without a view. It uses t
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-In Total.js 5 0.0.19 give it a text: an object as the body fails.
+The body can be an object too from Total.js 5 0.0.20; in 0.0.19 an object fails.
 
 ## How do I record who did what?
 
@@ -6951,7 +6951,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. In Total.js 5 0.0.19 make the token with `$.csrf()`: the directive `@{csrf}` of a view fails there.
+A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. A view can write the token with `@{csrf}` from Total.js 5 0.0.20; in 0.0.19 that directive fails, so make it with `$.csrf()`.
 
 ---
 
@@ -7014,7 +7014,7 @@ Solo `total5`. El framework lleva dentro el servidor, las rutas, las plantillas,
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	}
 }
 ```
@@ -7104,7 +7104,7 @@ No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, l
 
 ## ¿Qué versión de Total.js 5 instalo?
 
-`"total5": "latest"` en `package.json` es la versión estable. La beta es `npm install total5@beta`. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+`"total5": ">=0.0.20-2"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
 
 ---
 
@@ -7806,7 +7806,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-En Total.js 5 0.0.19 un paso (`*/5`) se ejecuta cada minuto; está corregido en 0.0.20. Para «cada N minutos» usa `ON('service')`.
+Un paso (`*/5`) funciona desde Total.js 5 0.0.20; en la 0.0.19 se ejecuta cada minuto. Para «cada N minutos», `ON('service')` funciona en las dos.
 
 ## ¿Debo usar setInterval para trabajo repetido?
 
@@ -8633,7 +8633,7 @@ Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicaci
 
 ## ¿Qué añade Total.js 5 0.0.20?
 
-Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Es la beta: usa una de ellas solo en un proyecto que dependa de `total5@beta` o de 0.0.20 y posteriores, y dilo.
+Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Un proyecto nuevo las tiene con `"total5": ">=0.0.20-2"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
 
 ## ¿Cómo expongo una acción como herramienta MCP?
 
@@ -9478,7 +9478,7 @@ Con `LOGMAIL(correo, asunto, texto)`: un mensaje sencillo, sin vista. Usa el ser
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-En Total.js 5 0.0.19 pásale un texto: un objeto como cuerpo falla.
+El cuerpo también puede ser un objeto desde Total.js 5 0.0.20; en la 0.0.19 un objeto falla.
 
 ## ¿Cómo registro quién hizo qué?
 
@@ -9571,7 +9571,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. En Total.js 5 0.0.19 crea el token con `$.csrf()`: la directiva `@{csrf}` de una vista falla ahí.
+Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. Una vista puede escribir el token con `@{csrf}` desde Total.js 5 0.0.20; en la 0.0.19 esa directiva falla, así que créalo con `$.csrf()`.
 
 ---
 
@@ -9634,7 +9634,7 @@ Iba `total5`. Framework má v sebe server, routy, šablóny, nástroj na dopyty 
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": "latest"
+		"total5": ">=0.0.20-2"
 	}
 }
 ```
@@ -9724,7 +9724,7 @@ Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Rou
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 
-`"total5": "latest"` v `package.json` je stabilná verzia. Beta je `npm install total5@beta`. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
+`"total5": ">=0.0.20-2"` v `package.json`: verzia 0.0.20 alebo novšia. Dnes nainštaluje betu 0.0.20, ktorá opravuje viacero problémov verzie 0.0.19, a stabilnú 0.0.20, keď vyjde. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
 
 ---
 
@@ -10426,7 +10426,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-V Total.js 5 0.0.19 sa krok (`*/5`) spúšťa každú minútu; v 0.0.20 je to opravené. Pre „každých N minút“ použi `ON('service')`.
+Krok (`*/5`) funguje od Total.js 5 0.0.20; vo verzii 0.0.19 sa spúšťa každú minútu. Pre „každých N minút“ funguje `ON('service')` v oboch.
 
 ## Mám na opakovanú prácu použiť setInterval?
 
@@ -11253,7 +11253,7 @@ Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <po
 
 ## Čo pridáva Total.js 5 0.0.20?
 
-Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Je to beta: niektorú z nich použi iba v projekte, ktorý závisí od `total5@beta` alebo od 0.0.20 a novšej, a povedz to.
+Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Nový projekt ich má s `"total5": ">=0.0.20-2"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
 
 ## Ako sprístupním akciu ako nástroj MCP?
 
@@ -12098,7 +12098,7 @@ Cez `LOGMAIL(e-mail, predmet, text)`: jednoduchá správa bez view. Používa po
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-V Total.js 5 0.0.19 mu daj text: objekt ako telo zlyhá.
+Telo môže byť od Total.js 5 0.0.20 aj objekt; vo verzii 0.0.19 objekt zlyhá.
 
 ## Ako zaznamenám, kto čo urobil?
 
@@ -12191,7 +12191,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. V Total.js 5 0.0.19 vytvor token cez `$.csrf()`: direktíva `@{csrf}` vo view tam zlyhá.
+Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. View môže zapísať token cez `@{csrf}` od Total.js 5 0.0.20; vo verzii 0.0.19 táto direktíva zlyhá, preto ho vytvor cez `$.csrf()`.
 
 ---
 
@@ -12417,7 +12417,7 @@ CRON('0 0 * * *', function() {
 
 - The work itself is an action, `Sites|check`. The schedule only calls it, and the API can call it too (`sites_check`): the same code runs at its time and when someone asks, and it can be tested without waiting.
 - `ON('service')` is for "every N minutes". `CRON` is for a time of the day or of the week: `minute hour day month weekday`.
-- In Total.js 5 0.0.19 the step form of `CRON` (`*/5 * * * *`) runs every minute, not every five: it is fixed in 0.0.20. With the stable version write the list (`0,15,30,45 * * * *`) or use `ON('service')`.
+- The step form of `CRON` (`*/5 * * * *`) works from Total.js 5 0.0.20. In 0.0.19 it runs every minute, not every five: there write the list (`0,15,30,45 * * * *`) or use `ON('service')`.
 - No `setInterval` and no package for schedules.
 
 ## A request to another server

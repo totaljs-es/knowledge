@@ -73,7 +73,7 @@ A clean, disposable database only for tests, never the one of the application. B
 
 ## What does Total.js 5 0.0.20 add?
 
-Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. It is the beta: use one of them only in a project that depends on `total5@beta` or on 0.0.20 and later, and say so.
+Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. A new project has them with `"total5": ">=0.0.20-2"`. In a project that still has 0.0.19, check the version first and say which one it needs.
 
 ## How do I expose an action as an MCP tool?
 
