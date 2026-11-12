@@ -48,6 +48,8 @@ var PAGES = [
 	['jComponent', 'reference/jcomponent/aicontext/ui-import.md', 'Load a part when needed: ui-import', 'Dynamic content of the interface'],
 	['jComponent', 'reference/jcomponent/api.md', 'The API of the library', 'The methods of the library and what a component can implement'],
 	['jComponent', 'reference/jcomponent/aicontext/component-development.md', 'Write a component', 'From a description to a component: contract, hooks, data flow, verification'],
+	['jComponent', 'reference/components/readme.md', 'jComponent 20: the published components', 'The catalogue: every published component by name with what it does; look here before writing a piece of interface by hand'],
+	['jComponent', 'reference/icons.md', 'Total Icons: the names', 'The names of the icons of the library, used as ti ti-name; a name that is not in the list draws nothing'],
 	['Reference', 'reference/total5-0.0.20.md', 'What Total.js 5 0.0.20 adds', 'MCP tools from actions, the cache of an action, the types JSON and IP, $.content, the environment of an action, total5 test and fakes; each one tried with the beta'],
 	['Answers', 'answers/new-application.md', 'How do I start a new Total.js 5 application?', 'A short answer with its code and the application that shows it'],
 	['Answers', 'answers/routes-and-actions.md', 'Where do the routes and the logic of an API go?', 'A short answer with its code and the application that shows it'],
@@ -108,6 +110,22 @@ var PAGES = [
 	['Applications', 'apps/board/readme.md', 'Board: an application with plugins', 'Each feature with its routes, actions, screen and form, in jComponent 20']
 ];
 
+// The published components: one page each, its readme copied from the repository of the components. They are listed from the folder, with the
+// name and the description of their header.
+var COMPONENTS = 'reference/components';
+
+Fs.readdirSync(Path.join(ROOT, COMPONENTS)).filter(function(name) {
+	return name.endsWith('.md') && name !== 'readme.md';
+}).sort(function(a, b) {
+	return a.toLowerCase().localeCompare(b.toLowerCase());
+}).forEach(function(name) {
+	var text = Fs.readFileSync(Path.join(ROOT, COMPONENTS, name), 'utf8');
+	var head = (text.match(/^---\n([\s\S]*?)\n---/) || ['', ''])[1];
+	var title = (head.match(/^name:\s*(.+)$/m) || ['', name.replace(/\.md$/, '')])[1].trim();
+	var description = (head.match(/^description:\s*(.+)$/m) || ['', ''])[1].trim();
+	PAGES.push(['Components', COMPONENTS + '/' + name, 'j-' + title + ' (' + name.replace(/\.md$/, '') + ')', description || 'A published component']);
+});
+
 exports.PAGES = PAGES;
 
 exports.index = function() {
@@ -134,6 +152,9 @@ exports.full = function() {
 
 	for (var i = 0; i < PAGES.length; i++) {
 		var page = PAGES[i];
+		// The pages of the components are many and long: the catalogue is here, and each page is read from its own address
+		if (page[0] === 'Components')
+			continue;
 		var text = Fs.readFileSync(Path.join(ROOT, page[1]), 'utf8').replace(/\r\n/g, '\n').trim();
 		lines.push('---', '', 'Source: ' + BASE + page[1], '', text, '');
 	}

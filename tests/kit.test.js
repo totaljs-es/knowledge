@@ -134,6 +134,52 @@ Test.push('the answers', function(next) {
 	next();
 });
 
+Test.push('the components and the icons', function(next) {
+
+	var files = Total.Fs.readdirSync(Total.Path.join(ROOT, 'reference/components')).filter(function(name) {
+		return name.endsWith('.md') && name !== 'readme.md';
+	});
+	var catalogue = read('reference/components/readme.md');
+
+	check('there are more than 300 components, each with its page', files.length > 300);
+	check('every component is in the catalogue with its page', files.every(function(name) {
+		return catalogue.indexOf('[`' + name.replace(/\.md$/, '') + '`](' + name + ')') !== -1;
+	}));
+	check('every page of a component has the name and the description of its header', files.every(function(name) {
+		var text = read('reference/components/' + name);
+		return (/^---\n[\s\S]*?^name: .+$[\s\S]*?^description: .+$[\s\S]*?\n---/m).test(text);
+	}));
+	check('the components the pages teach are in the catalogue', ['input', 'exec', 'validate', 'miniform', 'importer', 'approve', 'notify', 'errorhandler', 'locale', 'datagrid'].every(function(name) {
+		return files.indexOf(name + '.md') !== -1;
+	}));
+	check('the notice of the license is with the copies', Total.Fs.existsSync(Total.Path.join(ROOT, 'reference/components/LICENSE')));
+
+	var icons = {};
+	read('reference/icons.md').split('\n').forEach(function(line) {
+		if (line.startsWith('- **'))
+			line.substring(line.indexOf(':') + 1).split(',').forEach(function(name) {
+				icons[name.trim()] = 1;
+			});
+	});
+
+	check('there are more than 500 icons', Object.keys(icons).length > 500);
+
+	// An icon that a page or an application uses must exist; "name" is the placeholder of the explanation
+	var used = {};
+	pages('conventions').concat(pages('answers'), pages('questions'), pages('apps')).forEach(function(file) {
+		(read(file).match(/ti ti-[a-z0-9-]+/g) || []).forEach(function(name) {
+			used[name.substring(6)] = file;
+		});
+	});
+
+	Object.keys(used).forEach(function(name) {
+		if (name !== 'name')
+			check('the icon ' + name + ' of ' + used[name] + ' exists', icons[name] === 1);
+	});
+
+	next();
+});
+
 Test.push('the questions', function(next) {
 
 	var files = Total.Fs.readdirSync(Total.Path.join(ROOT, 'questions')).filter(function(name) {
@@ -197,6 +243,9 @@ Test.push('the pages', function(next) {
 		var match;
 		while ((match = regex.exec(text))) {
 			if (/^(https?:|mailto:)/.test(match[1]))
+				continue;
+			// The pages of the components are copies of their readmes and are not edited
+			if (file.startsWith('reference/components/') && file !== 'reference/components/readme.md')
 				continue;
 			// The official guides are copies and are not edited: one of them mentions a page that its source does not have either
 			if (file === 'reference/jcomponent/aicontext/component-development.md' && match[1] === 'jcomponent-components.md')

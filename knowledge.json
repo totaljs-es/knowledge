@@ -3,6 +3,7 @@
 		{
 			"file": "README.md",
 			"symbols": [
+				"data",
 				"filestorage",
 				"memorize",
 				"nosql"
@@ -25,6 +26,7 @@
 			"symbols": [
 				"componentator",
 				"conf",
+				"data",
 				"filestorage",
 				"func",
 				"main",
@@ -87,6 +89,7 @@
 		{
 			"file": "conventions/general/native-patterns.md",
 			"symbols": [
+				"data",
 				"filestorage",
 				"func",
 				"memorize",
@@ -123,7 +126,8 @@
 				"auth",
 				"func",
 				"main",
-				"repo"
+				"repo",
+				"route"
 			],
 			"tags": [
 				"application",
@@ -145,6 +149,7 @@
 			"file": "conventions/general/javascript-style.md",
 			"symbols": [
 				"conf",
+				"data",
 				"emptyarray",
 				"emptyobject",
 				"filestorage",
@@ -186,6 +191,7 @@
 			"file": "conventions/general/testing.md",
 			"symbols": [
 				"conf",
+				"data",
 				"loadconfig",
 				"require"
 			],
@@ -213,6 +219,7 @@
 			"file": "conventions/backend/actions.md",
 			"symbols": [
 				"action",
+				"data",
 				"newaction",
 				"newschema",
 				"uid",
@@ -271,7 +278,8 @@
 			"symbols": [
 				"auth",
 				"blocked",
-				"newaction"
+				"newaction",
+				"route"
 			],
 			"tags": [
 				"action",
@@ -311,6 +319,7 @@
 			"file": "conventions/backend/storage-and-integrations.md",
 			"symbols": [
 				"conf",
+				"data",
 				"emit",
 				"error",
 				"filestorage",
@@ -345,6 +354,7 @@
 			"tags": [
 				"answer",
 				"answers",
+				"data",
 				"file",
 				"files",
 				"gotcha",
@@ -392,6 +402,7 @@
 		{
 			"file": "conventions/database/queries.md",
 			"symbols": [
+				"data",
 				"newaction",
 				"now",
 				"pg_escape",
@@ -455,6 +466,7 @@
 				"class",
 				"error",
 				"plugin",
+				"route",
 				"set",
 				"setter"
 			],
@@ -667,6 +679,7 @@
 				"conditional",
 				"config",
 				"contract",
+				"data",
 				"declaration",
 				"default",
 				"element",
@@ -972,6 +985,30 @@
 			]
 		},
 		{
+			"file": "reference/components/readme.md",
+			"symbols": [
+				"componentator",
+				"ean13"
+			],
+			"tags": [
+				"component",
+				"components",
+				"jcomponent",
+				"published"
+			]
+		},
+		{
+			"file": "reference/icons.md",
+			"symbols": [],
+			"tags": [
+				"icon",
+				"icons",
+				"name",
+				"names",
+				"total"
+			]
+		},
+		{
 			"file": "reference/total5-0.0.20.md",
 			"symbols": [
 				"action",
@@ -979,7 +1016,8 @@
 				"auth",
 				"cron",
 				"json",
-				"newaction"
+				"newaction",
+				"route"
 			],
 			"tags": [
 				"actions",
@@ -1028,6 +1066,7 @@
 			"symbols": [
 				"newaction",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -1048,6 +1087,7 @@
 		{
 			"file": "answers/which-storage.md",
 			"symbols": [
+				"data",
 				"filestorage",
 				"memorize",
 				"nosql"
@@ -1061,6 +1101,7 @@
 		{
 			"file": "answers/move-to-postgresql.md",
 			"symbols": [
+				"data",
 				"error"
 			],
 			"tags": [
@@ -1075,7 +1116,8 @@
 			"file": "answers/protect-an-api.md",
 			"symbols": [
 				"auth",
-				"blocked"
+				"blocked",
+				"route"
 			],
 			"tags": [
 				"api",
@@ -1090,6 +1132,7 @@
 				"filestorage",
 				"newaction",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -1101,6 +1144,7 @@
 		{
 			"file": "answers/websocket.md",
 			"symbols": [
+				"route",
 				"setter",
 				"socket",
 				"type"
@@ -1124,7 +1168,9 @@
 		},
 		{
 			"file": "answers/pages.md",
-			"symbols": [],
+			"symbols": [
+				"route"
+			],
 			"tags": [
 				"layout",
 				"page"
@@ -1156,7 +1202,9 @@
 			"symbols": [
 				"conf",
 				"cron",
+				"data",
 				"newaction",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -1235,9 +1283,11 @@
 			"file": "questions/actions.md",
 			"symbols": [
 				"action",
+				"data",
 				"error",
 				"newaction",
 				"newschema",
+				"route",
 				"uid",
 				"url"
 			],
@@ -1288,7 +1338,8 @@
 				"blocked",
 				"get",
 				"newaction",
-				"post"
+				"post",
+				"route"
 			],
 			"tags": [
 				"action",
@@ -1336,6 +1387,7 @@
 		{
 			"file": "questions/data.md",
 			"symbols": [
+				"data",
 				"error",
 				"newaction",
 				"now",
@@ -1395,12 +1447,14 @@
 		{
 			"file": "questions/storage.md",
 			"symbols": [
+				"data",
 				"file",
 				"filestorage",
 				"memorize",
 				"newaction",
 				"nosql",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -1449,6 +1503,7 @@
 				"loadconfig",
 				"noop",
 				"post",
+				"route",
 				"socket"
 			],
 			"tags": [
@@ -1499,7 +1554,8 @@
 		{
 			"file": "questions/views.md",
 			"symbols": [
-				"plugin"
+				"plugin",
+				"route"
 			],
 			"tags": [
 				"answer",
@@ -1508,6 +1564,7 @@
 				"change",
 				"condition",
 				"css",
+				"data",
 				"file",
 				"javascript",
 				"kind",
@@ -1586,6 +1643,7 @@
 				"componentator",
 				"error",
 				"plugin",
+				"route",
 				"set",
 				"setter"
 			],
@@ -1601,6 +1659,7 @@
 				"components",
 				"confirmation",
 				"css",
+				"data",
 				"find",
 				"form",
 				"function",
@@ -1680,7 +1739,8 @@
 			"symbols": [
 				"json",
 				"newaction",
-				"now"
+				"now",
+				"route"
 			],
 			"tags": [
 				"action",
@@ -1741,6 +1801,7 @@
 				"memorize",
 				"newthread",
 				"options",
+				"route",
 				"translate"
 			],
 			"tags": [
@@ -1855,9 +1916,11 @@
 			"file": "questions/es/actions.md",
 			"symbols": [
 				"action",
+				"data",
 				"error",
 				"newaction",
 				"newschema",
+				"route",
 				"uid",
 				"url"
 			],
@@ -1929,7 +1992,8 @@
 				"blocked",
 				"get",
 				"newaction",
-				"post"
+				"post",
+				"route"
 			],
 			"tags": [
 				"acceso",
@@ -1991,6 +2055,7 @@
 		{
 			"file": "questions/es/data.md",
 			"symbols": [
+				"data",
 				"error",
 				"newaction",
 				"now",
@@ -2069,12 +2134,14 @@
 		{
 			"file": "questions/es/storage.md",
 			"symbols": [
+				"data",
 				"file",
 				"filestorage",
 				"memorize",
 				"newaction",
 				"nosql",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -2139,6 +2206,7 @@
 				"loadconfig",
 				"noop",
 				"post",
+				"route",
 				"socket"
 			],
 			"tags": [
@@ -2205,7 +2273,8 @@
 		{
 			"file": "questions/es/views.md",
 			"symbols": [
-				"plugin"
+				"plugin",
+				"route"
 			],
 			"tags": [
 				"ajuste",
@@ -2323,6 +2392,7 @@
 				"componentator",
 				"error",
 				"plugin",
+				"route",
 				"set",
 				"setter"
 			],
@@ -2441,7 +2511,8 @@
 			"symbols": [
 				"json",
 				"newaction",
-				"now"
+				"now",
+				"route"
 			],
 			"tags": [
 				"acci",
@@ -2523,6 +2594,7 @@
 				"memorize",
 				"newthread",
 				"options",
+				"route",
 				"translate"
 			],
 			"tags": [
@@ -2647,9 +2719,11 @@
 			"file": "questions/sk/actions.md",
 			"symbols": [
 				"action",
+				"data",
 				"error",
 				"newaction",
 				"newschema",
+				"route",
 				"uid",
 				"url"
 			],
@@ -2715,7 +2789,8 @@
 				"blocked",
 				"get",
 				"newaction",
-				"post"
+				"post",
+				"route"
 			],
 			"tags": [
 				"akcia",
@@ -2772,6 +2847,7 @@
 		{
 			"file": "questions/sk/data.md",
 			"symbols": [
+				"data",
 				"error",
 				"newaction",
 				"now",
@@ -2844,12 +2920,14 @@
 		{
 			"file": "questions/sk/storage.md",
 			"symbols": [
+				"data",
 				"file",
 				"filestorage",
 				"memorize",
 				"newaction",
 				"nosql",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -2909,6 +2987,7 @@
 				"loadconfig",
 				"noop",
 				"post",
+				"route",
 				"socket"
 			],
 			"tags": [
@@ -2972,7 +3051,8 @@
 		{
 			"file": "questions/sk/views.md",
 			"symbols": [
-				"plugin"
+				"plugin",
+				"route"
 			],
 			"tags": [
 				"ade",
@@ -3084,6 +3164,7 @@
 				"componentator",
 				"error",
 				"plugin",
+				"route",
 				"set",
 				"setter"
 			],
@@ -3192,7 +3273,8 @@
 			"symbols": [
 				"json",
 				"newaction",
-				"now"
+				"now",
+				"route"
 			],
 			"tags": [
 				"akcie",
@@ -3266,6 +3348,7 @@
 				"memorize",
 				"newthread",
 				"options",
+				"route",
 				"translate"
 			],
 			"tags": [
@@ -3319,6 +3402,7 @@
 		{
 			"file": "apps/contacts/readme.md",
 			"symbols": [
+				"data",
 				"post"
 			],
 			"tags": [
@@ -3334,6 +3418,7 @@
 		{
 			"file": "apps/contacts-postgresql/readme.md",
 			"symbols": [
+				"data",
 				"error",
 				"skipped",
 				"uid"
@@ -3352,9 +3437,11 @@
 		{
 			"file": "apps/files/readme.md",
 			"symbols": [
+				"data",
 				"file",
 				"filestorage",
 				"post",
+				"route",
 				"uid"
 			],
 			"tags": [
@@ -3376,6 +3463,7 @@
 			"symbols": [
 				"action",
 				"cron",
+				"data",
 				"error",
 				"get",
 				"memorize"
@@ -3397,7 +3485,9 @@
 		},
 		{
 			"file": "apps/website/readme.md",
-			"symbols": [],
+			"symbols": [
+				"route"
+			],
 			"tags": [
 				"layout",
 				"made",
@@ -3412,7 +3502,9 @@
 		{
 			"file": "apps/chat/readme.md",
 			"symbols": [
+				"data",
 				"push",
+				"route",
 				"setter",
 				"socket",
 				"type"
@@ -3433,6 +3525,7 @@
 			"symbols": [
 				"auth",
 				"plugin",
+				"route",
 				"set"
 			],
 			"tags": [
@@ -3444,6 +3537,2860 @@
 				"run",
 				"sign",
 				"test"
+			]
+		},
+		{
+			"file": "reference/components/ajaxloading.md",
+			"symbols": [
+				"ajax"
+			],
+			"tags": [
+				"ajaxloading"
+			]
+		},
+		{
+			"file": "reference/components/animation.md",
+			"symbols": [],
+			"tags": [
+				"animation",
+				"configuration",
+				"element"
+			]
+		},
+		{
+			"file": "reference/components/approve.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"approve",
+				"button",
+				"buttons",
+				"simple",
+				"styling"
+			]
+		},
+		{
+			"file": "reference/components/aselected.md",
+			"symbols": [],
+			"tags": [
+				"aselected"
+			]
+		},
+		{
+			"file": "reference/components/attachments.md",
+			"symbols": [],
+			"tags": [
+				"attachment",
+				"attachments"
+			]
+		},
+		{
+			"file": "reference/components/audio.md",
+			"symbols": [],
+			"tags": [
+				"audio"
+			]
+		},
+		{
+			"file": "reference/components/autocomplete.md",
+			"symbols": [
+				"ajax",
+				"setter"
+			],
+			"tags": [
+				"autocomplete"
+			]
+		},
+		{
+			"file": "reference/components/autodarkmode.md",
+			"symbols": [],
+			"tags": [
+				"autodarkmode"
+			]
+		},
+		{
+			"file": "reference/components/autoexec.md",
+			"symbols": [
+				"set"
+			],
+			"tags": [
+				"autoexec"
+			]
+		},
+		{
+			"file": "reference/components/autofill.md",
+			"symbols": [],
+			"tags": [
+				"autofill"
+			]
+		},
+		{
+			"file": "reference/components/autoselect.md",
+			"symbols": [],
+			"tags": [
+				"autoselect"
+			]
+		},
+		{
+			"file": "reference/components/avatar.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"avatar",
+				"contributor"
+			]
+		},
+		{
+			"file": "reference/components/backtotop.md",
+			"symbols": [],
+			"tags": [
+				"backtotop"
+			]
+		},
+		{
+			"file": "reference/components/backup.md",
+			"symbols": [],
+			"tags": [
+				"backup"
+			]
+		},
+		{
+			"file": "reference/components/banners.md",
+			"symbols": [],
+			"tags": [
+				"banner",
+				"banners"
+			]
+		},
+		{
+			"file": "reference/components/barchart.md",
+			"symbols": [],
+			"tags": [
+				"barchart"
+			]
+		},
+		{
+			"file": "reference/components/box.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"box"
+			]
+		},
+		{
+			"file": "reference/components/breadcrumb.md",
+			"symbols": [
+				"redirect"
+			],
+			"tags": [
+				"breadcrumb",
+				"data",
+				"example",
+				"method",
+				"methods",
+				"source"
+			]
+		},
+		{
+			"file": "reference/components/button.md",
+			"symbols": [
+				"inc",
+				"set",
+				"upd"
+			],
+			"tags": [
+				"button"
+			]
+		},
+		{
+			"file": "reference/components/calendar.md",
+			"symbols": [
+				"find"
+			],
+			"tags": [
+				"calendar",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/carousel.md",
+			"symbols": [],
+			"tags": [
+				"carousel"
+			]
+		},
+		{
+			"file": "reference/components/carousel2.md",
+			"symbols": [],
+			"tags": [
+				"carousel2"
+			]
+		},
+		{
+			"file": "reference/components/centered.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"centered"
+			]
+		},
+		{
+			"file": "reference/components/changer.md",
+			"symbols": [
+				"plugin"
+			],
+			"tags": [
+				"changer"
+			]
+		},
+		{
+			"file": "reference/components/checkbox.md",
+			"symbols": [],
+			"tags": [
+				"checkbox"
+			]
+		},
+		{
+			"file": "reference/components/checkboxlist.md",
+			"symbols": [],
+			"tags": [
+				"author",
+				"checkboxlist"
+			]
+		},
+		{
+			"file": "reference/components/checkboxlistexpert.md",
+			"symbols": [],
+			"tags": [
+				"checkboxlistexpert"
+			]
+		},
+		{
+			"file": "reference/components/checkpath.md",
+			"symbols": [],
+			"tags": [
+				"checkpath"
+			]
+		},
+		{
+			"file": "reference/components/children.md",
+			"symbols": [],
+			"tags": [
+				"children"
+			]
+		},
+		{
+			"file": "reference/components/choose.md",
+			"symbols": [],
+			"tags": [
+				"choose"
+			]
+		},
+		{
+			"file": "reference/components/chunkyscroll.md",
+			"symbols": [],
+			"tags": [
+				"chunkyscroll"
+			]
+		},
+		{
+			"file": "reference/components/cl.md",
+			"symbols": [],
+			"tags": []
+		},
+		{
+			"file": "reference/components/clbind.md",
+			"symbols": [],
+			"tags": [
+				"clbind"
+			]
+		},
+		{
+			"file": "reference/components/click.md",
+			"symbols": [],
+			"tags": [
+				"click"
+			]
+		},
+		{
+			"file": "reference/components/clickbox.md",
+			"symbols": [],
+			"tags": [
+				"clickbox"
+			]
+		},
+		{
+			"file": "reference/components/clipboard.md",
+			"symbols": [
+				"find",
+				"setter"
+			],
+			"tags": [
+				"clipboard"
+			]
+		},
+		{
+			"file": "reference/components/clipboardimage.md",
+			"symbols": [
+				"ajax"
+			],
+			"tags": [
+				"clipboardimage"
+			]
+		},
+		{
+			"file": "reference/components/clock.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"clock",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/cloudeditor.md",
+			"symbols": [],
+			"tags": [
+				"cloudeditor"
+			]
+		},
+		{
+			"file": "reference/components/cloudeditorsimple.md",
+			"symbols": [],
+			"tags": [
+				"cloudeditorsimple"
+			]
+		},
+		{
+			"file": "reference/components/code.md",
+			"symbols": [],
+			"tags": [
+				"code"
+			]
+		},
+		{
+			"file": "reference/components/codemirror.md",
+			"symbols": [],
+			"tags": [
+				"codemirror"
+			]
+		},
+		{
+			"file": "reference/components/colorpicker.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"colorpicker",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/colorpickerbutton.md",
+			"symbols": [],
+			"tags": [
+				"colorpickerbutton"
+			]
+		},
+		{
+			"file": "reference/components/colorselector.md",
+			"symbols": [],
+			"tags": [
+				"colorselector"
+			]
+		},
+		{
+			"file": "reference/components/columns.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"column",
+				"columns"
+			]
+		},
+		{
+			"file": "reference/components/configuration.md",
+			"symbols": [],
+			"tags": [
+				"configuration",
+				"declaration"
+			]
+		},
+		{
+			"file": "reference/components/confirm.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"button",
+				"buttons",
+				"confirm",
+				"simple",
+				"styling"
+			]
+		},
+		{
+			"file": "reference/components/console.md",
+			"symbols": [],
+			"tags": [
+				"console"
+			]
+		},
+		{
+			"file": "reference/components/console2.md",
+			"symbols": [],
+			"tags": [
+				"console2"
+			]
+		},
+		{
+			"file": "reference/components/contenteditable.md",
+			"symbols": [],
+			"tags": [
+				"contenteditable"
+			]
+		},
+		{
+			"file": "reference/components/contentslider.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"contentslider"
+			]
+		},
+		{
+			"file": "reference/components/contextmenu.md",
+			"symbols": [],
+			"tags": [
+				"contextmenu"
+			]
+		},
+		{
+			"file": "reference/components/controls.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"control",
+				"controls",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/cookie.md",
+			"symbols": [],
+			"tags": [
+				"cookie"
+			]
+		},
+		{
+			"file": "reference/components/cookie2.md",
+			"symbols": [],
+			"tags": [
+				"cookie2"
+			]
+		},
+		{
+			"file": "reference/components/countdown.md",
+			"symbols": [],
+			"tags": [
+				"countdown"
+			]
+		},
+		{
+			"file": "reference/components/crop.md",
+			"symbols": [
+				"find"
+			],
+			"tags": [
+				"crop"
+			]
+		},
+		{
+			"file": "reference/components/csv-export.md",
+			"symbols": [],
+			"tags": [
+				"csv",
+				"csvexport",
+				"export"
+			]
+		},
+		{
+			"file": "reference/components/dashboard.md",
+			"symbols": [
+				"push",
+				"return",
+				"setter"
+			],
+			"tags": [
+				"dashboard"
+			]
+		},
+		{
+			"file": "reference/components/datagrid.md",
+			"symbols": [
+				"exec",
+				"null",
+				"number",
+				"set",
+				"upd"
+			],
+			"tags": [
+				"datagrid"
+			]
+		},
+		{
+			"file": "reference/components/datasource.md",
+			"symbols": [
+				"ajax"
+			],
+			"tags": [
+				"datasource"
+			]
+		},
+		{
+			"file": "reference/components/datatable.md",
+			"symbols": [
+				"exec",
+				"number",
+				"set"
+			],
+			"tags": [
+				"datatable"
+			]
+		},
+		{
+			"file": "reference/components/datepicker.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"datepicker",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/detach.md",
+			"symbols": [],
+			"tags": [
+				"detach"
+			]
+		},
+		{
+			"file": "reference/components/detail.md",
+			"symbols": [],
+			"tags": [
+				"detail"
+			]
+		},
+		{
+			"file": "reference/components/developer.md",
+			"symbols": [],
+			"tags": [
+				"developer"
+			]
+		},
+		{
+			"file": "reference/components/diagram.md",
+			"symbols": [],
+			"tags": [
+				"author",
+				"diagram"
+			]
+		},
+		{
+			"file": "reference/components/directory.md",
+			"symbols": [
+				"html",
+				"setter"
+			],
+			"tags": [
+				"directory"
+			]
+		},
+		{
+			"file": "reference/components/disable.md",
+			"symbols": [
+				"reset"
+			],
+			"tags": [
+				"disable"
+			]
+		},
+		{
+			"file": "reference/components/display.md",
+			"symbols": [
+				"width"
+			],
+			"tags": [
+				"display"
+			]
+		},
+		{
+			"file": "reference/components/dockable.md",
+			"symbols": [
+				"push",
+				"setter"
+			],
+			"tags": [
+				"dockable"
+			]
+		},
+		{
+			"file": "reference/components/donutchart.md",
+			"symbols": [],
+			"tags": [
+				"donutchart"
+			]
+		},
+		{
+			"file": "reference/components/dragdropelement.md",
+			"symbols": [],
+			"tags": [
+				"dragdropelement"
+			]
+		},
+		{
+			"file": "reference/components/dragdropfiles.md",
+			"symbols": [],
+			"tags": [
+				"dragdropfile",
+				"dragdropfiles"
+			]
+		},
+		{
+			"file": "reference/components/draggable.md",
+			"symbols": [],
+			"tags": [
+				"draggable"
+			]
+		},
+		{
+			"file": "reference/components/drawer.md",
+			"symbols": [],
+			"tags": [
+				"drawer"
+			]
+		},
+		{
+			"file": "reference/components/drawzone.md",
+			"symbols": [],
+			"tags": [
+				"drawzone"
+			]
+		},
+		{
+			"file": "reference/components/dropdown.md",
+			"symbols": [],
+			"tags": [
+				"dropdown"
+			]
+		},
+		{
+			"file": "reference/components/dropdowncheckbox.md",
+			"symbols": [],
+			"tags": [
+				"dropdowncheckbox"
+			]
+		},
+		{
+			"file": "reference/components/dropdownlist.md",
+			"symbols": [],
+			"tags": [
+				"dropdownlist"
+			]
+		},
+		{
+			"file": "reference/components/dropfiles.md",
+			"symbols": [],
+			"tags": [
+				"dropfile",
+				"dropfiles"
+			]
+		},
+		{
+			"file": "reference/components/duplicator.md",
+			"symbols": [],
+			"tags": [
+				"advanced",
+				"duplicator",
+				"templating"
+			]
+		},
+		{
+			"file": "reference/components/dynamicvalue.md",
+			"symbols": [
+				"ajax",
+				"tapi"
+			],
+			"tags": [
+				"dynamicvalue",
+				"inline",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/dynamicvaluelist.md",
+			"symbols": [
+				"ajax",
+				"tapi"
+			],
+			"tags": [
+				"dynamicvaluelist",
+				"inline",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/EAN13.md",
+			"symbols": [],
+			"tags": [
+				"ean13"
+			]
+		},
+		{
+			"file": "reference/components/edit.md",
+			"symbols": [],
+			"tags": [
+				"edit"
+			]
+		},
+		{
+			"file": "reference/components/editable.md",
+			"symbols": [
+				"enter",
+				"esc"
+			],
+			"tags": [
+				"editable"
+			]
+		},
+		{
+			"file": "reference/components/elementid.md",
+			"symbols": [],
+			"tags": [
+				"elementid"
+			]
+		},
+		{
+			"file": "reference/components/emoji.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"emoji",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/emojibutton.md",
+			"symbols": [],
+			"tags": [
+				"emojibutton"
+			]
+		},
+		{
+			"file": "reference/components/empty.md",
+			"symbols": [],
+			"tags": [
+				"empty"
+			]
+		},
+		{
+			"file": "reference/components/emptyinline.md",
+			"symbols": [],
+			"tags": [
+				"emptyinline"
+			]
+		},
+		{
+			"file": "reference/components/enter.md",
+			"symbols": [
+				"can"
+			],
+			"tags": [
+				"enter"
+			]
+		},
+		{
+			"file": "reference/components/enterbox.md",
+			"symbols": [],
+			"tags": [
+				"enterbox"
+			]
+		},
+		{
+			"file": "reference/components/error.md",
+			"symbols": [],
+			"tags": [
+				"error"
+			]
+		},
+		{
+			"file": "reference/components/errorhandler.md",
+			"symbols": [
+				"error"
+			],
+			"tags": [
+				"errorhandler"
+			]
+		},
+		{
+			"file": "reference/components/exec.md",
+			"symbols": [
+				"exec",
+				"method_name",
+				"redirect",
+				"setter"
+			],
+			"tags": []
+		},
+		{
+			"file": "reference/components/expander.md",
+			"symbols": [],
+			"tags": [
+				"expander"
+			]
+		},
+		{
+			"file": "reference/components/expansionpanel.md",
+			"symbols": [],
+			"tags": [
+				"define",
+				"expansionpanel",
+				"panel",
+				"panels"
+			]
+		},
+		{
+			"file": "reference/components/extend.md",
+			"symbols": [],
+			"tags": [
+				"extend"
+			]
+		},
+		{
+			"file": "reference/components/faicons.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"faicon",
+				"faicons",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/faiconsbutton.md",
+			"symbols": [],
+			"tags": [
+				"faiconsbutton"
+			]
+		},
+		{
+			"file": "reference/components/faviconunread.md",
+			"symbols": [],
+			"tags": [
+				"faviconunread"
+			]
+		},
+		{
+			"file": "reference/components/features.md",
+			"symbols": [],
+			"tags": [
+				"feature",
+				"features",
+				"method",
+				"methods"
+			]
+		},
+		{
+			"file": "reference/components/feedbackbutton.md",
+			"symbols": [],
+			"tags": [
+				"feedbackbutton"
+			]
+		},
+		{
+			"file": "reference/components/filebrowser.md",
+			"symbols": [],
+			"tags": [
+				"filebrowser"
+			]
+		},
+		{
+			"file": "reference/components/filereader.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"filereader"
+			]
+		},
+		{
+			"file": "reference/components/filesaver.md",
+			"symbols": [],
+			"tags": [
+				"filesaver",
+				"method",
+				"methods"
+			]
+		},
+		{
+			"file": "reference/components/fileupload.md",
+			"symbols": [],
+			"tags": [
+				"fileupload"
+			]
+		},
+		{
+			"file": "reference/components/fileuploader.md",
+			"symbols": [],
+			"tags": [
+				"fileuploader"
+			]
+		},
+		{
+			"file": "reference/components/fileuploadlist.md",
+			"symbols": [],
+			"tags": [
+				"fileuploadlist"
+			]
+		},
+		{
+			"file": "reference/components/filter.md",
+			"symbols": [],
+			"tags": [
+				"filter"
+			]
+		},
+		{
+			"file": "reference/components/fixedmodal.md",
+			"symbols": [
+				"default"
+			],
+			"tags": [
+				"fixedmodal"
+			]
+		},
+		{
+			"file": "reference/components/floatingbox.md",
+			"symbols": [],
+			"tags": [
+				"boxe",
+				"boxes",
+				"floatingbox"
+			]
+		},
+		{
+			"file": "reference/components/floatinginput.md",
+			"symbols": [],
+			"tags": [
+				"floatinginput"
+			]
+		},
+		{
+			"file": "reference/components/floatingpanel.md",
+			"symbols": [],
+			"tags": [
+				"floatingpanel",
+				"good",
+				"know"
+			]
+		},
+		{
+			"file": "reference/components/floatingsearch.md",
+			"symbols": [],
+			"tags": [
+				"floatingsearch"
+			]
+		},
+		{
+			"file": "reference/components/flow.md",
+			"symbols": [
+				"cmd"
+			],
+			"tags": [
+				"flow"
+			]
+		},
+		{
+			"file": "reference/components/floweditor.md",
+			"symbols": [],
+			"tags": [
+				"floweditor"
+			]
+		},
+		{
+			"file": "reference/components/folder.md",
+			"symbols": [],
+			"tags": [
+				"folder"
+			]
+		},
+		{
+			"file": "reference/components/fontawesome.md",
+			"symbols": [],
+			"tags": [
+				"fontawesome"
+			]
+		},
+		{
+			"file": "reference/components/fontawesomebox.md",
+			"symbols": [],
+			"tags": [
+				"fontawesomebox"
+			]
+		},
+		{
+			"file": "reference/components/form.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"form"
+			]
+		},
+		{
+			"file": "reference/components/formdata.md",
+			"symbols": [
+				"post"
+			],
+			"tags": [
+				"configuration",
+				"formdata",
+				"method",
+				"methods"
+			]
+		},
+		{
+			"file": "reference/components/formtab.md",
+			"symbols": [],
+			"tags": [
+				"formtab"
+			]
+		},
+		{
+			"file": "reference/components/fullform.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"fullform"
+			]
+		},
+		{
+			"file": "reference/components/gallery.md",
+			"symbols": [],
+			"tags": [
+				"gallery"
+			]
+		},
+		{
+			"file": "reference/components/gauge.md",
+			"symbols": [],
+			"tags": [
+				"gauge"
+			]
+		},
+		{
+			"file": "reference/components/gps.md",
+			"symbols": [],
+			"tags": [
+				"gps"
+			]
+		},
+		{
+			"file": "reference/components/grid.md",
+			"symbols": [],
+			"tags": [
+				"grid"
+			]
+		},
+		{
+			"file": "reference/components/hashchange.md",
+			"symbols": [],
+			"tags": [
+				"hashchange"
+			]
+		},
+		{
+			"file": "reference/components/highlightsyntax.md",
+			"symbols": [],
+			"tags": [
+				"highlightsyntax"
+			]
+		},
+		{
+			"file": "reference/components/html-5-template.md",
+			"symbols": [],
+			"tags": [
+				"html",
+				"html5template",
+				"template"
+			]
+		},
+		{
+			"file": "reference/components/icons.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"icon",
+				"icons",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/idletime.md",
+			"symbols": [],
+			"tags": [
+				"idletime"
+			]
+		},
+		{
+			"file": "reference/components/iframe.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"iframe"
+			]
+		},
+		{
+			"file": "reference/components/iframeeditable.md",
+			"symbols": [],
+			"tags": [
+				"iframeeditable"
+			]
+		},
+		{
+			"file": "reference/components/iframepreview.md",
+			"symbols": [],
+			"tags": [
+				"iframepreview"
+			]
+		},
+		{
+			"file": "reference/components/iframeviewer.md",
+			"symbols": [
+				"esc"
+			],
+			"tags": [
+				"iframeviewer"
+			]
+		},
+		{
+			"file": "reference/components/imageuploader.md",
+			"symbols": [],
+			"tags": [
+				"imageuploader"
+			]
+		},
+		{
+			"file": "reference/components/imageviewer.md",
+			"symbols": [],
+			"tags": [
+				"imageviewer"
+			]
+		},
+		{
+			"file": "reference/components/importcsv.md",
+			"symbols": [],
+			"tags": [
+				"importcsv"
+			]
+		},
+		{
+			"file": "reference/components/importer.md",
+			"symbols": [
+				"class"
+			],
+			"tags": [
+				"importer"
+			]
+		},
+		{
+			"file": "reference/components/infinitescroll.md",
+			"symbols": [],
+			"tags": [
+				"infinitescroll"
+			]
+		},
+		{
+			"file": "reference/components/info.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"info"
+			]
+		},
+		{
+			"file": "reference/components/infowindows.md",
+			"symbols": [
+				"push",
+				"setter"
+			],
+			"tags": [
+				"infowindow",
+				"infowindows"
+			]
+		},
+		{
+			"file": "reference/components/inlinedatepicker.md",
+			"symbols": [],
+			"tags": [
+				"inlinedatepicker"
+			]
+		},
+		{
+			"file": "reference/components/inlineform.md",
+			"symbols": [
+				"default"
+			],
+			"tags": [
+				"inlineform"
+			]
+		},
+		{
+			"file": "reference/components/inlineproperties.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"inlinepropertie",
+				"inlineproperties",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/input.md",
+			"symbols": [
+				"set"
+			],
+			"tags": [
+				"input"
+			]
+		},
+		{
+			"file": "reference/components/inputtags.md",
+			"symbols": [],
+			"tags": [
+				"inputtag",
+				"inputtags"
+			]
+		},
+		{
+			"file": "reference/components/intranet-css.md",
+			"symbols": [],
+			"tags": [
+				"css",
+				"intranet",
+				"intranetcss"
+			]
+		},
+		{
+			"file": "reference/components/intro.md",
+			"symbols": [],
+			"tags": [
+				"intro"
+			]
+		},
+		{
+			"file": "reference/components/isopen.md",
+			"symbols": [],
+			"tags": [
+				"isopen"
+			]
+		},
+		{
+			"file": "reference/components/jsontree.md",
+			"symbols": [],
+			"tags": [
+				"author",
+				"jsontree"
+			]
+		},
+		{
+			"file": "reference/components/kanban.md",
+			"symbols": [],
+			"tags": [
+				"kanban"
+			]
+		},
+		{
+			"file": "reference/components/keyselection.md",
+			"symbols": [],
+			"tags": [
+				"keyselection"
+			]
+		},
+		{
+			"file": "reference/components/keyvalue.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"keyvalue"
+			]
+		},
+		{
+			"file": "reference/components/largeform.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"largeform"
+			]
+		},
+		{
+			"file": "reference/components/layer.md",
+			"symbols": [
+				"default"
+			],
+			"tags": [
+				"layer"
+			]
+		},
+		{
+			"file": "reference/components/layout.md",
+			"symbols": [],
+			"tags": [
+				"layout"
+			]
+		},
+		{
+			"file": "reference/components/layout2.md",
+			"symbols": [],
+			"tags": [
+				"layout2"
+			]
+		},
+		{
+			"file": "reference/components/lazycontent.md",
+			"symbols": [],
+			"tags": [
+				"lazycontent"
+			]
+		},
+		{
+			"file": "reference/components/lazyimages.md",
+			"symbols": [],
+			"tags": [
+				"lazyimage",
+				"lazyimages"
+			]
+		},
+		{
+			"file": "reference/components/lazyload.md",
+			"symbols": [],
+			"tags": [
+				"lazyload"
+			]
+		},
+		{
+			"file": "reference/components/leaflet.md",
+			"symbols": [],
+			"tags": [
+				"leaflet"
+			]
+		},
+		{
+			"file": "reference/components/linechart.md",
+			"symbols": [],
+			"tags": [
+				"linechart"
+			]
+		},
+		{
+			"file": "reference/components/listbox.md",
+			"symbols": [],
+			"tags": [
+				"listbox"
+			]
+		},
+		{
+			"file": "reference/components/listdetail.md",
+			"symbols": [],
+			"tags": [
+				"listdetail"
+			]
+		},
+		{
+			"file": "reference/components/listform.md",
+			"symbols": [
+				"default"
+			],
+			"tags": [
+				"listform"
+			]
+		},
+		{
+			"file": "reference/components/listing.md",
+			"symbols": [],
+			"tags": [
+				"listing"
+			]
+		},
+		{
+			"file": "reference/components/listmenu.md",
+			"symbols": [],
+			"tags": [
+				"listmenu"
+			]
+		},
+		{
+			"file": "reference/components/listmenueditable.md",
+			"symbols": [],
+			"tags": [
+				"listmenueditable"
+			]
+		},
+		{
+			"file": "reference/components/livestats.md",
+			"symbols": [],
+			"tags": [
+				"livestat",
+				"livestats"
+			]
+		},
+		{
+			"file": "reference/components/loadcontent.md",
+			"symbols": [
+				"scr"
+			],
+			"tags": [
+				"loadcontent"
+			]
+		},
+		{
+			"file": "reference/components/loading.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"loading"
+			]
+		},
+		{
+			"file": "reference/components/locale.md",
+			"symbols": [],
+			"tags": [
+				"locale"
+			]
+		},
+		{
+			"file": "reference/components/mailify.md",
+			"symbols": [],
+			"tags": [
+				"mailify"
+			]
+		},
+		{
+			"file": "reference/components/mainprogress.md",
+			"symbols": [],
+			"tags": [
+				"mainprogress"
+			]
+		},
+		{
+			"file": "reference/components/map.md",
+			"symbols": [
+				"css"
+			],
+			"tags": [
+				"map"
+			]
+		},
+		{
+			"file": "reference/components/mapmarker.md",
+			"symbols": [],
+			"tags": [
+				"mapmarker"
+			]
+		},
+		{
+			"file": "reference/components/mapzones.md",
+			"symbols": [],
+			"tags": [
+				"mapzone",
+				"mapzones"
+			]
+		},
+		{
+			"file": "reference/components/markdown.md",
+			"symbols": [],
+			"tags": [
+				"inline",
+				"license",
+				"markdown",
+				"new",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/markdowneditor.md",
+			"symbols": [],
+			"tags": [
+				"license",
+				"markdowneditor"
+			]
+		},
+		{
+			"file": "reference/components/markdownpreview.md",
+			"symbols": [],
+			"tags": [
+				"license",
+				"markdownpreview"
+			]
+		},
+		{
+			"file": "reference/components/masonry.md",
+			"symbols": [],
+			"tags": [
+				"masonry"
+			]
+		},
+		{
+			"file": "reference/components/menu.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"menu",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/message.md",
+			"symbols": [
+				"ajax",
+				"asetter",
+				"setter"
+			],
+			"tags": [
+				"message"
+			]
+		},
+		{
+			"file": "reference/components/minheight.md",
+			"symbols": [],
+			"tags": [
+				"minheight"
+			]
+		},
+		{
+			"file": "reference/components/miniform.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"miniform"
+			]
+		},
+		{
+			"file": "reference/components/mobilecarousel.md",
+			"symbols": [],
+			"tags": [
+				"mobilecarousel"
+			]
+		},
+		{
+			"file": "reference/components/modal.md",
+			"symbols": [
+				"default",
+				"html"
+			],
+			"tags": [
+				"modal"
+			]
+		},
+		{
+			"file": "reference/components/modificator.md",
+			"symbols": [],
+			"tags": [
+				"modificator"
+			]
+		},
+		{
+			"file": "reference/components/monacoeditor.md",
+			"symbols": [],
+			"tags": [
+				"monacoeditor"
+			]
+		},
+		{
+			"file": "reference/components/monthlycalendar.md",
+			"symbols": [
+				"days",
+				"months"
+			],
+			"tags": [
+				"monthlycalendar"
+			]
+		},
+		{
+			"file": "reference/components/movable.md",
+			"symbols": [
+				"change"
+			],
+			"tags": [
+				"movable"
+			]
+		},
+		{
+			"file": "reference/components/movement.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"movement"
+			]
+		},
+		{
+			"file": "reference/components/multioptions.md",
+			"symbols": [],
+			"tags": [
+				"multioption",
+				"multioptions"
+			]
+		},
+		{
+			"file": "reference/components/nativenotifications.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"nativenotification",
+				"nativenotifications"
+			]
+		},
+		{
+			"file": "reference/components/navigation.md",
+			"symbols": [],
+			"tags": [
+				"navigation"
+			]
+		},
+		{
+			"file": "reference/components/navlayout.md",
+			"symbols": [],
+			"tags": [
+				"navlayout"
+			]
+		},
+		{
+			"file": "reference/components/noscrollbar.md",
+			"symbols": [
+				"empty"
+			],
+			"tags": [
+				"noscrollbar"
+			]
+		},
+		{
+			"file": "reference/components/nosqlcounter.md",
+			"symbols": [],
+			"tags": [
+				"nosqlcounter"
+			]
+		},
+		{
+			"file": "reference/components/notifications.md",
+			"symbols": [],
+			"tags": [
+				"notification",
+				"notifications"
+			]
+		},
+		{
+			"file": "reference/components/notificationspanel.md",
+			"symbols": [],
+			"tags": [
+				"notificationspanel"
+			]
+		},
+		{
+			"file": "reference/components/notify.md",
+			"symbols": [
+				"ajax",
+				"asetter",
+				"setter"
+			],
+			"tags": [
+				"notify"
+			]
+		},
+		{
+			"file": "reference/components/notifybar.md",
+			"symbols": [
+				"ajax",
+				"asetter",
+				"setter"
+			],
+			"tags": [
+				"notifybar"
+			]
+		},
+		{
+			"file": "reference/components/objecteditor.md",
+			"symbols": [],
+			"tags": [
+				"objecteditor"
+			]
+		},
+		{
+			"file": "reference/components/objecttree.md",
+			"symbols": [],
+			"tags": [
+				"objecttree"
+			]
+		},
+		{
+			"file": "reference/components/offline.md",
+			"symbols": [],
+			"tags": [
+				"offline"
+			]
+		},
+		{
+			"file": "reference/components/onetime.md",
+			"symbols": [],
+			"tags": [
+				"onetime"
+			]
+		},
+		{
+			"file": "reference/components/packeta.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"packeta"
+			]
+		},
+		{
+			"file": "reference/components/page.md",
+			"symbols": [
+				"class",
+				"default",
+				"setter"
+			],
+			"tags": [
+				"page"
+			]
+		},
+		{
+			"file": "reference/components/pages.md",
+			"symbols": [],
+			"tags": [
+				"page",
+				"pages"
+			]
+		},
+		{
+			"file": "reference/components/pagination.md",
+			"symbols": [],
+			"tags": [
+				"pagination"
+			]
+		},
+		{
+			"file": "reference/components/panel.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"panel"
+			]
+		},
+		{
+			"file": "reference/components/paper.md",
+			"symbols": [],
+			"tags": [
+				"paper"
+			]
+		},
+		{
+			"file": "reference/components/parameters.md",
+			"symbols": [],
+			"tags": [
+				"parameter",
+				"parameters"
+			]
+		},
+		{
+			"file": "reference/components/part.md",
+			"symbols": [
+				"class",
+				"default",
+				"setter"
+			],
+			"tags": [
+				"part"
+			]
+		},
+		{
+			"file": "reference/components/parts.md",
+			"symbols": [],
+			"tags": [
+				"part",
+				"parts"
+			]
+		},
+		{
+			"file": "reference/components/passwordmeter.md",
+			"symbols": [],
+			"tags": [
+				"passwordmeter"
+			]
+		},
+		{
+			"file": "reference/components/paste.md",
+			"symbols": [],
+			"tags": [
+				"paste"
+			]
+		},
+		{
+			"file": "reference/components/period.md",
+			"symbols": [],
+			"tags": [
+				"period"
+			]
+		},
+		{
+			"file": "reference/components/permissions.md",
+			"symbols": [],
+			"tags": [
+				"permission",
+				"permissions"
+			]
+		},
+		{
+			"file": "reference/components/permissionsop.md",
+			"symbols": [
+				"crud"
+			],
+			"tags": [
+				"permissionsop"
+			]
+		},
+		{
+			"file": "reference/components/pictures.md",
+			"symbols": [],
+			"tags": [
+				"picture",
+				"pictures"
+			]
+		},
+		{
+			"file": "reference/components/pictureupload.md",
+			"symbols": [],
+			"tags": [
+				"pictureupload"
+			]
+		},
+		{
+			"file": "reference/components/pictureuploadexpert.md",
+			"symbols": [],
+			"tags": [
+				"pictureuploadexpert"
+			]
+		},
+		{
+			"file": "reference/components/pin.md",
+			"symbols": [],
+			"tags": [
+				"pin"
+			]
+		},
+		{
+			"file": "reference/components/planner.md",
+			"symbols": [],
+			"tags": [
+				"planner"
+			]
+		},
+		{
+			"file": "reference/components/preview.md",
+			"symbols": [],
+			"tags": [
+				"preview"
+			]
+		},
+		{
+			"file": "reference/components/pricerange.md",
+			"symbols": [],
+			"tags": [
+				"pricerange"
+			]
+		},
+		{
+			"file": "reference/components/print-custom-html.md",
+			"symbols": [],
+			"tags": [
+				"custom",
+				"html",
+				"print",
+				"printcustomhtml"
+			]
+		},
+		{
+			"file": "reference/components/printer.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"printer"
+			]
+		},
+		{
+			"file": "reference/components/progress.md",
+			"symbols": [],
+			"tags": [
+				"progress"
+			]
+		},
+		{
+			"file": "reference/components/prompt.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"prompt"
+			]
+		},
+		{
+			"file": "reference/components/properties.md",
+			"symbols": [],
+			"tags": [
+				"good",
+				"know",
+				"mode",
+				"persistent",
+				"propertie",
+				"properties"
+			]
+		},
+		{
+			"file": "reference/components/properties2.md",
+			"symbols": [],
+			"tags": [
+				"good",
+				"know",
+				"properties2"
+			]
+		},
+		{
+			"file": "reference/components/qrcode.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"qrcode"
+			]
+		},
+		{
+			"file": "reference/components/radiobutton.md",
+			"symbols": [],
+			"tags": [
+				"radiobutton"
+			]
+		},
+		{
+			"file": "reference/components/radiobuttonexpert.md",
+			"symbols": [],
+			"tags": [
+				"radiobuttonexpert"
+			]
+		},
+		{
+			"file": "reference/components/range.md",
+			"symbols": [],
+			"tags": [
+				"range"
+			]
+		},
+		{
+			"file": "reference/components/rating.md",
+			"symbols": [],
+			"tags": [
+				"rating"
+			]
+		},
+		{
+			"file": "reference/components/raweditable.md",
+			"symbols": [],
+			"tags": [
+				"raweditable"
+			]
+		},
+		{
+			"file": "reference/components/rawinput.md",
+			"symbols": [],
+			"tags": [
+				"rawinput"
+			]
+		},
+		{
+			"file": "reference/components/ready.md",
+			"symbols": [],
+			"tags": [
+				"ready"
+			]
+		},
+		{
+			"file": "reference/components/recaptcha.md",
+			"symbols": [],
+			"tags": [
+				"recaptcha"
+			]
+		},
+		{
+			"file": "reference/components/releaser.md",
+			"symbols": [],
+			"tags": [
+				"releaser"
+			]
+		},
+		{
+			"file": "reference/components/remember.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"remember"
+			]
+		},
+		{
+			"file": "reference/components/repeater.md",
+			"symbols": [],
+			"tags": [
+				"contributor",
+				"contributors",
+				"license",
+				"repeater"
+			]
+		},
+		{
+			"file": "reference/components/repeatergroup.md",
+			"symbols": [],
+			"tags": [
+				"repeatergroup"
+			]
+		},
+		{
+			"file": "reference/components/resource.md",
+			"symbols": [
+				"find",
+				"resource"
+			],
+			"tags": []
+		},
+		{
+			"file": "reference/components/restart.md",
+			"symbols": [],
+			"tags": [
+				"restart"
+			]
+		},
+		{
+			"file": "reference/components/rows.md",
+			"symbols": [],
+			"tags": [
+				"rows"
+			]
+		},
+		{
+			"file": "reference/components/rules.md",
+			"symbols": [],
+			"tags": [
+				"rule",
+				"rules"
+			]
+		},
+		{
+			"file": "reference/components/scanner.md",
+			"symbols": [],
+			"tags": [
+				"scanner"
+			]
+		},
+		{
+			"file": "reference/components/scrollbar.md",
+			"symbols": [],
+			"tags": [
+				"scrollbar"
+			]
+		},
+		{
+			"file": "reference/components/scrollpercentage.md",
+			"symbols": [],
+			"tags": [
+				"scrollpercentage"
+			]
+		},
+		{
+			"file": "reference/components/search.md",
+			"symbols": [],
+			"tags": [
+				"search"
+			]
+		},
+		{
+			"file": "reference/components/searchbox.md",
+			"symbols": [
+				"esc"
+			],
+			"tags": [
+				"searchbox"
+			]
+		},
+		{
+			"file": "reference/components/searchdata.md",
+			"symbols": [],
+			"tags": [
+				"searchdata"
+			]
+		},
+		{
+			"file": "reference/components/searchinput.md",
+			"symbols": [],
+			"tags": [
+				"searchinput"
+			]
+		},
+		{
+			"file": "reference/components/section.md",
+			"symbols": [
+				"section",
+				"set"
+			],
+			"tags": []
+		},
+		{
+			"file": "reference/components/selectbox.md",
+			"symbols": [],
+			"tags": [
+				"selectbox"
+			]
+		},
+		{
+			"file": "reference/components/selected.md",
+			"symbols": [],
+			"tags": [
+				"selected"
+			]
+		},
+		{
+			"file": "reference/components/selection.md",
+			"symbols": [],
+			"tags": [
+				"selection"
+			]
+		},
+		{
+			"file": "reference/components/servergrid.md",
+			"symbols": [
+				"null"
+			],
+			"tags": [
+				"servergrid"
+			]
+		},
+		{
+			"file": "reference/components/serverlist.md",
+			"symbols": [
+				"null"
+			],
+			"tags": [
+				"custom",
+				"serverlist",
+				"templating"
+			]
+		},
+		{
+			"file": "reference/components/serverlisting.md",
+			"symbols": [],
+			"tags": [
+				"serverlisting"
+			]
+		},
+		{
+			"file": "reference/components/serviceworker.md",
+			"symbols": [
+				"set"
+			],
+			"tags": [
+				"serviceworker"
+			]
+		},
+		{
+			"file": "reference/components/shoppingcart.md",
+			"symbols": [],
+			"tags": [
+				"event",
+				"events",
+				"global",
+				"method",
+				"methods",
+				"shoppingcart"
+			]
+		},
+		{
+			"file": "reference/components/shortcuts.md",
+			"symbols": [
+				"f10",
+				"f11",
+				"f12",
+				"setter"
+			],
+			"tags": [
+				"shortcut",
+				"shortcuts"
+			]
+		},
+		{
+			"file": "reference/components/singleupload.md",
+			"symbols": [],
+			"tags": [
+				"singleupload"
+			]
+		},
+		{
+			"file": "reference/components/slider.md",
+			"symbols": [],
+			"tags": [
+				"slider"
+			]
+		},
+		{
+			"file": "reference/components/smilefy.md",
+			"symbols": [],
+			"tags": [
+				"smilefy"
+			]
+		},
+		{
+			"file": "reference/components/snackbar.md",
+			"symbols": [
+				"ajax",
+				"asetter",
+				"html",
+				"setter"
+			],
+			"tags": [
+				"snackbar"
+			]
+		},
+		{
+			"file": "reference/components/sounds.md",
+			"symbols": [],
+			"tags": [
+				"sound",
+				"sounds"
+			]
+		},
+		{
+			"file": "reference/components/splashscreen.md",
+			"symbols": [],
+			"tags": [
+				"splashscreen"
+			]
+		},
+		{
+			"file": "reference/components/spotlight.md",
+			"symbols": [],
+			"tags": [
+				"spotlight"
+			]
+		},
+		{
+			"file": "reference/components/stash.md",
+			"symbols": [],
+			"tags": [
+				"stash"
+			]
+		},
+		{
+			"file": "reference/components/stats12.md",
+			"symbols": [],
+			"tags": [
+				"stats12"
+			]
+		},
+		{
+			"file": "reference/components/stats24.md",
+			"symbols": [],
+			"tags": [
+				"stats24"
+			]
+		},
+		{
+			"file": "reference/components/stats7.md",
+			"symbols": [],
+			"tags": [
+				"stats7"
+			]
+		},
+		{
+			"file": "reference/components/statsbarsimple.md",
+			"symbols": [],
+			"tags": [
+				"statsbarsimple"
+			]
+		},
+		{
+			"file": "reference/components/statusinput.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"statusinput",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/sticker.md",
+			"symbols": [],
+			"tags": [
+				"sticker"
+			]
+		},
+		{
+			"file": "reference/components/submit.md",
+			"symbols": [
+				"enter",
+				"inc",
+				"patch",
+				"set",
+				"upd"
+			],
+			"tags": [
+				"submit"
+			]
+		},
+		{
+			"file": "reference/components/suggestion.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"suggestion"
+			]
+		},
+		{
+			"file": "reference/components/svgicons.md",
+			"symbols": [],
+			"tags": [
+				"svgicon",
+				"svgicons"
+			]
+		},
+		{
+			"file": "reference/components/swiper.md",
+			"symbols": [],
+			"tags": [
+				"swiper"
+			]
+		},
+		{
+			"file": "reference/components/switchbutton.md",
+			"symbols": [],
+			"tags": [
+				"switchbutton"
+			]
+		},
+		{
+			"file": "reference/components/table.md",
+			"symbols": [
+				"null"
+			],
+			"tags": [
+				"table"
+			]
+		},
+		{
+			"file": "reference/components/tablegrid.md",
+			"symbols": [],
+			"tags": [
+				"tablegrid"
+			]
+		},
+		{
+			"file": "reference/components/tabmenu.md",
+			"symbols": [],
+			"tags": [
+				"tabmenu"
+			]
+		},
+		{
+			"file": "reference/components/tabs.md",
+			"symbols": [],
+			"tags": [
+				"define",
+				"panel",
+				"panels",
+				"tabs"
+			]
+		},
+		{
+			"file": "reference/components/tagger.md",
+			"symbols": [],
+			"tags": [
+				"tagger"
+			]
+		},
+		{
+			"file": "reference/components/tags.md",
+			"symbols": [],
+			"tags": [
+				"tags"
+			]
+		},
+		{
+			"file": "reference/components/tangular-autoformat.md",
+			"symbols": [],
+			"tags": [
+				"autoformat",
+				"tangular",
+				"tangularautoformat"
+			]
+		},
+		{
+			"file": "reference/components/tangular-badge.md",
+			"symbols": [],
+			"tags": [
+				"badge",
+				"tangular",
+				"tangularbadge"
+			]
+		},
+		{
+			"file": "reference/components/tangular-color.md",
+			"symbols": [],
+			"tags": [
+				"color",
+				"tangular",
+				"tangularcolor"
+			]
+		},
+		{
+			"file": "reference/components/tangular-counter.md",
+			"symbols": [],
+			"tags": [
+				"counter",
+				"tangular",
+				"tangularcounter"
+			]
+		},
+		{
+			"file": "reference/components/tangular-filesize.md",
+			"symbols": [],
+			"tags": [
+				"filesize",
+				"tangular",
+				"tangularfilesize"
+			]
+		},
+		{
+			"file": "reference/components/tangular-initials.md",
+			"symbols": [],
+			"tags": [
+				"image",
+				"initial",
+				"initials",
+				"tangular",
+				"tangularinitial",
+				"tangularinitials"
+			]
+		},
+		{
+			"file": "reference/components/tangular-jsonformat.md",
+			"symbols": [],
+			"tags": [
+				"jsonformat",
+				"tangular",
+				"tangularjsonformat"
+			]
+		},
+		{
+			"file": "reference/components/tangular-rgba.md",
+			"symbols": [],
+			"tags": [
+				"rgba",
+				"tangular",
+				"tangularrgba"
+			]
+		},
+		{
+			"file": "reference/components/tangular-time.md",
+			"symbols": [],
+			"tags": [
+				"improvement",
+				"improvements",
+				"tangular",
+				"tangulartime",
+				"time"
+			]
+		},
+		{
+			"file": "reference/components/template.md",
+			"symbols": [],
+			"tags": [
+				"template"
+			]
+		},
+		{
+			"file": "reference/components/templates.md",
+			"symbols": [],
+			"tags": [
+				"template",
+				"templates"
+			]
+		},
+		{
+			"file": "reference/components/textarea.md",
+			"symbols": [],
+			"tags": [
+				"textarea"
+			]
+		},
+		{
+			"file": "reference/components/textbox.md",
+			"symbols": [],
+			"tags": [
+				"textbox"
+			]
+		},
+		{
+			"file": "reference/components/textboxlist.md",
+			"symbols": [],
+			"tags": [
+				"contributor",
+				"textboxlist"
+			]
+		},
+		{
+			"file": "reference/components/textboxtags.md",
+			"symbols": [],
+			"tags": [
+				"textboxtag",
+				"textboxtags"
+			]
+		},
+		{
+			"file": "reference/components/time.md",
+			"symbols": [],
+			"tags": [
+				"time"
+			]
+		},
+		{
+			"file": "reference/components/timepicker.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"timepicker",
+				"usage"
+			]
+		},
+		{
+			"file": "reference/components/title.md",
+			"symbols": [],
+			"tags": [
+				"title"
+			]
+		},
+		{
+			"file": "reference/components/togglebox.md",
+			"symbols": [],
+			"tags": [
+				"togglebox"
+			]
+		},
+		{
+			"file": "reference/components/togglebutton.md",
+			"symbols": [],
+			"tags": [
+				"togglebutton"
+			]
+		},
+		{
+			"file": "reference/components/togglemore.md",
+			"symbols": [],
+			"tags": [
+				"togglemore"
+			]
+		},
+		{
+			"file": "reference/components/tooltip-css.md",
+			"symbols": [],
+			"tags": [
+				"css",
+				"tooltip",
+				"tooltipcss"
+			]
+		},
+		{
+			"file": "reference/components/tooltip.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"tooltip"
+			]
+		},
+		{
+			"file": "reference/components/totaltemplates.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"totaltemplate",
+				"totaltemplates"
+			]
+		},
+		{
+			"file": "reference/components/touchmove.md",
+			"symbols": [],
+			"tags": [
+				"touchmove"
+			]
+		},
+		{
+			"file": "reference/components/tour.md",
+			"symbols": [],
+			"tags": [
+				"tour"
+			]
+		},
+		{
+			"file": "reference/components/tree.md",
+			"symbols": [],
+			"tags": [
+				"tree"
+			]
+		},
+		{
+			"file": "reference/components/treeview.md",
+			"symbols": [],
+			"tags": [
+				"treeview"
+			]
+		},
+		{
+			"file": "reference/components/typed.md",
+			"symbols": [],
+			"tags": [
+				"typed"
+			]
+		},
+		{
+			"file": "reference/components/uibuilder.md",
+			"symbols": [
+				"ajax",
+				"json"
+			],
+			"tags": [
+				"data",
+				"handle",
+				"uibuilder"
+			]
+		},
+		{
+			"file": "reference/components/uieditor.md",
+			"symbols": [],
+			"tags": [
+				"uieditor"
+			]
+		},
+		{
+			"file": "reference/components/uistudio.md",
+			"symbols": [],
+			"tags": [
+				"uistudio"
+			]
+		},
+		{
+			"file": "reference/components/unsaved.md",
+			"symbols": [],
+			"tags": [
+				"unsaved"
+			]
+		},
+		{
+			"file": "reference/components/upload.md",
+			"symbols": [
+				"setter"
+			],
+			"tags": [
+				"upload"
+			]
+		},
+		{
+			"file": "reference/components/urlify.md",
+			"symbols": [],
+			"tags": [
+				"urlify"
+			]
+		},
+		{
+			"file": "reference/components/validate.md",
+			"symbols": [
+				"inc",
+				"set",
+				"upd"
+			],
+			"tags": [
+				"validate"
+			]
+		},
+		{
+			"file": "reference/components/validation.md",
+			"symbols": [
+				"inc",
+				"set",
+				"upd"
+			],
+			"tags": [
+				"validation"
+			]
+		},
+		{
+			"file": "reference/components/view.md",
+			"symbols": [
+				"get",
+				"plugin",
+				"upd"
+			],
+			"tags": [
+				"usage",
+				"view"
+			]
+		},
+		{
+			"file": "reference/components/viewbox.md",
+			"symbols": [
+				"empty"
+			],
+			"tags": [
+				"viewbox"
+			]
+		},
+		{
+			"file": "reference/components/virtualwire.md",
+			"symbols": [],
+			"tags": [
+				"virtualwire"
+			]
+		},
+		{
+			"file": "reference/components/watch.md",
+			"symbols": [],
+			"tags": [
+				"watch"
+			]
+		},
+		{
+			"file": "reference/components/watcher.md",
+			"symbols": [],
+			"tags": [
+				"watcher"
+			]
+		},
+		{
+			"file": "reference/components/webmcp.md",
+			"symbols": [
+				"newaction",
+				"route",
+				"set"
+			],
+			"tags": [
+				"browser",
+				"integration",
+				"page",
+				"pages",
+				"public",
+				"result",
+				"total",
+				"usage",
+				"webmcp"
+			]
+		},
+		{
+			"file": "reference/components/websocket.md",
+			"symbols": [
+				"uri"
+			],
+			"tags": [
+				"websocket"
+			]
+		},
+		{
+			"file": "reference/components/wiki.md",
+			"symbols": [],
+			"tags": [
+				"wiki"
+			]
+		},
+		{
+			"file": "reference/components/window.md",
+			"symbols": [
+				"default",
+				"esc"
+			],
+			"tags": [
+				"window"
+			]
+		},
+		{
+			"file": "reference/components/windows.md",
+			"symbols": [
+				"push",
+				"setter"
+			],
+			"tags": [
+				"window",
+				"windows"
+			]
+		},
+		{
+			"file": "reference/components/wizardexpert.md",
+			"symbols": [],
+			"tags": [
+				"wizardexpert"
+			]
+		},
+		{
+			"file": "reference/components/wysiwyg.md",
+			"symbols": [],
+			"tags": [
+				"wysiwyg"
+			]
+		},
+		{
+			"file": "reference/components/xterm.md",
+			"symbols": [],
+			"tags": [
+				"xterm"
 			]
 		}
 	]
