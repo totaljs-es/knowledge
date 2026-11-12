@@ -3,7 +3,7 @@
 - File names lowercase, words separated by `-`.
 - **One rule per line**: keep all declarations of a selector on the same line.
 - Strings in `'` apostrophes.
-- No vendor prefixes. Put `/*auto*/` at the top of the file and Total.js adds them.
+- No vendor prefixes: current browsers do not need them. `/*auto*/` at the top of a file comes from Total.js 4, which added them; Total.js 5 keeps the mark and adds nothing.
 - No LESS and no SASS: Total.js CSS supports variables and nested selectors.
 
 ```css

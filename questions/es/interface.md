@@ -236,7 +236,7 @@ PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
 
 ## ¿Cómo escribo el CSS de una aplicación?
 
-Una regla por línea, textos entre `'`, sin prefijos de navegador (`/*auto*/` al principio del archivo los añade), sin LESS y sin SASS:
+Una regla por línea, textos entre `'`, sin prefijos de navegador (`/*auto*/` al principio del archivo viene de Total.js 4, que los añadía; Total.js 5 no añade nada), sin LESS y sin SASS:
 
 ```css
 /*auto*/

@@ -236,7 +236,7 @@ PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
 
 ## How do I write the CSS of an application?
 
-One rule per line, texts in `'`, no vendor prefixes (`/*auto*/` at the top of the file adds them), no LESS and no SASS:
+One rule per line, texts in `'`, no vendor prefixes (`/*auto*/` at the top of the file comes from Total.js 4, which added them; Total.js 5 adds nothing), no LESS and no SASS:
 
 ```css
 /*auto*/

@@ -215,3 +215,41 @@ PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
 ```
 
 Bez `.copy('replace')` idú všetky adresy pod cestou na koreň cieľa. Druhý server dostane adresu klienta v hlavičke `x-forwarded-for`.
+
+## Ako ochránim požiadavku CSRF tokenom?
+
+Nastav `secret_csrf` v `config`. `$.csrf()` vytvorí token, prehliadač ho pošle späť v hlavičke `x-csrf-token` a middleware ho overí cez `DEF.onCSRFcheck($)`:
+
+```
+secret_csrf : change-this-secret
+```
+
+```js
+// definitions/init.js
+MIDDLEWARE('csrf', function($, next) {
+	if (DEF.onCSRFcheck($))
+		next();
+	else
+		$.invalid(403);
+});
+```
+
+```js
+ROUTE('GET /token/', function($) {
+	$.json({ token: $.csrf() });
+});
+
+ROUTE('POST /api/save/ #csrf', function($) {
+	$.json({ saved: true });
+});
+```
+
+V prehliadači vlož token raz do hlavičiek knižnice a každé volanie `AJAX` ho pošle:
+
+```js
+AJAX('GET /token/', function(response) {
+	DEF.headers['x-csrf-token'] = response.token;
+});
+```
+
+Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. V Total.js 5 0.0.19 vytvor token cez `$.csrf()`: direktíva `@{csrf}` vo view tam zlyhá.

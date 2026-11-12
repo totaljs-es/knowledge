@@ -215,3 +215,41 @@ PROXY('/remote/', 'http://127.0.0.1:8001/').copy('replace');
 ```
 
 Without `.copy('replace')` every address under the path goes to the root of the target. The other server gets the address of the client in the header `x-forwarded-for`.
+
+## How do I protect a request with a CSRF token?
+
+Set `secret_csrf` in `config`. `$.csrf()` makes a token, the browser sends it back in the header `x-csrf-token`, and a middleware checks it with `DEF.onCSRFcheck($)`:
+
+```
+secret_csrf : change-this-secret
+```
+
+```js
+// definitions/init.js
+MIDDLEWARE('csrf', function($, next) {
+	if (DEF.onCSRFcheck($))
+		next();
+	else
+		$.invalid(403);
+});
+```
+
+```js
+ROUTE('GET /token/', function($) {
+	$.json({ token: $.csrf() });
+});
+
+ROUTE('POST /api/save/ #csrf', function($) {
+	$.json({ saved: true });
+});
+```
+
+In the browser, put the token in the headers of the library once and every `AJAX` call sends it:
+
+```js
+AJAX('GET /token/', function(response) {
+	DEF.headers['x-csrf-token'] = response.token;
+});
+```
+
+A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. In Total.js 5 0.0.19 make the token with `$.csrf()`: the directive `@{csrf}` of a view fails there.

@@ -236,7 +236,7 @@ PLUGIN('name', function(exports) { exports.dosomething = function() {}; });
 
 ## Ako píšem CSS aplikácie?
 
-Jedno pravidlo na riadok, texty v `'`, bez prefixov prehliadačov (`/*auto*/` na začiatku súboru ich pridá), bez LESS a bez SASS:
+Jedno pravidlo na riadok, texty v `'`, bez prefixov prehliadačov (`/*auto*/` na začiatku súboru pochádza z Total.js 4, ktorý ich pridával; Total.js 5 nepridáva nič), bez LESS a bez SASS:
 
 ```css
 /*auto*/
