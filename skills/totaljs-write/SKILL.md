@@ -25,10 +25,8 @@ Start from the nearest working feature of the project you edit: read its route, 
 
 ## Check what you wrote
 
-```bash
-node ${CLAUDE_SKILL_DIR}/../../tools/check.js path/to/changed/files
-```
+Resolve `../../tools/check.js` relative to this `SKILL.md`. From the project you are editing, run `node` with the absolute path to that script and the changed file or directory as its argument.
 
-It reports defects (`error`), rules with legacy exceptions (`warn`) and preferences for new code (`style`). A plugin install also runs it after each edit. Then run `node --check`, start the app and call the changed route. Report the reference you followed, the checks that ran and what you could not verify.
+It reports defects (`error`), rules with legacy exceptions (`warn`) and preferences for new code (`style`). Claude Code also runs the checker after edits through the plugin hook. Then run `node --check`, start the app and call the changed route. Report the reference you followed, the checks that ran and what you could not verify.
 
 For a standalone action follow [action kits](../../conventions/backend/action-kits.md); for tests, [testing](../../conventions/general/testing.md); for CMS widgets, [CMS widgets](../../conventions/frontend/cms-widgets.md).

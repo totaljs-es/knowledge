@@ -9,9 +9,7 @@ Review the bounded feature with its callers. Pages: [workflow](../../conventions
 
 ## First, the script
 
-```bash
-node ${CLAUDE_SKILL_DIR}/../../tools/check.js path/to/changed/files
-```
+Resolve `../../tools/check.js` relative to this `SKILL.md`. From the project under review, run `node` with the absolute path to that script and the changed file or directory as its argument.
 
 Treat `error` as a defect and `warn` as a mismatch to confirm: existing code may keep a legacy form (slash action names, untranslated messages) that you must not rewrite unrelated to the change. `style` is a preference for new code.
 

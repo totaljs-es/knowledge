@@ -46,7 +46,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 
 ```
 codex plugin marketplace add totaljs-es/knowledge
-codex plugin add totaljs
+codex plugin add totaljs@totaljs-knowledge
 ```
 
 ## The rules of everything here

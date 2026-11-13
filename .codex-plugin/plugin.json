@@ -4,7 +4,7 @@
 	"interface": {
 		"displayName": "Total.js",
 		"shortDescription": "Write and review Total.js 5 code",
-		"longDescription": "Total.js 5 knowledge for agents: the conventions, tested example applications, skills to write and review code, and a check that runs after each edit.",
+		"longDescription": "Total.js 5 knowledge for agents: the conventions, tested example applications, skills to write and review code, and a checker to run on changed files.",
 		"developerName": "Total.js",
 		"category": "Developer Tools",
 		"capabilities": [
@@ -17,7 +17,7 @@
 			"Use totaljs-review to review my changes against the Total.js 5 conventions."
 		]
 	},
-	"description": "Total.js 5 knowledge for agents: the conventions, tested example applications, skills to write and review code, and a check that runs after each edit.",
+	"description": "Total.js 5 knowledge for agents: the conventions, tested example applications, skills to write and review code, and a checker to run on changed files.",
 	"author": {
 		"name": "Total.js"
 	},
