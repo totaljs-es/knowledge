@@ -43,7 +43,7 @@ NEWACTION('Tickets|list', {
 
 ## ¿Dónde pongo las acciones?
 
-En `schemas/`, un archivo por colección: `schemas/contacts.js`. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+En `schemas/`, un archivo por colección: `schemas/contacts.js`. Total.js 5 carga la carpeta `actions/` de la misma forma, y algunas aplicaciones la usan en su lugar: mantén la que la aplicación ya tenga. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
 
 ## ¿Cómo declaro la entrada de una acción?
 

@@ -10,7 +10,7 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions
+schemas/            actions (the folder actions/ is loaded in the same way)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages

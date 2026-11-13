@@ -43,7 +43,7 @@ NEWACTION('Tickets|list', {
 
 ## Where do I put the actions?
 
-In `schemas/`, one file per collection: `schemas/contacts.js`. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+In `schemas/`, one file per collection: `schemas/contacts.js`. Total.js 5 loads the folder `actions/` in the same way, and some applications use it instead: keep the one that the application already has. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
 
 ## How do I declare the input of an action?
 

@@ -1,6 +1,6 @@
 # Actions
 
-An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in a `schemas/` file.
+An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in a `schemas/` file, or in an `actions/` file: Total.js 5 loads both folders in the same way, so keep the one that the application already uses.
 
 ```js
 NEWACTION('Redirects|save', {

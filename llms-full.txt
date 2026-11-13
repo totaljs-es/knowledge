@@ -300,7 +300,7 @@ controllers/        routes: exports.install = function() { ROUTE(...) }
 definitions/        auth.js, init.js, func.js, db.js: loaded at start, no exports
 modules/            integrations with other systems (cdn, tapi...)
 plugins/<name>/     a feature: index.js (server), index.html (UI), schemas/, public/
-schemas/            actions that are not part of a plugin
+schemas/            actions that are not part of a plugin (actions/ is loaded in the same way)
 views/              layout and pages (HTML with @{...} directives)
 public/             browser-accessible static files
 private/            internal runtime files and grouped SQL/maintenance assets
@@ -377,7 +377,7 @@ Run it with `node index.js 8000` (add `--release` for release mode).
 ## Where things go
 
 - **A route** follows the app's existing pattern: `controllers/*.js` / plugin `index.js`, or the action's `route:` property.
-- **Business logic** belongs in actions: usually `schemas/` or `plugins/<name>/schemas/`; compact plugins may declare actions in `index.js`.
+- **Business logic** belongs in actions: usually `schemas/` or `plugins/<name>/schemas/` (Total.js 5 also loads `actions/`, which some applications use instead of `schemas/`); compact plugins may declare actions in `index.js`.
 - **Shared helpers** hang from `FUNC` (`FUNC.notify`, `FUNC.save`) and live in `definitions/func.js`.
 - **Shared state in memory** hangs from `MAIN` (the app) or `REPO` (cached lookups, e.g. `REPO.tags`).
 - **Startup work** (config defaults, loading caches, registering UI components) goes in `ON('ready', ...)` in `definitions/init.js`.
@@ -621,7 +621,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/
 
 # Actions
 
-An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in a `schemas/` file.
+An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in a `schemas/` file, or in an `actions/` file: Total.js 5 loads both folders in the same way, so keep the one that the application already uses.
 
 ```js
 NEWACTION('Redirects|save', {
@@ -4461,7 +4461,7 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions
+schemas/            actions (the folder actions/ is loaded in the same way)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
@@ -4647,7 +4647,7 @@ NEWACTION('Tickets|list', {
 
 ## Where do I put the actions?
 
-In `schemas/`, one file per collection: `schemas/contacts.js`. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+In `schemas/`, one file per collection: `schemas/contacts.js`. Total.js 5 loads the folder `actions/` in the same way, and some applications use it instead: keep the one that the application already has. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
 
 ## How do I declare the input of an action?
 
@@ -7096,7 +7096,7 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions
+schemas/            actions (the folder actions/ is loaded in the same way)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
@@ -7282,7 +7282,7 @@ NEWACTION('Tickets|list', {
 
 ## ¿Dónde pongo las acciones?
 
-En `schemas/`, un archivo por colección: `schemas/contacts.js`. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+En `schemas/`, un archivo por colección: `schemas/contacts.js`. Total.js 5 carga la carpeta `actions/` de la misma forma, y algunas aplicaciones la usan en su lugar: mantén la que la aplicación ya tenga. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
 
 ## ¿Cómo declaro la entrada de una acción?
 
@@ -9731,7 +9731,7 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions
+schemas/            actions (the folder actions/ is loaded in the same way)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
@@ -9917,7 +9917,7 @@ NEWACTION('Tickets|list', {
 
 ## Kam dám akcie?
 
-Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. Total.js 5 načíta priečinok `actions/` rovnakým spôsobom a niektoré aplikácie ho používajú namiesto toho: ponechaj ten, ktorý aplikácia už má. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
 
 ## Ako deklarujem vstup akcie?
 

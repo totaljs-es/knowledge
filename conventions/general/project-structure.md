@@ -10,7 +10,7 @@ controllers/        routes: exports.install = function() { ROUTE(...) }
 definitions/        auth.js, init.js, func.js, db.js: loaded at start, no exports
 modules/            integrations with other systems (cdn, tapi...)
 plugins/<name>/     a feature: index.js (server), index.html (UI), schemas/, public/
-schemas/            actions that are not part of a plugin
+schemas/            actions that are not part of a plugin (actions/ is loaded in the same way)
 views/              layout and pages (HTML with @{...} directives)
 public/             browser-accessible static files
 private/            internal runtime files and grouped SQL/maintenance assets
@@ -87,7 +87,7 @@ Run it with `node index.js 8000` (add `--release` for release mode).
 ## Where things go
 
 - **A route** follows the app's existing pattern: `controllers/*.js` / plugin `index.js`, or the action's `route:` property.
-- **Business logic** belongs in actions: usually `schemas/` or `plugins/<name>/schemas/`; compact plugins may declare actions in `index.js`.
+- **Business logic** belongs in actions: usually `schemas/` or `plugins/<name>/schemas/` (Total.js 5 also loads `actions/`, which some applications use instead of `schemas/`); compact plugins may declare actions in `index.js`.
 - **Shared helpers** hang from `FUNC` (`FUNC.notify`, `FUNC.save`) and live in `definitions/func.js`.
 - **Shared state in memory** hangs from `MAIN` (the app) or `REPO` (cached lookups, e.g. `REPO.tags`).
 - **Startup work** (config defaults, loading caches, registering UI components) goes in `ON('ready', ...)` in `definitions/init.js`.

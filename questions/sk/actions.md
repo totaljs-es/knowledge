@@ -43,7 +43,7 @@ NEWACTION('Tickets|list', {
 
 ## Kam dám akcie?
 
-Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. Total.js 5 načíta priečinok `actions/` rovnakým spôsobom a niektoré aplikácie ho používajú namiesto toho: ponechaj ten, ktorý aplikácia už má. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
 
 ## Ako deklarujem vstup akcie?
 
