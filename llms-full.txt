@@ -3974,7 +3974,7 @@ question_es: ¿Cómo paso una aplicación de la base de datos embebida a Postgre
 
 # How do I move an application from the embedded database to PostgreSQL?
 
-An application that uses `DATA` from the start changes three things, and no query is written again. Total.js 5 has its own client of PostgreSQL from 0.0.20-4 (`"total5": ">=0.0.20-4"` in `package.json`), so there is no package to add:
+An application that uses `DATA` from the start changes three things, and no query is written again. Total.js 5 has its own client of PostgreSQL, so there is no package to add:
 
 1. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
 2. Add the definition of the database:
@@ -4175,7 +4175,7 @@ CRON('0 0 * * *', function() {
 
 Put the work in an action and let the schedule only call it: the API can call it too, and it can be tested without waiting.
 
-The step form of a `CRON` (`*/15 * * * *`) works from Total.js 5 0.0.20. In 0.0.19 it runs every minute: there write the minutes as a list (`0,15,30,45 * * * *`).
+A step works too: `*/15 * * * *` is every fifteen minutes.
 
 Do not use `setInterval` or a package for schedules. The complete application: [`apps/monitor`](../apps/monitor).
 
@@ -4330,7 +4330,7 @@ No. Total.js 5 is one package, `total5`, and it already has what an Express appl
 | `uuid` | `UID()` |
 | a database for a small application | the embedded NoSQL database through `DATA` |
 
-The applications of this repository have no other dependency: PostgreSQL is in `total5` too, from 0.0.20-4.
+The applications of this repository have no other dependency: PostgreSQL is in `total5` too.
 
 ---
 
@@ -4448,19 +4448,23 @@ Before writing a piece of interface by hand, look for it in the [catalogue of co
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/answers/versions.md
 
 ---
-question: Which version of Total.js 5 should I use, and what does the beta add?
-question_es: ¿Qué versión de Total.js 5 debo usar y qué añade la beta?
+question: Which version of Total.js 5 should I use?
+question_es: ¿Qué versión de Total.js 5 debo usar?
 ---
 
-# Which version of Total.js 5 should I use, and what does the beta add?
+# Which version of Total.js 5 should I use?
 
-Use `"total5": ">=0.0.20-4"` in `package.json`: version 0.0.20 or later. The stable version on npm is still `0.0.19`, and 0.0.20 is its beta: it fixes several problems of 0.0.19 (the step of `CRON`, `LOGMAIL` with an object, `@{csrf}` in a view) and adds new things. That line installs the beta now and the stable 0.0.20 when it is published, with no change, and it never installs 0.0.19. `npm view total5 dist-tags` says which versions they are today.
+Total.js 5 up to 0.0.20-4: use this version or a later one, always.
+
+```json
+"dependencies": {
+	"total5": ">=0.0.20-4"
+}
+```
 
 Total.js 5 is the current framework. Total.js 4 (`total4`) is the previous one and its code is not the same: do not mix them.
 
-What 0.0.20 adds is in [reference](../reference/total5-0.0.20.md): actions as MCP tools, the cache of an action, the field types `JSON` and `IP`, `$.content()`, `total5 test` and fakes for tests. A project with `"total5": "latest"` may still have 0.0.19: check its version before using one of those there, and say which version it needs.
-
-When you are not sure that a function exists in the version of the project, say so and check it in the source of the framework instead of guessing.
+When you are not sure that a function exists, say so and check it in the source of the framework instead of guessing.
 
 ---
 
@@ -4609,11 +4613,11 @@ It depends on the project. An application that will grow by features is made wit
 
 ## Do I need Express or other packages?
 
-No. Total.js 5 is not built on Express and does not use its middleware. Routes, actions, validation, templates, WebSocket, the database builder and the tests are in `total5`. PostgreSQL too, from Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. A common application adds no other package.
+No. Total.js 5 is not built on Express and does not use its middleware. Routes, actions, validation, templates, WebSocket, the database builder and the tests are in `total5`. PostgreSQL too: `DATA.init('postgresql', '', CONF.database)`. A common application adds no other package.
 
 ## Which version of Total.js 5 do I install?
 
-`"total5": ">=0.0.20-4"` in `package.json`: version 0.0.20 or later. Today it installs the beta of 0.0.20, which fixes several problems of 0.0.19, and the stable 0.0.20 when it is published. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
+`"total5": ">=0.0.20-4"` in `package.json`: this version or a later one, always. Total.js 4 (`total4`) is the previous framework and its code is not the same.
 
 ---
 
@@ -5175,7 +5179,7 @@ NEWACTION('Groups|list', {
 
 ## How do I connect the application to PostgreSQL?
 
-Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL from 0.0.20-4: no package to add.
+Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL: no package to add.
 
 ```
 database : postgresql://user:password@localhost/myapp
@@ -5412,7 +5416,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-A step (`*/5`) works from Total.js 5 0.0.20; in 0.0.19 it runs every minute. For "every N minutes" `ON('service')` works in both.
+A step works too: `*/5 * * * *` is every five minutes.
 
 ## Should I use setInterval for repeated work?
 
@@ -6252,13 +6256,13 @@ They copy it to a disposable folder and start it there with `node index.js <port
 
 A clean, disposable database only for tests, never the one of the application. Before anything that deletes, the test checks the name of the database it is connected to and stops if it is not the expected one.
 
-## What does Total.js 5 0.0.20 add?
+## Which version of Total.js 5 do you know?
 
-Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test`, `Test.fake()` and, from 0.0.20-4, its own client of PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). A new project has them with `"total5": ">=0.0.20-4"`. In a project that still has 0.0.19, check the version first and say which one it needs.
+Total.js 5 up to 0.0.20-4. Use this version or a later one, always: `"total5": ">=0.0.20-4"` in `package.json`.
 
 ## How do I expose an action as an MCP tool?
 
-In Total.js 5 0.0.20 and later: `$mcp : true` in `config` opens the route `POST /$mcp/`, and every action with `mcp: true` is a tool there.
+`$mcp : true` in `config` opens the route `POST /$mcp/`, and every action with `mcp: true` is a tool there.
 
 ```js
 NEWACTION('Items|create', {
@@ -6276,7 +6280,7 @@ The tool is named `Items_create`: the name of a tool cannot have the pipe.
 
 ## How do I cache the answer of an action?
 
-In Total.js 5 0.0.20 and later, with `cache`:
+With `cache`:
 
 ```js
 NEWACTION('Items|list', {
@@ -6293,7 +6297,7 @@ NEWACTION('Items|list', {
 
 ## How do I answer with CSV or another content type?
 
-In Total.js 5 0.0.20 and later, with `$.content(value, type)`:
+With `$.content(value, type)`:
 
 ```js
 ROUTE('GET /export/', function($) {
@@ -6303,7 +6307,7 @@ ROUTE('GET /export/', function($) {
 
 ## How do I replace an action in a test?
 
-In Total.js 5 0.0.20 and later, with `Test.fake(name, definition)`; `Test.restore()` puts the real actions back:
+With `Test.fake(name, definition)`; `Test.restore()` puts the real actions back:
 
 ```js
 Test.fake('Mail|send', {
@@ -7099,7 +7103,7 @@ With `LOGMAIL(email, subject, text)`: a plain message, without a view. It uses t
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-The body can be an object too from Total.js 5 0.0.20; in 0.0.19 an object fails.
+The body can be an object too.
 
 ## How do I record who did what?
 
@@ -7192,7 +7196,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. A view can write the token with `@{csrf}` from Total.js 5 0.0.20; in 0.0.19 that directive fails, so make it with `$.csrf()`.
+A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. A view can write the token with `@{csrf}`.
 
 ---
 
@@ -7341,11 +7345,11 @@ Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hac
 
 ## ¿Necesito Express u otros paquetes?
 
-No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL, desde Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
+No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
 
 ## ¿Qué versión de Total.js 5 instalo?
 
-`"total5": ">=0.0.20-4"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+`"total5": ">=0.0.20-4"` en `package.json`: esta versión o una posterior, siempre. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
 
 ---
 
@@ -7907,7 +7911,7 @@ NEWACTION('Groups|list', {
 
 ## ¿Cómo conecto la aplicación a PostgreSQL?
 
-Pon la dirección de la base de datos en `config` y escribe una definición. Total.js 5 tiene su propio cliente de PostgreSQL desde la 0.0.20-4: no hay paquete que añadir.
+Pon la dirección de la base de datos en `config` y escribe una definición. Total.js 5 tiene su propio cliente de PostgreSQL: no hay paquete que añadir.
 
 ```
 database : postgresql://user:password@localhost/myapp
@@ -8144,7 +8148,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-Un paso (`*/5`) funciona desde Total.js 5 0.0.20; en la 0.0.19 se ejecuta cada minuto. Para «cada N minutos», `ON('service')` funciona en las dos.
+También funciona un paso: `*/5 * * * *` es cada cinco minutos.
 
 ## ¿Debo usar setInterval para trabajo repetido?
 
@@ -8984,13 +8988,13 @@ La copian a una carpeta desechable y la arrancan allí con `node index.js <puert
 
 Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicación. Antes de cualquier cosa que borre, la prueba comprueba el nombre de la base de datos a la que está conectada y se detiene si no es la esperada.
 
-## ¿Qué añade Total.js 5 0.0.20?
+## ¿Qué versión de Total.js 5 conoces?
 
-Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test`, `Test.fake()` y, desde la 0.0.20-4, su propio cliente de PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Un proyecto nuevo las tiene con `"total5": ">=0.0.20-4"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
+Total.js 5 hasta la 0.0.20-4. Usa esta versión o una posterior, siempre: `"total5": ">=0.0.20-4"` en `package.json`.
 
 ## ¿Cómo expongo una acción como herramienta MCP?
 
-En Total.js 5 0.0.20 y posteriores: `$mcp : true` en `config` abre la ruta `POST /$mcp/`, y cada acción con `mcp: true` es allí una herramienta.
+`$mcp : true` en `config` abre la ruta `POST /$mcp/`, y cada acción con `mcp: true` es allí una herramienta.
 
 ```js
 NEWACTION('Items|create', {
@@ -9008,7 +9012,7 @@ La herramienta se llama `Items_create`: el nombre de una herramienta no puede ll
 
 ## ¿Cómo guardo en caché la respuesta de una acción?
 
-En Total.js 5 0.0.20 y posteriores, con `cache`:
+Con `cache`:
 
 ```js
 NEWACTION('Items|list', {
@@ -9025,7 +9029,7 @@ NEWACTION('Items|list', {
 
 ## ¿Cómo respondo con CSV u otro tipo de contenido?
 
-En Total.js 5 0.0.20 y posteriores, con `$.content(value, type)`:
+Con `$.content(value, type)`:
 
 ```js
 ROUTE('GET /export/', function($) {
@@ -9035,7 +9039,7 @@ ROUTE('GET /export/', function($) {
 
 ## ¿Cómo sustituyo una acción en una prueba?
 
-En Total.js 5 0.0.20 y posteriores, con `Test.fake(name, definition)`; `Test.restore()` vuelve a poner las acciones reales:
+Con `Test.fake(name, definition)`; `Test.restore()` vuelve a poner las acciones reales:
 
 ```js
 Test.fake('Mail|send', {
@@ -9831,7 +9835,7 @@ Con `LOGMAIL(correo, asunto, texto)`: un mensaje sencillo, sin vista. Usa el ser
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-El cuerpo también puede ser un objeto desde Total.js 5 0.0.20; en la 0.0.19 un objeto falla.
+El cuerpo también puede ser un objeto.
 
 ## ¿Cómo registro quién hizo qué?
 
@@ -9924,7 +9928,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. Una vista puede escribir el token con `@{csrf}` desde Total.js 5 0.0.20; en la 0.0.19 esa directiva falla, así que créalo con `$.csrf()`.
+Un token vale 30 minutos y solo para la dirección y el navegador que lo pidieron; sin él, cambiado, o desde otro navegador, la respuesta es 403. Una vista puede escribir el token con `@{csrf}`.
 
 ---
 
@@ -10073,11 +10077,11 @@ Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí 
 
 ## Potrebujem Express alebo iné balíčky?
 
-Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL, od Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
+Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 
-`"total5": ">=0.0.20-4"` v `package.json`: verzia 0.0.20 alebo novšia. Dnes nainštaluje betu 0.0.20, ktorá opravuje viacero problémov verzie 0.0.19, a stabilnú 0.0.20, keď vyjde. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
+`"total5": ">=0.0.20-4"` v `package.json`: táto verzia alebo novšia, vždy. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
 
 ---
 
@@ -10639,7 +10643,7 @@ NEWACTION('Groups|list', {
 
 ## Ako pripojím aplikáciu k PostgreSQL?
 
-Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má od verzie 0.0.20-4 vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
+Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
 
 ```
 database : postgresql://user:password@localhost/myapp
@@ -10876,7 +10880,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-Krok (`*/5`) funguje od Total.js 5 0.0.20; vo verzii 0.0.19 sa spúšťa každú minútu. Pre „každých N minút“ funguje `ON('service')` v oboch.
+Funguje aj krok: `*/5 * * * *` je každých päť minút.
 
 ## Mám na opakovanú prácu použiť setInterval?
 
@@ -11716,13 +11720,13 @@ Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <po
 
 Čistú, dočasnú databázu iba pre testy, nikdy tú z aplikácie. Pred čímkoľvek, čo maže, test skontroluje názov databázy, ku ktorej je pripojený, a zastaví sa, ak to nie je tá očakávaná.
 
-## Čo pridáva Total.js 5 0.0.20?
+## Ktorú verziu Total.js 5 poznáš?
 
-Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test`, `Test.fake()` a od 0.0.20-4 vlastný klient PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Nový projekt ich má s `"total5": ">=0.0.20-4"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
+Total.js 5 po 0.0.20-4. Používaj túto verziu alebo novšiu, vždy: `"total5": ">=0.0.20-4"` v `package.json`.
 
 ## Ako sprístupním akciu ako nástroj MCP?
 
-V Total.js 5 0.0.20 a novšom: `$mcp : true` v `config` otvorí routu `POST /$mcp/` a každá akcia s `mcp: true` je tam nástrojom.
+`$mcp : true` v `config` otvorí routu `POST /$mcp/` a každá akcia s `mcp: true` je tam nástrojom.
 
 ```js
 NEWACTION('Items|create', {
@@ -11740,7 +11744,7 @@ Nástroj sa volá `Items_create`: názov nástroja nemôže obsahovať zvislú �
 
 ## Ako uložím odpoveď akcie do cache?
 
-V Total.js 5 0.0.20 a novšom, cez `cache`:
+Cez `cache`:
 
 ```js
 NEWACTION('Items|list', {
@@ -11757,7 +11761,7 @@ NEWACTION('Items|list', {
 
 ## Ako odpoviem CSV alebo iným typom obsahu?
 
-V Total.js 5 0.0.20 a novšom, cez `$.content(value, type)`:
+Cez `$.content(value, type)`:
 
 ```js
 ROUTE('GET /export/', function($) {
@@ -11767,7 +11771,7 @@ ROUTE('GET /export/', function($) {
 
 ## Ako v teste nahradím akciu?
 
-V Total.js 5 0.0.20 a novšom, cez `Test.fake(name, definition)`; `Test.restore()` vráti skutočné akcie:
+Cez `Test.fake(name, definition)`; `Test.restore()` vráti skutočné akcie:
 
 ```js
 Test.fake('Mail|send', {
@@ -12563,7 +12567,7 @@ Cez `LOGMAIL(e-mail, predmet, text)`: jednoduchá správa bez view. Používa po
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-Telo môže byť od Total.js 5 0.0.20 aj objekt; vo verzii 0.0.19 objekt zlyhá.
+Telo môže byť aj objekt.
 
 ## Ako zaznamenám, kto čo urobil?
 
@@ -12656,7 +12660,7 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. View môže zapísať token cez `@{csrf}` od Total.js 5 0.0.20; vo verzii 0.0.19 táto direktíva zlyhá, preto ho vytvor cez `$.csrf()`.
+Token platí 30 minút a len pre adresu a prehliadač, ktoré oň požiadali; bez neho, so zmeneným alebo z iného prehliadača je odpoveď 403. View môže zapísať token cez `@{csrf}`.
 
 ---
 

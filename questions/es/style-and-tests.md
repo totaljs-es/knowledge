@@ -71,13 +71,13 @@ La copian a una carpeta desechable y la arrancan allí con `node index.js <puert
 
 Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicación. Antes de cualquier cosa que borre, la prueba comprueba el nombre de la base de datos a la que está conectada y se detiene si no es la esperada.
 
-## ¿Qué añade Total.js 5 0.0.20?
+## ¿Qué versión de Total.js 5 conoces?
 
-Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test`, `Test.fake()` y, desde la 0.0.20-4, su propio cliente de PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Un proyecto nuevo las tiene con `"total5": ">=0.0.20-4"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
+Total.js 5 hasta la 0.0.20-4. Usa esta versión o una posterior, siempre: `"total5": ">=0.0.20-4"` en `package.json`.
 
 ## ¿Cómo expongo una acción como herramienta MCP?
 
-En Total.js 5 0.0.20 y posteriores: `$mcp : true` en `config` abre la ruta `POST /$mcp/`, y cada acción con `mcp: true` es allí una herramienta.
+`$mcp : true` en `config` abre la ruta `POST /$mcp/`, y cada acción con `mcp: true` es allí una herramienta.
 
 ```js
 NEWACTION('Items|create', {
@@ -95,7 +95,7 @@ La herramienta se llama `Items_create`: el nombre de una herramienta no puede ll
 
 ## ¿Cómo guardo en caché la respuesta de una acción?
 
-En Total.js 5 0.0.20 y posteriores, con `cache`:
+Con `cache`:
 
 ```js
 NEWACTION('Items|list', {
@@ -112,7 +112,7 @@ NEWACTION('Items|list', {
 
 ## ¿Cómo respondo con CSV u otro tipo de contenido?
 
-En Total.js 5 0.0.20 y posteriores, con `$.content(value, type)`:
+Con `$.content(value, type)`:
 
 ```js
 ROUTE('GET /export/', function($) {
@@ -122,7 +122,7 @@ ROUTE('GET /export/', function($) {
 
 ## ¿Cómo sustituyo una acción en una prueba?
 
-En Total.js 5 0.0.20 y posteriores, con `Test.fake(name, definition)`; `Test.restore()` vuelve a poner las acciones reales:
+Con `Test.fake(name, definition)`; `Test.restore()` vuelve a poner las acciones reales:
 
 ```js
 Test.fake('Mail|send', {

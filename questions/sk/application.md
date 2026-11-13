@@ -141,8 +141,8 @@ Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí 
 
 ## Potrebujem Express alebo iné balíčky?
 
-Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL, od Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
+Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 
-`"total5": ">=0.0.20-4"` v `package.json`: verzia 0.0.20 alebo novšia. Dnes nainštaluje betu 0.0.20, ktorá opravuje viacero problémov verzie 0.0.19, a stabilnú 0.0.20, keď vyjde. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
+`"total5": ">=0.0.20-4"` v `package.json`: táto verzia alebo novšia, vždy. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.

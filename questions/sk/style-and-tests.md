@@ -71,13 +71,13 @@ Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <po
 
 Čistú, dočasnú databázu iba pre testy, nikdy tú z aplikácie. Pred čímkoľvek, čo maže, test skontroluje názov databázy, ku ktorej je pripojený, a zastaví sa, ak to nie je tá očakávaná.
 
-## Čo pridáva Total.js 5 0.0.20?
+## Ktorú verziu Total.js 5 poznáš?
 
-Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test`, `Test.fake()` a od 0.0.20-4 vlastný klient PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Nový projekt ich má s `"total5": ">=0.0.20-4"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
+Total.js 5 po 0.0.20-4. Používaj túto verziu alebo novšiu, vždy: `"total5": ">=0.0.20-4"` v `package.json`.
 
 ## Ako sprístupním akciu ako nástroj MCP?
 
-V Total.js 5 0.0.20 a novšom: `$mcp : true` v `config` otvorí routu `POST /$mcp/` a každá akcia s `mcp: true` je tam nástrojom.
+`$mcp : true` v `config` otvorí routu `POST /$mcp/` a každá akcia s `mcp: true` je tam nástrojom.
 
 ```js
 NEWACTION('Items|create', {
@@ -95,7 +95,7 @@ Nástroj sa volá `Items_create`: názov nástroja nemôže obsahovať zvislú �
 
 ## Ako uložím odpoveď akcie do cache?
 
-V Total.js 5 0.0.20 a novšom, cez `cache`:
+Cez `cache`:
 
 ```js
 NEWACTION('Items|list', {
@@ -112,7 +112,7 @@ NEWACTION('Items|list', {
 
 ## Ako odpoviem CSV alebo iným typom obsahu?
 
-V Total.js 5 0.0.20 a novšom, cez `$.content(value, type)`:
+Cez `$.content(value, type)`:
 
 ```js
 ROUTE('GET /export/', function($) {
@@ -122,7 +122,7 @@ ROUTE('GET /export/', function($) {
 
 ## Ako v teste nahradím akciu?
 
-V Total.js 5 0.0.20 a novšom, cez `Test.fake(name, definition)`; `Test.restore()` vráti skutočné akcie:
+Cez `Test.fake(name, definition)`; `Test.restore()` vráti skutočné akcie:
 
 ```js
 Test.fake('Mail|send', {

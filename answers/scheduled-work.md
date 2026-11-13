@@ -24,6 +24,6 @@ CRON('0 0 * * *', function() {
 
 Put the work in an action and let the schedule only call it: the API can call it too, and it can be tested without waiting.
 
-The step form of a `CRON` (`*/15 * * * *`) works from Total.js 5 0.0.20. In 0.0.19 it runs every minute: there write the minutes as a list (`0,15,30,45 * * * *`).
+A step works too: `*/15 * * * *` is every fifteen minutes.
 
 Do not use `setInterval` or a package for schedules. The complete application: [`apps/monitor`](../apps/monitor).

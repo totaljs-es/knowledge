@@ -159,7 +159,7 @@ With `LOGMAIL(email, subject, text)`: a plain message, without a view. It uses t
 LOGMAIL('admin@example.com', 'Import failed', 'The import stopped at the row 12');
 ```
 
-The body can be an object too from Total.js 5 0.0.20; in 0.0.19 an object fails.
+The body can be an object too.
 
 ## How do I record who did what?
 
@@ -252,4 +252,4 @@ AJAX('GET /token/', function(response) {
 });
 ```
 
-A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. A view can write the token with `@{csrf}` from Total.js 5 0.0.20; in 0.0.19 that directive fails, so make it with `$.csrf()`.
+A token is good for 30 minutes and only for the address and the browser that asked for it; without it, changed, or from another browser, the answer is 403. A view can write the token with `@{csrf}`.

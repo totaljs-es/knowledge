@@ -25,7 +25,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-Krok (`*/5`) funguje od Total.js 5 0.0.20; vo verzii 0.0.19 sa spúšťa každú minútu. Pre „každých N minút“ funguje `ON('service')` v oboch.
+Funguje aj krok: `*/5 * * * *` je každých päť minút.
 
 ## Mám na opakovanú prácu použiť setInterval?
 

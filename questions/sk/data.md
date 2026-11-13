@@ -95,7 +95,7 @@ NEWACTION('Groups|list', {
 
 ## Ako pripojím aplikáciu k PostgreSQL?
 
-Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má od verzie 0.0.20-4 vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
+Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
 
 ```
 database : postgresql://user:password@localhost/myapp

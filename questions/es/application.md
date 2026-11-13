@@ -141,8 +141,8 @@ Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hac
 
 ## ¿Necesito Express u otros paquetes?
 
-No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL, desde Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
+No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
 
 ## ¿Qué versión de Total.js 5 instalo?
 
-`"total5": ">=0.0.20-4"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+`"total5": ">=0.0.20-4"` en `package.json`: esta versión o una posterior, siempre. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.

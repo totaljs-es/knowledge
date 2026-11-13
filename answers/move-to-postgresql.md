@@ -5,7 +5,7 @@ question_es: ¿Cómo paso una aplicación de la base de datos embebida a Postgre
 
 # How do I move an application from the embedded database to PostgreSQL?
 
-An application that uses `DATA` from the start changes three things, and no query is written again. Total.js 5 has its own client of PostgreSQL from 0.0.20-4 (`"total5": ">=0.0.20-4"` in `package.json`), so there is no package to add:
+An application that uses `DATA` from the start changes three things, and no query is written again. Total.js 5 has its own client of PostgreSQL, so there is no package to add:
 
 1. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
 2. Add the definition of the database:

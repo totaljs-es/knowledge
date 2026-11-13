@@ -1256,11 +1256,7 @@
 		},
 		{
 			"file": "answers/versions.md",
-			"symbols": [
-				"cron",
-				"json",
-				"logmail"
-			],
+			"symbols": [],
 			"tags": [
 				"add",
 				"beta",
@@ -1798,14 +1794,12 @@
 		{
 			"file": "questions/style-and-tests.md",
 			"symbols": [
-				"json",
 				"newaction",
 				"now",
 				"route"
 			],
 			"tags": [
 				"action",
-				"add",
 				"another",
 				"answer",
 				"answers",
@@ -1828,6 +1822,7 @@
 				"function",
 				"item",
 				"javascript",
+				"know",
 				"mcp",
 				"question",
 				"questions",
@@ -2846,7 +2841,6 @@
 		{
 			"file": "questions/es/style-and-tests.md",
 			"symbols": [
-				"json",
 				"newaction",
 				"now",
 				"route"
@@ -2854,7 +2848,6 @@
 			"tags": [
 				"acci",
 				"actual",
-				"ade",
 				"aplicaci",
 				"archivo",
 				"arrancar",
@@ -2865,6 +2858,8 @@
 				"campo",
 				"como",
 				"con",
+				"conoce",
+				"conoces",
 				"contenido",
 				"cre",
 				"csv",
@@ -2914,6 +2909,7 @@
 				"usan",
 				"valore",
 				"valores",
+				"versi",
 				"versione",
 				"versiones"
 			]
@@ -3939,7 +3935,6 @@
 		{
 			"file": "questions/sk/style-and-tests.md",
 			"symbols": [
-				"json",
 				"newaction",
 				"now",
 				"route"
@@ -3965,6 +3960,7 @@
 				"javascriptu",
 				"jdem",
 				"kto",
+				"ktor",
 				"lny",
 				"maj",
 				"mcp",
@@ -3978,8 +3974,8 @@
 				"pod",
 				"polo",
 				"pou",
+				"pozn",
 				"pre",
-				"prid",
 				"require",
 				"rovnak",
 				"skam",
@@ -3998,6 +3994,7 @@
 				"urob",
 				"vaj",
 				"verzie",
+				"verziu",
 				"vlo",
 				"vytvoril",
 				"zky"

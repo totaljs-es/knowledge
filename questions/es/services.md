@@ -25,7 +25,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-Un paso (`*/5`) funciona desde Total.js 5 0.0.20; en la 0.0.19 se ejecuta cada minuto. Para «cada N minutos», `ON('service')` funciona en las dos.
+También funciona un paso: `*/5 * * * *` es cada cinco minutos.
 
 ## ¿Debo usar setInterval para trabajo repetido?
 

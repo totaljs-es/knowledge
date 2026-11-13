@@ -25,7 +25,7 @@ CRON('0 0 * * *', function() {
 });
 ```
 
-A step (`*/5`) works from Total.js 5 0.0.20; in 0.0.19 it runs every minute. For "every N minutes" `ON('service')` works in both.
+A step works too: `*/5 * * * *` is every five minutes.
 
 ## Should I use setInterval for repeated work?
 

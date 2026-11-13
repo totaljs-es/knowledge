@@ -95,7 +95,7 @@ NEWACTION('Groups|list', {
 
 ## How do I connect the application to PostgreSQL?
 
-Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL from 0.0.20-4: no package to add.
+Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL: no package to add.
 
 ```
 database : postgresql://user:password@localhost/myapp
