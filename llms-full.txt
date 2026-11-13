@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 231 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 233 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -4681,6 +4681,20 @@ NEWACTION('Tickets|remove', {
 
 A folder for each action (`actions/<name>/action.js`, with its test) is only the layout of a kit of standalone actions, which is a repository of actions and not an application.
 
+## Do I make a folder for each collection inside actions/?
+
+No. One file for each collection, directly in `actions/`: `actions/tickets.js`, `actions/contacts.js`. The file is named as the collection and has all its actions.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## Do I write one file for each action?
+
+No. All the actions of a collection are in one file: `Tickets|list`, `Tickets|read`, `Tickets|save` and `Tickets|remove` are in `actions/tickets.js`.
+
 ## Can I put NEWACTION() in a controller?
 
 No. `controllers/` has only the routes, one line each, and a route points to an action. The action is in `actions/`:
@@ -7389,6 +7403,20 @@ NEWACTION('Tickets|remove', {
 
 Una carpeta por cada acción (`actions/<nombre>/action.js`, con su prueba) es solo la forma de un kit de acciones sueltas, que es un repositorio de acciones y no una aplicación.
 
+## ¿Hago una carpeta por cada colección dentro de actions/?
+
+No. Un archivo por cada colección, directamente en `actions/`: `actions/tickets.js`, `actions/contacts.js`. El archivo se llama como la colección y tiene todas sus acciones.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## ¿Escribo un archivo por cada acción?
+
+No. Todas las acciones de una colección están en un archivo: `Tickets|list`, `Tickets|read`, `Tickets|save` y `Tickets|remove` están en `actions/tickets.js`.
+
 ## ¿Puedo poner NEWACTION() en un controlador?
 
 No. `controllers/` solo tiene las rutas, una línea cada una, y una ruta apunta a una acción. La acción está en `actions/`:
@@ -10096,6 +10124,20 @@ NEWACTION('Tickets|remove', {
 ```
 
 Priečinok pre každú akciu (`actions/<názov>/action.js`, s jej testom) je len rozloženie kitu samostatných akcií, čo je repozitár akcií, nie aplikácia.
+
+## Robím priečinok pre každú kolekciu v actions/?
+
+Nie. Jeden súbor pre každú kolekciu, priamo v `actions/`: `actions/tickets.js`, `actions/contacts.js`. Súbor sa volá ako kolekcia a má všetky jej akcie.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## Píšem jeden súbor pre každú akciu?
+
+Nie. Všetky akcie jednej kolekcie sú v jednom súbore: `Tickets|list`, `Tickets|read`, `Tickets|save` a `Tickets|remove` sú v `actions/tickets.js`.
 
 ## Môžem dať NEWACTION() do controllera?
 

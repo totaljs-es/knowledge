@@ -75,6 +75,20 @@ NEWACTION('Tickets|remove', {
 
 A folder for each action (`actions/<name>/action.js`, with its test) is only the layout of a kit of standalone actions, which is a repository of actions and not an application.
 
+## Do I make a folder for each collection inside actions/?
+
+No. One file for each collection, directly in `actions/`: `actions/tickets.js`, `actions/contacts.js`. The file is named as the collection and has all its actions.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## Do I write one file for each action?
+
+No. All the actions of a collection are in one file: `Tickets|list`, `Tickets|read`, `Tickets|save` and `Tickets|remove` are in `actions/tickets.js`.
+
 ## Can I put NEWACTION() in a controller?
 
 No. `controllers/` has only the routes, one line each, and a route points to an action. The action is in `actions/`:

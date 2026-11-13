@@ -75,6 +75,20 @@ NEWACTION('Tickets|remove', {
 
 Priečinok pre každú akciu (`actions/<názov>/action.js`, s jej testom) je len rozloženie kitu samostatných akcií, čo je repozitár akcií, nie aplikácia.
 
+## Robím priečinok pre každú kolekciu v actions/?
+
+Nie. Jeden súbor pre každú kolekciu, priamo v `actions/`: `actions/tickets.js`, `actions/contacts.js`. Súbor sa volá ako kolekcia a má všetky jej akcie.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## Píšem jeden súbor pre každú akciu?
+
+Nie. Všetky akcie jednej kolekcie sú v jednom súbore: `Tickets|list`, `Tickets|read`, `Tickets|save` a `Tickets|remove` sú v `actions/tickets.js`.
+
 ## Môžem dať NEWACTION() do controllera?
 
 Nie. `controllers/` má len routy, každú na jednom riadku, a routa ukazuje na akciu. Akcia je v `actions/`:

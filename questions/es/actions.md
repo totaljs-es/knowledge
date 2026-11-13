@@ -75,6 +75,20 @@ NEWACTION('Tickets|remove', {
 
 Una carpeta por cada acción (`actions/<nombre>/action.js`, con su prueba) es solo la forma de un kit de acciones sueltas, que es un repositorio de acciones y no una aplicación.
 
+## ¿Hago una carpeta por cada colección dentro de actions/?
+
+No. Un archivo por cada colección, directamente en `actions/`: `actions/tickets.js`, `actions/contacts.js`. El archivo se llama como la colección y tiene todas sus acciones.
+
+```
+actions/
+	contacts.js
+	tickets.js
+```
+
+## ¿Escribo un archivo por cada acción?
+
+No. Todas las acciones de una colección están en un archivo: `Tickets|list`, `Tickets|read`, `Tickets|save` y `Tickets|remove` están en `actions/tickets.js`.
+
 ## ¿Puedo poner NEWACTION() en un controlador?
 
 No. `controllers/` solo tiene las rutas, una línea cada una, y una ruta apunta a una acción. La acción está en `actions/`:
