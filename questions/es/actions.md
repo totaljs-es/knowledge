@@ -49,6 +49,75 @@ En `actions/`, un archivo por colección: `actions/contacts.js`. Una aplicación
 
 La carpeta de las acciones en las aplicaciones escritas antes de que Total.js 5 añadiera `actions/`. Total.js 5 carga las dos de la misma forma, así que un `NEWACTION` en `schemas/tickets.js` funciona igual que uno en `actions/tickets.js`. En una aplicación que tiene `schemas/`, sigue escribiendo sus acciones ahí y no las muevas; una aplicación nueva usa `actions/`. El nombre viene de `NEWSCHEMA`, que agrupa acciones y también forma parte de Total.js 5.
 
+## ¿Una acción es un archivo o una carpeta?
+
+En una aplicación es un archivo, y el archivo tiene todas las acciones de una colección: `actions/tickets.js` tiene `Tickets|list`, `Tickets|read`, `Tickets|save` y `Tickets|remove`. No hay una carpeta por colección ni un archivo por acción.
+
+```js
+// actions/tickets.js
+NEWACTION('Tickets|list', {
+	name: 'List of tickets',
+	action: async function($) {
+		var items = await DATA.find('nosql/tbl_ticket').promise($);
+		$.callback(items);
+	}
+});
+
+NEWACTION('Tickets|remove', {
+	name: 'Remove a ticket',
+	params: '*id:UID',
+	action: async function($) {
+		await DATA.remove('nosql/tbl_ticket').id($.params.id).error(404).promise($);
+		$.success($.params.id);
+	}
+});
+```
+
+Una carpeta por cada acción (`actions/<nombre>/action.js`, con su prueba) es solo la forma de un kit de acciones sueltas, que es un repositorio de acciones y no una aplicación.
+
+## ¿Puedo poner NEWACTION() en un controlador?
+
+No. `controllers/` solo tiene las rutas, una línea cada una, y una ruta apunta a una acción. La acción está en `actions/`:
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    +tickets_create          --> Tickets|create');
+};
+```
+
+```js
+// actions/tickets.js
+NEWACTION('Tickets|create', {
+	name: 'Create a ticket',
+	input: '*name:String',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_ticket', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+## ¿Va NEWACTION() en definitions/?
+
+No. `definitions/` es para lo que se ejecuta una vez al arrancar la aplicación: `AUTH`, `ON('ready')`, los ayudantes de `FUNC` y la conexión de la base de datos. Una acción está en `actions/`, y el framework la carga solo: nada tiene que registrarla.
+
+## ¿Qué diferencia hay entre tickets_create y Tickets|create?
+
+Son dos nombres de dos cosas, y están uno al lado del otro en la línea de la ruta:
+
+```js
+ROUTE('+API    ?    +tickets_create          --> Tickets|create');
+```
+
+`tickets_create` es el endpoint: lo que el navegador u otro programa envía en `schema` para llamarla. `Tickets|create` es la acción: el nombre que recibe `NEWACTION`, con mayúscula y una barra vertical. Una acción nunca se nombra como un endpoint, y un endpoint nunca lleva barra vertical.
+
+## ¿Qué va en controllers/ y qué no?
+
+Las rutas, y las funciones pequeñas de las páginas que solo pintan una vista. La lógica no: leer y escribir datos, comprobar quién puede hacerlo y responder con un resultado están en una acción. Un controlador que crece es señal de que su lógica pertenece a `actions/`.
+
 ## ¿Cómo declaro la entrada de una acción?
 
 Con un texto en `input`: los campos separados por comas, `*` delante de un campo obligatorio y el tipo después de `:`.

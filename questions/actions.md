@@ -49,6 +49,75 @@ In `actions/`, one file per collection: `actions/contacts.js`. An application wr
 
 The folder of the actions in the applications written before Total.js 5 added `actions/`. Total.js 5 loads both in the same way, so a `NEWACTION` in `schemas/tickets.js` works as one in `actions/tickets.js`. In an application that has `schemas/`, keep writing its actions there and do not move them; a new application uses `actions/`. The name comes from `NEWSCHEMA`, which groups actions and is also part of Total.js 5.
 
+## Is an action a file or a folder?
+
+In an application it is a file, and the file has all the actions of one collection: `actions/tickets.js` has `Tickets|list`, `Tickets|read`, `Tickets|save` and `Tickets|remove`. There is no folder per collection and no file per action.
+
+```js
+// actions/tickets.js
+NEWACTION('Tickets|list', {
+	name: 'List of tickets',
+	action: async function($) {
+		var items = await DATA.find('nosql/tbl_ticket').promise($);
+		$.callback(items);
+	}
+});
+
+NEWACTION('Tickets|remove', {
+	name: 'Remove a ticket',
+	params: '*id:UID',
+	action: async function($) {
+		await DATA.remove('nosql/tbl_ticket').id($.params.id).error(404).promise($);
+		$.success($.params.id);
+	}
+});
+```
+
+A folder for each action (`actions/<name>/action.js`, with its test) is only the layout of a kit of standalone actions, which is a repository of actions and not an application.
+
+## Can I put NEWACTION() in a controller?
+
+No. `controllers/` has only the routes, one line each, and a route points to an action. The action is in `actions/`:
+
+```js
+// controllers/api.js
+exports.install = function() {
+	ROUTE('+API    ?    +tickets_create          --> Tickets|create');
+};
+```
+
+```js
+// actions/tickets.js
+NEWACTION('Tickets|create', {
+	name: 'Create a ticket',
+	input: '*name:String',
+	action: async function($, model) {
+		model.id = UID();
+		model.dtcreated = NOW;
+		await DATA.insert('nosql/tbl_ticket', model).promise($);
+		$.success(model.id);
+	}
+});
+```
+
+## Does NEWACTION() go in definitions/?
+
+No. `definitions/` is for what runs once when the application starts: `AUTH`, `ON('ready')`, the helpers of `FUNC` and the connection of the database. An action is in `actions/`, and the framework loads it by itself: nothing has to register it.
+
+## What is the difference between tickets_create and Tickets|create?
+
+They are two names of two things, and they are side by side in the line of the route:
+
+```js
+ROUTE('+API    ?    +tickets_create          --> Tickets|create');
+```
+
+`tickets_create` is the endpoint: what the browser or another program sends in `schema` to call it. `Tickets|create` is the action: the name given to `NEWACTION`, with a capital letter and a pipe. An action is never named as an endpoint, and an endpoint never has a pipe.
+
+## What goes in controllers/ and what does not?
+
+The routes, and the small functions of the pages that only render a view. The logic does not: reading and writing data, checking who may do it and answering with a result are in an action. A controller that grows is a sign that its logic belongs in `actions/`.
+
 ## How do I declare the input of an action?
 
 With a text in `input`: the fields separated by commas, `*` before a required field and the type after `:`.

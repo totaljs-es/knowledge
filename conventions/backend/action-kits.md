@@ -16,6 +16,8 @@ tools/check.js     checks structure and style, then runs test.js
 
 Single files from an older layout (`actions/*.js`) stay as they are; a new action always has its folder and its test.
 
+This layout is for a kit, not for an application. In an application the actions are files, one for each collection (`actions/tickets.js` with every action of the tickets), and there is no folder per action: see [actions](actions.md).
+
 ## Contract first
 
 Name the action `Collection|verb` (see [actions](actions.md)) and write the contract before the code: `input`, `output`, `config` and the errors it returns. Split by responsibility:
