@@ -58,7 +58,7 @@ A project can add a line to its own `AGENTS.md`: "Follow the Total.js 5 knowledg
 - Claude Code: `/plugin marketplace add totaljs-es/knowledge`, then `/plugin install totaljs@totaljs-knowledge`. It adds the two skills, the check after each edit and the rules at the start of a session.
 - Codex: `codex plugin marketplace add totaljs-es/knowledge`, then `codex plugin add totaljs`. It adds the two skills.
 
-Check files by hand: `node tools/check.js <file|directory>` (`--strict` makes style findings fail, `--json` prints JSON). It only checks files inside a project that depends on `total5`, in the Total.js folders (`schemas/`, `controllers/`, `definitions/`, `modules/`, `plugins/`, `actions/`, `views/`).
+Check files by hand: `node tools/check.js <file|directory>` (`--strict` makes style findings fail, `--json` prints JSON). It only checks files inside a project that depends on `total5`, in the Total.js folders (`actions/`, `controllers/`, `definitions/`, `modules/`, `plugins/`, `actions/`, `views/`).
 
 ## Checking this repository
 

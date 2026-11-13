@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 225 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 226 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -146,7 +146,7 @@ A project can add a line to its own `AGENTS.md`: "Follow the Total.js 5 knowledg
 - Claude Code: `/plugin marketplace add totaljs-es/knowledge`, then `/plugin install totaljs@totaljs-knowledge`. It adds the two skills, the check after each edit and the rules at the start of a session.
 - Codex: `codex plugin marketplace add totaljs-es/knowledge`, then `codex plugin add totaljs`. It adds the two skills.
 
-Check files by hand: `node tools/check.js <file|directory>` (`--strict` makes style findings fail, `--json` prints JSON). It only checks files inside a project that depends on `total5`, in the Total.js folders (`schemas/`, `controllers/`, `definitions/`, `modules/`, `plugins/`, `actions/`, `views/`).
+Check files by hand: `node tools/check.js <file|directory>` (`--strict` makes style findings fail, `--json` prints JSON). It only checks files inside a project that depends on `total5`, in the Total.js folders (`actions/`, `controllers/`, `definitions/`, `modules/`, `plugins/`, `actions/`, `views/`).
 
 ## Checking this repository
 
@@ -299,8 +299,8 @@ package.json        "total5" is the runtime dependency
 controllers/        routes: exports.install = function() { ROUTE(...) }
 definitions/        auth.js, init.js, func.js, db.js: loaded at start, no exports
 modules/            integrations with other systems (cdn, tapi...)
-plugins/<name>/     a feature: index.js (server), index.html (UI), schemas/, public/
-schemas/            actions that are not part of a plugin (actions/ is loaded in the same way)
+plugins/<name>/     a feature: index.js (server), index.html (UI), actions/, public/
+actions/            actions that are not part of a plugin (an older application has them in schemas/)
 views/              layout and pages (HTML with @{...} directives)
 public/             browser-accessible static files
 private/            internal runtime files and grouped SQL/maintenance assets
@@ -377,7 +377,7 @@ Run it with `node index.js 8000` (add `--release` for release mode).
 ## Where things go
 
 - **A route** follows the app's existing pattern: `controllers/*.js` / plugin `index.js`, or the action's `route:` property.
-- **Business logic** belongs in actions: usually `schemas/` or `plugins/<name>/schemas/` (Total.js 5 also loads `actions/`, which some applications use instead of `schemas/`); compact plugins may declare actions in `index.js`.
+- **Business logic** belongs in actions: `actions/` or `plugins/<name>/actions/` (an application written before Total.js 5 added that folder has them in `schemas/`, which is loaded in the same way: leave them there); compact plugins may declare actions in `index.js`.
 - **Shared helpers** hang from `FUNC` (`FUNC.notify`, `FUNC.save`) and live in `definitions/func.js`.
 - **Shared state in memory** hangs from `MAIN` (the app) or `REPO` (cached lookups, e.g. `REPO.tags`).
 - **Startup work** (config defaults, loading caches, registering UI components) goes in `ON('ready', ...)` in `definitions/init.js`.
@@ -621,7 +621,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/
 
 # Actions
 
-An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in a `schemas/` file, or in an `actions/` file: Total.js 5 loads both folders in the same way, so keep the one that the application already uses.
+An action is one unit of server logic: a name, the input it accepts, who may call it, and a function. Define it with `NEWACTION` in an `actions/` file. An application written before Total.js 5 added that folder has its actions in `schemas/`, which is loaded in the same way: leave them there.
 
 ```js
 NEWACTION('Redirects|save', {
@@ -1498,7 +1498,7 @@ A feature of an app is a **plugin**: a folder with a server part and a UI part t
 ```
 plugins/redirects/
 	index.js              server: metadata + routes
-	schemas/redirects.js  actions (see backend/actions.md)
+	actions/redirects.js  actions (see backend/actions.md)
 	public/index.html     the screen: markup + <script>PLUGIN(...)</script>
 	public/form.html      the form that opens over the screen
 ```
@@ -3815,7 +3815,7 @@ index.js        the official start script, whole and unchanged
 config          the settings, one "key : value" per line
 package.json    "total5" is the dependency
 controllers/    the routes
-schemas/        the actions
+actions/        the actions
 definitions/    what runs at the start: AUTH, schedules, shared state
 views/          the pages, when it has pages
 public/         the static files
@@ -3854,10 +3854,10 @@ question_es: ¿Dónde van las rutas y la lógica de una API?
 
 # Where do the routes and the logic of an API go?
 
-The logic is an action, in a file of `schemas/`. The route is one line in a file of `controllers/` and points to the action. The name of an action has a pipe: `Collection|verb`.
+The logic is an action, in a file of `actions/`. The route is one line in a file of `controllers/` and points to the action. The name of an action has a pipe: `Collection|verb`.
 
 ```js
-// schemas/contacts.js
+// actions/contacts.js
 NEWACTION('Contacts|create', {
 	name: 'Create a contact',
 	input: '*name:String, email:Email',
@@ -3897,18 +3897,18 @@ question_es: ¿Debe mi aplicación usar plugins?
 
 Use plugins when the application has screens to manage data and will grow by features: each feature is a folder in `plugins/` with its routes, its actions, its screen and its form, and adding one does not touch the rest.
 
-Do not use plugins for a small API with one or two collections, or for a website with a few pages: `controllers/`, `schemas/` and `views/` are enough.
+Do not use plugins for a small API with one or two collections, or for a website with a few pages: `controllers/`, `actions/` and `views/` are enough.
 
 | The application | Shape | Example |
 |---|---|---|
-| A small API | No plugins: `controllers/` and `schemas/` | [`apps/contacts`](../apps/contacts) |
+| A small API | No plugins: `controllers/` and `actions/` | [`apps/contacts`](../apps/contacts) |
 | Public pages | No plugins: `controllers/` and `views/` | [`apps/website`](../apps/website) |
 | Screens to manage data, more features later | Plugins | [`apps/board`](../apps/board) |
 
 ```
 plugins/tasks/
 	index.js              the name, the icon, the position in the menu and the routes
-	schemas/tasks.js      the actions
+	actions/tasks.js      the actions
 	public/index.html     the screen
 	public/form.html      the form
 ```
@@ -4057,7 +4057,7 @@ function download($) {
 ```
 
 ```js
-// schemas/files.js
+// actions/files.js
 NEWACTION('Files|upload', {
 	name: 'Upload files',
 	action: async function($) {
@@ -4330,7 +4330,7 @@ Total.js 5 is the server and jComponent 20 is the browser. The server sends **mo
 
 | | The server: Total.js 5 | The browser: jComponent 20 |
 |---|---|---|
-| Where | `controllers/`, `schemas/`, `definitions/`, `plugins/<name>/index.js` | `views/` once it is loaded, `public/`, `plugins/<name>/public/*.html` |
+| Where | `controllers/`, `actions/`, `definitions/`, `plugins/<name>/index.js` | `views/` once it is loaded, `public/`, `plugins/<name>/public/*.html` |
 | What it does | routes, actions, validation, the database, files, mail, schedules | screens, components, bindings, forms, clicks, the pages of the browser |
 | How it answers or asks | `$.callback(model)`, `$.success()`, `$.invalid()`, `$.view('name', model)` | `exports.tapi('endpoint', data, callback)`, `AJAX('GET /url/', callback)` |
 | What it never does | HTML for a screen, jQuery, `document`, components | a query to the database, `CONF`, secrets, `NEWACTION`, `ROUTE` of the server |
@@ -4340,7 +4340,7 @@ A model crosses the border in two ways.
 As JSON, when a screen asks for it. The action answers with data and the screen puts it in its state; the bindings draw it:
 
 ```js
-// schemas/tasks.js (server)
+// actions/tasks.js (server)
 NEWACTION('Tasks|list', {
 	name: 'List of tasks',
 	action: async function($) {
@@ -4461,14 +4461,14 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions (the folder actions/ is loaded in the same way)
+actions/            actions (an older application has them in schemas/)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
 public/             static files for the browser
 ```
 
-A small API needs only `index.js`, `config`, `package.json`, `controllers/`, `schemas/` and `definitions/`.
+A small API needs only `index.js`, `config`, `package.json`, `controllers/`, `actions/` and `definitions/`.
 
 ## What goes in index.js?
 
@@ -4588,7 +4588,7 @@ Do not load an application module with `require(PATH.root('modules/...'))`. A na
 
 ## Should a new application use plugins?
 
-It depends on the project. An application that will grow by features is made with plugins: each feature is a folder `plugins/<name>/` with its routes, its actions and its screen. A small service with one or two collections does not need them: `controllers/` and `schemas/` are enough.
+It depends on the project. An application that will grow by features is made with plugins: each feature is a folder `plugins/<name>/` with its routes, its actions and its screen. A small service with one or two collections does not need them: `controllers/` and `actions/` are enough.
 
 ## Do I need Express or other packages?
 
@@ -4606,7 +4606,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/ac
 
 ## What is an action?
 
-One unit of server logic: a name, the input it accepts, who may call it, and a function. It is defined with `NEWACTION` in a file of `schemas/`:
+One unit of server logic: a name, the input it accepts, who may call it, and a function. It is defined with `NEWACTION` in a file of `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -4647,7 +4647,11 @@ NEWACTION('Tickets|list', {
 
 ## Where do I put the actions?
 
-In `schemas/`, one file per collection: `schemas/contacts.js`. Total.js 5 loads the folder `actions/` in the same way, and some applications use it instead: keep the one that the application already has. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+In `actions/`, one file per collection: `actions/contacts.js`. An application written before Total.js 5 added this folder has its actions in `schemas/`, which is loaded in the same way: leave them there. In an application with plugins, in `plugins/<name>/actions/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+
+## What is the folder schemas/?
+
+The folder of the actions in the applications written before Total.js 5 added `actions/`. Total.js 5 loads both in the same way, so a `NEWACTION` in `schemas/tickets.js` works as one in `actions/tickets.js`. In an application that has `schemas/`, keep writing its actions there and do not move them; a new application uses `actions/`. The name comes from `NEWSCHEMA`, which groups actions and is also part of Total.js 5.
 
 ## How do I declare the input of an action?
 
@@ -5715,7 +5719,7 @@ A feature of an application: a folder with its server part and its screen, which
 ```
 plugins/redirects/
 	index.js              server: metadata and routes
-	schemas/redirects.js  actions
+	actions/redirects.js  actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```
@@ -7096,14 +7100,14 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions (the folder actions/ is loaded in the same way)
+actions/            actions (an older application has them in schemas/)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
 public/             static files for the browser
 ```
 
-Una API pequeña solo necesita `index.js`, `config`, `package.json`, `controllers/`, `schemas/` y `definitions/`.
+Una API pequeña solo necesita `index.js`, `config`, `package.json`, `controllers/`, `actions/` y `definitions/`.
 
 ## ¿Qué va en index.js?
 
@@ -7223,7 +7227,7 @@ No cargues un módulo de la aplicación con `require(PATH.root('modules/...'))`.
 
 ## ¿Una aplicación nueva debe usar plugins?
 
-Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hace con plugins: cada funcionalidad es una carpeta `plugins/<nombre>/` con sus rutas, sus acciones y su pantalla. Un servicio pequeño con una o dos colecciones no los necesita: bastan `controllers/` y `schemas/`.
+Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hace con plugins: cada funcionalidad es una carpeta `plugins/<nombre>/` con sus rutas, sus acciones y su pantalla. Un servicio pequeño con una o dos colecciones no los necesita: bastan `controllers/` y `actions/`.
 
 ## ¿Necesito Express u otros paquetes?
 
@@ -7241,7 +7245,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es
 
 ## ¿Qué es una acción?
 
-Una unidad de lógica del servidor: un nombre, la entrada que acepta, quién puede llamarla y una función. Se define con `NEWACTION` en un archivo de `schemas/`:
+Una unidad de lógica del servidor: un nombre, la entrada que acepta, quién puede llamarla y una función. Se define con `NEWACTION` en un archivo de `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -7282,7 +7286,11 @@ NEWACTION('Tickets|list', {
 
 ## ¿Dónde pongo las acciones?
 
-En `schemas/`, un archivo por colección: `schemas/contacts.js`. Total.js 5 carga la carpeta `actions/` de la misma forma, y algunas aplicaciones la usan en su lugar: mantén la que la aplicación ya tenga. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+En `actions/`, un archivo por colección: `actions/contacts.js`. Una aplicación escrita antes de que Total.js 5 añadiera esta carpeta tiene sus acciones en `schemas/`, que se carga de la misma forma: déjalas ahí. En una aplicación con plugins, en `plugins/<nombre>/actions/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+
+## ¿Qué es la carpeta schemas/?
+
+La carpeta de las acciones en las aplicaciones escritas antes de que Total.js 5 añadiera `actions/`. Total.js 5 carga las dos de la misma forma, así que un `NEWACTION` en `schemas/tickets.js` funciona igual que uno en `actions/tickets.js`. En una aplicación que tiene `schemas/`, sigue escribiendo sus acciones ahí y no las muevas; una aplicación nueva usa `actions/`. El nombre viene de `NEWSCHEMA`, que agrupa acciones y también forma parte de Total.js 5.
 
 ## ¿Cómo declaro la entrada de una acción?
 
@@ -8350,7 +8358,7 @@ Una funcionalidad de una aplicación: una carpeta con su parte de servidor y su 
 ```
 plugins/redirects/
 	index.js              server: metadata and routes
-	schemas/redirects.js  actions
+	actions/redirects.js  actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```
@@ -9731,14 +9739,14 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions (the folder actions/ is loaded in the same way)
+actions/            actions (an older application has them in schemas/)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
 public/             static files for the browser
 ```
 
-Malé API potrebuje iba `index.js`, `config`, `package.json`, `controllers/`, `schemas/` a `definitions/`.
+Malé API potrebuje iba `index.js`, `config`, `package.json`, `controllers/`, `actions/` a `definitions/`.
 
 ## Čo patrí do index.js?
 
@@ -9858,7 +9866,7 @@ Modul aplikácie nenačítavaj cez `require(PATH.root('modules/...'))`. Názov s
 
 ## Má nová aplikácia používať pluginy?
 
-Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí s pluginmi: každá funkcia je priečinok `plugins/<názov>/` so svojimi routami, akciami a obrazovkou. Malá služba s jednou alebo dvoma kolekciami ich nepotrebuje: stačia `controllers/` a `schemas/`.
+Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí s pluginmi: každá funkcia je priečinok `plugins/<názov>/` so svojimi routami, akciami a obrazovkou. Malá služba s jednou alebo dvoma kolekciami ich nepotrebuje: stačia `controllers/` a `actions/`.
 
 ## Potrebujem Express alebo iné balíčky?
 
@@ -9876,7 +9884,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/sk
 
 ## Čo je akcia?
 
-Jedna jednotka logiky servera: názov, vstup, ktorý prijíma, kto ju smie volať, a funkcia. Definuje sa cez `NEWACTION` v súbore v `schemas/`:
+Jedna jednotka logiky servera: názov, vstup, ktorý prijíma, kto ju smie volať, a funkcia. Definuje sa cez `NEWACTION` v súbore v `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -9917,7 +9925,11 @@ NEWACTION('Tickets|list', {
 
 ## Kam dám akcie?
 
-Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. Total.js 5 načíta priečinok `actions/` rovnakým spôsobom a niektoré aplikácie ho používajú namiesto toho: ponechaj ten, ktorý aplikácia už má. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+Do `actions/`, jeden súbor na kolekciu: `actions/contacts.js`. Aplikácia napísaná skôr, než Total.js 5 pridal tento priečinok, má akcie v `schemas/`, ktorý sa načíta rovnakým spôsobom: nechaj ich tam. V aplikácii s pluginmi do `plugins/<názov>/actions/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+
+## Čo je priečinok schemas/?
+
+Priečinok akcií v aplikáciách napísaných skôr, než Total.js 5 pridal `actions/`. Total.js 5 načíta oba rovnakým spôsobom, takže `NEWACTION` v `schemas/tickets.js` funguje rovnako ako v `actions/tickets.js`. V aplikácii, ktorá má `schemas/`, píš jej akcie ďalej tam a nepresúvaj ich; nová aplikácia používa `actions/`. Názov pochádza z `NEWSCHEMA`, ktoré zoskupuje akcie a je tiež súčasťou Total.js 5.
 
 ## Ako deklarujem vstup akcie?
 
@@ -10985,7 +10997,7 @@ Jedna funkcia aplikácie: priečinok so svojou serverovou časťou a obrazovkou,
 ```
 plugins/redirects/
 	index.js              server: metadata and routes
-	schemas/redirects.js  actions
+	actions/redirects.js  actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```
@@ -12368,7 +12380,7 @@ An API of contacts with Total.js 5: list, read, create, update and remove. The d
 | `config` | The name of the application and the token of the API |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes of the API, one line each |
-| `schemas/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
+| `actions/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
 | `test.js` | The tests: they start the application and call every action |
 
@@ -12421,14 +12433,14 @@ The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its route
 
 | File | In `apps/contacts` | Here |
 |---|---|---|
-| `schemas/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
+| `actions/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
 | `definitions/db.js` | | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
 | `config` | | `database : postgresql://user:password@localhost/contacts` |
 | `package.json` | | the dependency `querybuilderpg` |
 | `database.sql` | | the table `tbl_contact` |
 | `definitions/init.js` | | creates the table from `database.sql` the first time the application starts |
 
-`controllers/api.js` and `definitions/auth.js` do not change, and `schemas/contacts.js` changes only in that prefix. A test checks both.
+`controllers/api.js` and `definitions/auth.js` do not change, and `actions/contacts.js` changes only in that prefix. A test checks both.
 
 The table has the names of the SQL conventions, which the application used from the start: `tbl_contact`, `id` as `text` filled with `UID()`, `dtcreated` and `dtupdated`.
 
@@ -12473,7 +12485,7 @@ An API to upload files and download them with Total.js 5. The files are kept in 
 | `config` | The name of the application and the token |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes: the API, the upload and the download |
-| `schemas/files.js` | The actions: `Files|list`, `Files|upload`, `Files|remove` |
+| `actions/files.js` | The actions: `Files|list`, `Files|upload`, `Files|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
 | `test.js` | The tests: they start the application, upload a real file, download it and remove it |
 
@@ -12551,7 +12563,7 @@ An application that checks websites on a schedule with Total.js 5 and says which
 | `config` | The name, the token, every how many minutes the websites are checked and how long one has to answer |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes of the API |
-| `schemas/sites.js` | The actions: `Sites|list`, `Sites|create`, `Sites|remove`, `Sites|check` |
+| `actions/sites.js` | The actions: `Sites|list`, `Sites|create`, `Sites|remove`, `Sites|check` |
 | `definitions/init.js` | The state of the application: `MAIN.monitor = MEMORIZE('monitor', 1000)` |
 | `definitions/jobs.js` | The schedule: the check and the reset of the counts at midnight |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
@@ -12807,9 +12819,9 @@ An application with sign in: users, sessions with a cookie, and notes that belon
 | `definitions/init.js` | The components of the interface, and the first user when there is none |
 | `controllers/default.js` | The two pages: `+GET /` with a session, `-GET /*` without one |
 | `controllers/api.js` | The routes of the API: `-` for the sign in, `+` for the rest |
-| `schemas/account.js` | `Account|login`, `Account|logout`, `Account|read`, `Account|password` |
-| `schemas/notes.js` | `Notes|list`, `Notes|save`, `Notes|remove`: every query has the id of the user of the session |
-| `schemas/users.js` | `Users|list`, `Users|create`, `Users|remove`: only for an administrator, and the action checks it |
+| `actions/account.js` | `Account|login`, `Account|logout`, `Account|read`, `Account|password` |
+| `actions/notes.js` | `Notes|list`, `Notes|save`, `Notes|remove`: every query has the id of the user of the session |
+| `actions/users.js` | `Users|list`, `Users|create`, `Users|remove`: only for an administrator, and the action checks it |
 | `views/login.html`, `views/index.html` | The page to sign in and the application, with jComponent 20 |
 | `test.js` | The tests: two browsers, each with its own cookie |
 
@@ -12868,7 +12880,7 @@ A board of tasks and notes with Total.js 5, made with plugins. Each feature is a
 ```
 plugins/tasks/
 	index.js              the name, the icon, the position in the menu and the routes
-	schemas/tasks.js      the actions
+	actions/tasks.js      the actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```

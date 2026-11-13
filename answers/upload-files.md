@@ -22,7 +22,7 @@ function download($) {
 ```
 
 ```js
-// schemas/files.js
+// actions/files.js
 NEWACTION('Files|upload', {
 	name: 'Upload files',
 	action: async function($) {

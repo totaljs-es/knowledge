@@ -2,7 +2,7 @@
 
 ## ¿Qué es una acción?
 
-Una unidad de lógica del servidor: un nombre, la entrada que acepta, quién puede llamarla y una función. Se define con `NEWACTION` en un archivo de `schemas/`:
+Una unidad de lógica del servidor: un nombre, la entrada que acepta, quién puede llamarla y una función. Se define con `NEWACTION` en un archivo de `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -43,7 +43,11 @@ NEWACTION('Tickets|list', {
 
 ## ¿Dónde pongo las acciones?
 
-En `schemas/`, un archivo por colección: `schemas/contacts.js`. Total.js 5 carga la carpeta `actions/` de la misma forma, y algunas aplicaciones la usan en su lugar: mantén la que la aplicación ya tenga. En una aplicación con plugins, en `plugins/<nombre>/schemas/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+En `actions/`, un archivo por colección: `actions/contacts.js`. Una aplicación escrita antes de que Total.js 5 añadiera esta carpeta tiene sus acciones en `schemas/`, que se carga de la misma forma: déjalas ahí. En una aplicación con plugins, en `plugins/<nombre>/actions/`. Las rutas que las llaman van en `controllers/` o en el `index.js` del plugin.
+
+## ¿Qué es la carpeta schemas/?
+
+La carpeta de las acciones en las aplicaciones escritas antes de que Total.js 5 añadiera `actions/`. Total.js 5 carga las dos de la misma forma, así que un `NEWACTION` en `schemas/tickets.js` funciona igual que uno en `actions/tickets.js`. En una aplicación que tiene `schemas/`, sigue escribiendo sus acciones ahí y no las muevas; una aplicación nueva usa `actions/`. El nombre viene de `NEWSCHEMA`, que agrupa acciones y también forma parte de Total.js 5.
 
 ## ¿Cómo declaro la entrada de una acción?
 

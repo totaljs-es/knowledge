@@ -7,7 +7,7 @@ A feature of an application: a folder with its server part and its screen, which
 ```
 plugins/redirects/
 	index.js              server: metadata and routes
-	schemas/redirects.js  actions
+	actions/redirects.js  actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```

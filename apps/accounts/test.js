@@ -64,7 +64,7 @@ var nobody = browser();
 
 Test.push('start', function(next) {
 
-	['index.js', 'config', 'controllers', 'definitions', 'schemas', 'views', 'public'].forEach(function(name) {
+	['index.js', 'config', 'controllers', 'definitions', 'actions', 'views', 'public'].forEach(function(name) {
 		Total.Fs.cpSync(Total.Path.join(__dirname, name), Total.Path.join(TMP, name), { recursive: true });
 	});
 

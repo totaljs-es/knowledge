@@ -57,15 +57,15 @@ Test.push('database', async function(next) {
 		return Total.Fs.readFileSync(Total.Path.join(__dirname, file), 'utf8') === Total.Fs.readFileSync(Total.Path.join(__dirname, '..', 'contacts', file), 'utf8');
 	};
 	check('the routes and the authorization are the same files as in apps/contacts', same('controllers/api.js') && same('definitions/auth.js'));
-	var actions = Total.Fs.readFileSync(Total.Path.join(__dirname, '..', 'contacts', 'schemas/contacts.js'), 'utf8');
-	check('the actions are the ones of apps/contacts without the prefix nosql/ of the table', actions.indexOf("'nosql/tbl_contact'") !== -1 && actions.replace(/'nosql\/tbl_contact'/g, "'tbl_contact'") === Total.Fs.readFileSync(Total.Path.join(__dirname, 'schemas/contacts.js'), 'utf8'));
+	var actions = Total.Fs.readFileSync(Total.Path.join(__dirname, '..', 'contacts', 'actions/contacts.js'), 'utf8');
+	check('the actions are the ones of apps/contacts without the prefix nosql/ of the table', actions.indexOf("'nosql/tbl_contact'") !== -1 && actions.replace(/'nosql\/tbl_contact'/g, "'tbl_contact'") === Total.Fs.readFileSync(Total.Path.join(__dirname, 'actions/contacts.js'), 'utf8'));
 	next();
 });
 
 Test.push('start', function(next) {
 
 	// The copy has its own token and its own data
-	['index.js', 'config', 'database.sql', 'controllers', 'definitions', 'schemas'].forEach(function(name) {
+	['index.js', 'config', 'database.sql', 'controllers', 'definitions', 'actions'].forEach(function(name) {
 		Total.Fs.cpSync(Total.Path.join(__dirname, name), Total.Path.join(TMP, name), { recursive: true });
 	});
 	Total.Fs.appendFileSync(Total.Path.join(TMP, 'config'), '\ntoken : ' + TOKEN + '\ndatabase : ' + DATABASE + '\n');

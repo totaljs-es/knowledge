@@ -10,14 +10,14 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions (the folder actions/ is loaded in the same way)
+actions/            actions (an older application has them in schemas/)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
 public/             static files for the browser
 ```
 
-A small API needs only `index.js`, `config`, `package.json`, `controllers/`, `schemas/` and `definitions/`.
+A small API needs only `index.js`, `config`, `package.json`, `controllers/`, `actions/` and `definitions/`.
 
 ## What goes in index.js?
 
@@ -137,7 +137,7 @@ Do not load an application module with `require(PATH.root('modules/...'))`. A na
 
 ## Should a new application use plugins?
 
-It depends on the project. An application that will grow by features is made with plugins: each feature is a folder `plugins/<name>/` with its routes, its actions and its screen. A small service with one or two collections does not need them: `controllers/` and `schemas/` are enough.
+It depends on the project. An application that will grow by features is made with plugins: each feature is a folder `plugins/<name>/` with its routes, its actions and its screen. A small service with one or two collections does not need them: `controllers/` and `actions/` are enough.
 
 ## Do I need Express or other packages?
 

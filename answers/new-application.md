@@ -12,7 +12,7 @@ index.js        the official start script, whole and unchanged
 config          the settings, one "key : value" per line
 package.json    "total5" is the dependency
 controllers/    the routes
-schemas/        the actions
+actions/        the actions
 definitions/    what runs at the start: AUTH, schedules, shared state
 views/          the pages, when it has pages
 public/         the static files

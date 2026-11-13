@@ -9,7 +9,7 @@ Total.js 5 is the server and jComponent 20 is the browser. The server sends **mo
 
 | | The server: Total.js 5 | The browser: jComponent 20 |
 |---|---|---|
-| Where | `controllers/`, `schemas/`, `definitions/`, `plugins/<name>/index.js` | `views/` once it is loaded, `public/`, `plugins/<name>/public/*.html` |
+| Where | `controllers/`, `actions/`, `definitions/`, `plugins/<name>/index.js` | `views/` once it is loaded, `public/`, `plugins/<name>/public/*.html` |
 | What it does | routes, actions, validation, the database, files, mail, schedules | screens, components, bindings, forms, clicks, the pages of the browser |
 | How it answers or asks | `$.callback(model)`, `$.success()`, `$.invalid()`, `$.view('name', model)` | `exports.tapi('endpoint', data, callback)`, `AJAX('GET /url/', callback)` |
 | What it never does | HTML for a screen, jQuery, `document`, components | a query to the database, `CONF`, secrets, `NEWACTION`, `ROUTE` of the server |
@@ -19,7 +19,7 @@ A model crosses the border in two ways.
 As JSON, when a screen asks for it. The action answers with data and the screen puts it in its state; the bindings draw it:
 
 ```js
-// schemas/tasks.js (server)
+// actions/tasks.js (server)
 NEWACTION('Tasks|list', {
 	name: 'List of tasks',
 	action: async function($) {

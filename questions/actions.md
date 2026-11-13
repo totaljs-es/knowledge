@@ -2,7 +2,7 @@
 
 ## What is an action?
 
-One unit of server logic: a name, the input it accepts, who may call it, and a function. It is defined with `NEWACTION` in a file of `schemas/`:
+One unit of server logic: a name, the input it accepts, who may call it, and a function. It is defined with `NEWACTION` in a file of `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -43,7 +43,11 @@ NEWACTION('Tickets|list', {
 
 ## Where do I put the actions?
 
-In `schemas/`, one file per collection: `schemas/contacts.js`. Total.js 5 loads the folder `actions/` in the same way, and some applications use it instead: keep the one that the application already has. In an application with plugins, in `plugins/<name>/schemas/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+In `actions/`, one file per collection: `actions/contacts.js`. An application written before Total.js 5 added this folder has its actions in `schemas/`, which is loaded in the same way: leave them there. In an application with plugins, in `plugins/<name>/actions/`. The routes that call them go in `controllers/` or in the `index.js` of the plugin.
+
+## What is the folder schemas/?
+
+The folder of the actions in the applications written before Total.js 5 added `actions/`. Total.js 5 loads both in the same way, so a `NEWACTION` in `schemas/tickets.js` works as one in `actions/tickets.js`. In an application that has `schemas/`, keep writing its actions there and do not move them; a new application uses `actions/`. The name comes from `NEWSCHEMA`, which groups actions and is also part of Total.js 5.
 
 ## How do I declare the input of an action?
 

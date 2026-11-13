@@ -12,7 +12,7 @@ An API to upload files and download them with Total.js 5. The files are kept in 
 | `config` | The name of the application and the token |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes: the API, the upload and the download |
-| `schemas/files.js` | The actions: `Files|list`, `Files|upload`, `Files|remove` |
+| `actions/files.js` | The actions: `Files|list`, `Files|upload`, `Files|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
 | `test.js` | The tests: they start the application, upload a real file, download it and remove it |
 

@@ -11,7 +11,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 225 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 226 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |

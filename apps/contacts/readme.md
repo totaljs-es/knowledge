@@ -12,7 +12,7 @@ An API of contacts with Total.js 5: list, read, create, update and remove. The d
 | `config` | The name of the application and the token of the API |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes of the API, one line each |
-| `schemas/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
+| `actions/contacts.js` | The actions: `Contacts|list`, `Contacts|read`, `Contacts|create`, `Contacts|update`, `Contacts|remove` |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |
 | `test.js` | The tests: they start the application and call every action |
 

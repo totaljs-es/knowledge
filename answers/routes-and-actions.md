@@ -5,10 +5,10 @@ question_es: ¿Dónde van las rutas y la lógica de una API?
 
 # Where do the routes and the logic of an API go?
 
-The logic is an action, in a file of `schemas/`. The route is one line in a file of `controllers/` and points to the action. The name of an action has a pipe: `Collection|verb`.
+The logic is an action, in a file of `actions/`. The route is one line in a file of `controllers/` and points to the action. The name of an action has a pipe: `Collection|verb`.
 
 ```js
-// schemas/contacts.js
+// actions/contacts.js
 NEWACTION('Contacts|create', {
 	name: 'Create a contact',
 	input: '*name:String, email:Email',

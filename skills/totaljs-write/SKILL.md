@@ -9,7 +9,7 @@ Start from the nearest working feature of the project you edit: read its route, 
 
 ## Server
 
-- File zones: actions in `schemas/` (or `actions/`), routes in `controllers/` or the plugin `index.js`, shared helpers in `FUNC`, shared state in `MAIN`, loaded modules through `MODS`.
+- File zones: actions in `actions/` (or `actions/`), routes in `controllers/` or the plugin `index.js`, shared helpers in `FUNC`, shared state in `MAIN`, loaded modules through `MODS`.
 - Action name: `Collection|verb` with a pipe (`Tickets|list`). Declare `name`, `input` / `params` / `query`, `permissions` or `user`, then `action`. Keep the route style of the app: `ROUTE('+API ? -tickets_read/{id} --> Tickets|read')` or `route:` in the action.
 - Validate ownership and business rules inside the action: the declared input does not do it.
 - Answer once: `$.callback(data)`, `$.success(id)`, `$.invalid(404)`, `$.invalid('@(Text)')`. In `async` actions pass `$` to `.promise($)`.

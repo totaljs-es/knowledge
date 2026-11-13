@@ -14,9 +14,9 @@ An application with sign in: users, sessions with a cookie, and notes that belon
 | `definitions/init.js` | The components of the interface, and the first user when there is none |
 | `controllers/default.js` | The two pages: `+GET /` with a session, `-GET /*` without one |
 | `controllers/api.js` | The routes of the API: `-` for the sign in, `+` for the rest |
-| `schemas/account.js` | `Account|login`, `Account|logout`, `Account|read`, `Account|password` |
-| `schemas/notes.js` | `Notes|list`, `Notes|save`, `Notes|remove`: every query has the id of the user of the session |
-| `schemas/users.js` | `Users|list`, `Users|create`, `Users|remove`: only for an administrator, and the action checks it |
+| `actions/account.js` | `Account|login`, `Account|logout`, `Account|read`, `Account|password` |
+| `actions/notes.js` | `Notes|list`, `Notes|save`, `Notes|remove`: every query has the id of the user of the session |
+| `actions/users.js` | `Users|list`, `Users|create`, `Users|remove`: only for an administrator, and the action checks it |
 | `views/login.html`, `views/index.html` | The page to sign in and the application, with jComponent 20 |
 | `test.js` | The tests: two browsers, each with its own cookie |
 

@@ -12,7 +12,7 @@ An application that checks websites on a schedule with Total.js 5 and says which
 | `config` | The name, the token, every how many minutes the websites are checked and how long one has to answer |
 | `package.json` | `total5` is the only dependency |
 | `controllers/api.js` | The routes of the API |
-| `schemas/sites.js` | The actions: `Sites|list`, `Sites|create`, `Sites|remove`, `Sites|check` |
+| `actions/sites.js` | The actions: `Sites|list`, `Sites|create`, `Sites|remove`, `Sites|check` |
 | `definitions/init.js` | The state of the application: `MAIN.monitor = MEMORIZE('monitor', 1000)` |
 | `definitions/jobs.js` | The schedule: the check and the reset of the counts at midnight |
 | `definitions/auth.js` | Who the request is: the token of the header `x-token` |

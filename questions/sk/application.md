@@ -10,14 +10,14 @@ config              settings, one "key : value" per line
 package.json        "total5" is the dependency
 controllers/        routes
 definitions/        auth.js, init.js, func.js, db.js: loaded at start
-schemas/            actions (the folder actions/ is loaded in the same way)
+actions/            actions (an older application has them in schemas/)
 modules/            integrations with other systems
 plugins/<name>/     a feature with its server part and its screen
 views/              layout and pages
 public/             static files for the browser
 ```
 
-Malé API potrebuje iba `index.js`, `config`, `package.json`, `controllers/`, `schemas/` a `definitions/`.
+Malé API potrebuje iba `index.js`, `config`, `package.json`, `controllers/`, `actions/` a `definitions/`.
 
 ## Čo patrí do index.js?
 
@@ -137,7 +137,7 @@ Modul aplikácie nenačítavaj cez `require(PATH.root('modules/...'))`. Názov s
 
 ## Má nová aplikácia používať pluginy?
 
-Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí s pluginmi: každá funkcia je priečinok `plugins/<názov>/` so svojimi routami, akciami a obrazovkou. Malá služba s jednou alebo dvoma kolekciami ich nepotrebuje: stačia `controllers/` a `schemas/`.
+Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí s pluginmi: každá funkcia je priečinok `plugins/<názov>/` so svojimi routami, akciami a obrazovkou. Malá služba s jednou alebo dvoma kolekciami ich nepotrebuje: stačia `controllers/` a `actions/`.
 
 ## Potrebujem Express alebo iné balíčky?
 

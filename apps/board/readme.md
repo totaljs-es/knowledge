@@ -23,7 +23,7 @@ A board of tasks and notes with Total.js 5, made with plugins. Each feature is a
 ```
 plugins/tasks/
 	index.js              the name, the icon, the position in the menu and the routes
-	schemas/tasks.js      the actions
+	actions/tasks.js      the actions
 	public/index.html     the screen
 	public/form.html      the form that opens over the screen
 ```

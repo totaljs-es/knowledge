@@ -2,7 +2,7 @@
 
 ## Čo je akcia?
 
-Jedna jednotka logiky servera: názov, vstup, ktorý prijíma, kto ju smie volať, a funkcia. Definuje sa cez `NEWACTION` v súbore v `schemas/`:
+Jedna jednotka logiky servera: názov, vstup, ktorý prijíma, kto ju smie volať, a funkcia. Definuje sa cez `NEWACTION` v súbore v `actions/`:
 
 ```js
 NEWACTION('Contacts|create', {
@@ -43,7 +43,11 @@ NEWACTION('Tickets|list', {
 
 ## Kam dám akcie?
 
-Do `schemas/`, jeden súbor na kolekciu: `schemas/contacts.js`. Total.js 5 načíta priečinok `actions/` rovnakým spôsobom a niektoré aplikácie ho používajú namiesto toho: ponechaj ten, ktorý aplikácia už má. V aplikácii s pluginmi do `plugins/<názov>/schemas/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+Do `actions/`, jeden súbor na kolekciu: `actions/contacts.js`. Aplikácia napísaná skôr, než Total.js 5 pridal tento priečinok, má akcie v `schemas/`, ktorý sa načíta rovnakým spôsobom: nechaj ich tam. V aplikácii s pluginmi do `plugins/<názov>/actions/`. Routy, ktoré ich volajú, idú do `controllers/` alebo do `index.js` pluginu.
+
+## Čo je priečinok schemas/?
+
+Priečinok akcií v aplikáciách napísaných skôr, než Total.js 5 pridal `actions/`. Total.js 5 načíta oba rovnakým spôsobom, takže `NEWACTION` v `schemas/tickets.js` funguje rovnako ako v `actions/tickets.js`. V aplikácii, ktorá má `schemas/`, píš jej akcie ďalej tam a nepresúvaj ich; nová aplikácia používa `actions/`. Názov pochádza z `NEWSCHEMA`, ktoré zoskupuje akcie a je tiež súčasťou Total.js 5.
 
 ## Ako deklarujem vstup akcie?
 

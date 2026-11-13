@@ -56,7 +56,7 @@ function api(schema, data, token) {
 Test.push('start', function(next) {
 
 	// The copy has its own token and its own data
-	['index.js', 'config', 'controllers', 'definitions', 'schemas'].forEach(function(name) {
+	['index.js', 'config', 'controllers', 'definitions', 'actions'].forEach(function(name) {
 		Total.Fs.cpSync(Total.Path.join(__dirname, name), Total.Path.join(TMP, name), { recursive: true });
 	});
 	Total.Fs.appendFileSync(Total.Path.join(TMP, 'config'), '\ntoken : ' + TOKEN + '\ntimeout (Number) : 1000\n');

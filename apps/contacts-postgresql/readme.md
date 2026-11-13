@@ -10,14 +10,14 @@ The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its route
 
 | File | In `apps/contacts` | Here |
 |---|---|---|
-| `schemas/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
+| `actions/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
 | `definitions/db.js` | | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
 | `config` | | `database : postgresql://user:password@localhost/contacts` |
 | `package.json` | | the dependency `querybuilderpg` |
 | `database.sql` | | the table `tbl_contact` |
 | `definitions/init.js` | | creates the table from `database.sql` the first time the application starts |
 
-`controllers/api.js` and `definitions/auth.js` do not change, and `schemas/contacts.js` changes only in that prefix. A test checks both.
+`controllers/api.js` and `definitions/auth.js` do not change, and `actions/contacts.js` changes only in that prefix. A test checks both.
 
 The table has the names of the SQL conventions, which the application used from the start: `tbl_contact`, `id` as `text` filled with `UID()`, `dtcreated` and `dtupdated`.
 

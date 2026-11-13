@@ -5,7 +5,7 @@ A feature of an app is a **plugin**: a folder with a server part and a UI part t
 ```
 plugins/redirects/
 	index.js              server: metadata + routes
-	schemas/redirects.js  actions (see backend/actions.md)
+	actions/redirects.js  actions (see backend/actions.md)
 	public/index.html     the screen: markup + <script>PLUGIN(...)</script>
 	public/form.html      the form that opens over the screen
 ```
