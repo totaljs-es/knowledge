@@ -95,18 +95,24 @@ NEWACTION('Groups|list', {
 
 ## ¿Cómo conecto la aplicación a PostgreSQL?
 
-Añade el paquete `querybuilderpg`, pon la dirección de la base de datos en `config` y escribe una definición:
+Pon la dirección de la base de datos en `config` y escribe una definición. Total.js 5 tiene su propio cliente de PostgreSQL desde la 0.0.20-4: no hay paquete que añadir.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+El nombre vacío es la base de datos por defecto. `?pooling=5` al final de la dirección mantiene un grupo de cinco conexiones.
 
 Las consultas son las mismas llamadas a `DATA`, con el nombre de la tabla sin prefijo: `DATA.find('tbl_contact')`.
 
 ## ¿Cómo paso de la base de datos embebida a PostgreSQL?
 
-Quita el prefijo `nosql/` de los nombres de las tablas, añade la definición de `querybuilderpg` y crea las tablas con `database.sql`. Las consultas no cambian:
+Quita el prefijo `nosql/` de los nombres de las tablas, añade la definición con `DATA.init('postgresql', '', CONF.database)` y crea las tablas con `database.sql`. Las consultas no cambian:
 
 ```js
 // before
@@ -115,6 +121,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## ¿Qué es querybuilderpg?
+
+El paquete que conectaba `DATA` con PostgreSQL antes de que Total.js 5 tuviera su propio cliente. Una aplicación hecha con él tiene `require('querybuilderpg').init(...)` en `definitions/db.js` y el paquete en `package.json`: déjala como está. Una aplicación nueva usa `DATA.init('postgresql', '', CONF.database)` y no añade ningún paquete.
 
 ## ¿Cómo ejecuto SQL directo?
 
@@ -159,7 +169,7 @@ builder.or(function(b) {
 
 ## ¿Tengo que configurar QueryBuilder para la base de datos embebida?
 
-No. QueryBuilder viene cargado con Total.js 5 y el prefijo `nosql/` envía la consulta a la base de datos embebida. Solo un servidor de base de datos necesita su adaptador, como `querybuilderpg`.
+No. QueryBuilder viene cargado con Total.js 5 y el prefijo `nosql/` envía la consulta a la base de datos embebida. Solo un servidor de base de datos necesita una línea: `DATA.init('postgresql', '', CONF.database)`.
 
 ## ¿Cómo nombro las tablas y los campos en la base de datos embebida?
 

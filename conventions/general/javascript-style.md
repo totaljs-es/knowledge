@@ -101,7 +101,7 @@ const Path = require('path');
 
 In Total.js 5 use `Total.Path`, not `const Path = require('path')`.
 
-Application files run after Total.js has initialized these globals. Bootstrap files still load `total5`, database adapters may need `require('querybuilderpg')`, and standalone Node.js tools (such as this repo's generator) use Node imports. Do not apply app-global rules to a process that has not loaded the framework.
+Application files run after Total.js has initialized these globals. Bootstrap files still load `total5`, an application made before Total.js 5 0.0.20-4 may have `require('querybuilderpg')` (a new one uses `DATA.init('postgresql', ...)`), and standalone Node.js tools (such as this repo's generator) use Node imports. Do not apply app-global rules to a process that has not loaded the framework.
 
 Access application modules through `MODS.name` or `MODS['hyphenated-name']`, rather than repeatedly requiring their file path. Standalone tools may import a shared helper directly; requiring `total5` alone does not populate the module registry. See [definitions and modules](../backend/definitions-and-modules.md).
 

@@ -95,18 +95,24 @@ NEWACTION('Groups|list', {
 
 ## How do I connect the application to PostgreSQL?
 
-Add the package `querybuilderpg`, put the address of the database in `config` and write one definition:
+Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL from 0.0.20-4: no package to add.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+The empty name is the default database. `?pooling=5` at the end of the address keeps a pool of five connections.
 
 The queries are the same `DATA` calls, with the name of the table without a prefix: `DATA.find('tbl_contact')`.
 
 ## How do I move from the embedded database to PostgreSQL?
 
-Take the prefix `nosql/` away from the table names, add the definition of `querybuilderpg` and create the tables with `database.sql`. The queries do not change:
+Take the prefix `nosql/` away from the table names, add the definition with `DATA.init('postgresql', '', CONF.database)` and create the tables with `database.sql`. The queries do not change:
 
 ```js
 // before
@@ -115,6 +121,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## What is querybuilderpg?
+
+The package that connected `DATA` to PostgreSQL before Total.js 5 had its own client. An application made with it has `require('querybuilderpg').init(...)` in `definitions/db.js` and the package in `package.json`: leave it as it is. A new application uses `DATA.init('postgresql', '', CONF.database)` and adds no package.
 
 ## How do I run raw SQL?
 
@@ -159,7 +169,7 @@ builder.or(function(b) {
 
 ## Do I need to set up QueryBuilder for the embedded database?
 
-No. QueryBuilder comes loaded with Total.js 5 and the prefix `nosql/` sends the query to the embedded database. Only a database server needs its adapter, as `querybuilderpg`.
+No. QueryBuilder comes loaded with Total.js 5 and the prefix `nosql/` sends the query to the embedded database. Only a database server needs one line: `DATA.init('postgresql', '', CONF.database)`.
 
 ## How do I name tables and fields in the embedded database?
 

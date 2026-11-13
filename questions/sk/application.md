@@ -141,7 +141,7 @@ Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí 
 
 ## Potrebujem Express alebo iné balíčky?
 
-Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Jediný ďalší balíček, ktorý bežná aplikácia pridáva, je adaptér jej databázy, napríklad `querybuilderpg` pre PostgreSQL.
+Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL, od Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 

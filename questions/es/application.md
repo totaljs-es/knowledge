@@ -141,7 +141,7 @@ Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hac
 
 ## ¿Necesito Express u otros paquetes?
 
-No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. El único paquete más que añade una aplicación corriente es el adaptador de su base de datos, como `querybuilderpg` para PostgreSQL.
+No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL, desde Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
 
 ## ¿Qué versión de Total.js 5 instalo?
 

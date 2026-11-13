@@ -38,7 +38,7 @@ function api(schema, data, token) {
 
 Test.push('database', async function(next) {
 
-	require('querybuilderpg').init('default', DATABASE, 1, NOOP);
+	DATA.init('postgresql', '', DATABASE, NOOP);
 
 	// Without PostgreSQL the tests cannot run: they say so and end with the code 3, which is not a failure and not a pass
 	var name;

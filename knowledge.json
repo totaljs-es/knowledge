@@ -1101,8 +1101,7 @@
 		{
 			"file": "answers/move-to-postgresql.md",
 			"symbols": [
-				"data",
-				"error"
+				"data"
 			],
 			"tags": [
 				"application",
@@ -1442,7 +1441,6 @@
 			"file": "questions/data.md",
 			"symbols": [
 				"data",
-				"error",
 				"newaction",
 				"now",
 				"pg_escape",
@@ -1473,6 +1471,7 @@
 				"postgresql",
 				"query",
 				"querybuilder",
+				"querybuilderpg",
 				"question",
 				"questions",
 				"raw",
@@ -2386,7 +2385,6 @@
 			"file": "questions/es/data.md",
 			"symbols": [
 				"data",
-				"error",
 				"newaction",
 				"now",
 				"pg_escape",
@@ -2442,6 +2440,7 @@
 				"que",
 				"query",
 				"querybuilder",
+				"querybuilderpg",
 				"registro",
 				"registros",
 				"respondo",
@@ -3511,7 +3510,6 @@
 			"file": "questions/sk/data.md",
 			"symbols": [
 				"data",
-				"error",
 				"newaction",
 				"now",
 				"pg_escape",
@@ -3555,6 +3553,7 @@
 				"pripoj",
 				"query",
 				"querybuilder",
+				"querybuilderpg",
 				"spechom",
 				"spust",
 				"sql",
@@ -4367,7 +4366,6 @@
 			"file": "apps/contacts-postgresql/readme.md",
 			"symbols": [
 				"data",
-				"error",
 				"skipped",
 				"uid"
 			],

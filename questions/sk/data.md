@@ -95,18 +95,24 @@ NEWACTION('Groups|list', {
 
 ## Ako pripojím aplikáciu k PostgreSQL?
 
-Pridaj balíček `querybuilderpg`, daj adresu databázy do `config` a napíš jednu definíciu:
+Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má od verzie 0.0.20-4 vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+Prázdny názov je predvolená databáza. `?pooling=5` na konci adresy drží skupinu piatich spojení.
 
 Dopyty sú tie isté volania `DATA`, s názvom tabuľky bez prefixu: `DATA.find('tbl_contact')`.
 
 ## Ako prejdem zo vstavanej databázy na PostgreSQL?
 
-Odstráň prefix `nosql/` z názvov tabuliek, pridaj definíciu `querybuilderpg` a vytvor tabuľky cez `database.sql`. Dopyty sa nemenia:
+Odstráň prefix `nosql/` z názvov tabuliek, pridaj definíciu cez `DATA.init('postgresql', '', CONF.database)` a vytvor tabuľky cez `database.sql`. Dopyty sa nemenia:
 
 ```js
 // before
@@ -115,6 +121,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## Čo je querybuilderpg?
+
+Balíček, ktorý pripájal `DATA` k PostgreSQL predtým, ako mal Total.js 5 vlastného klienta. Aplikácia urobená s ním má `require('querybuilderpg').init(...)` v `definitions/db.js` a balíček v `package.json`: nechaj ju tak. Nová aplikácia používa `DATA.init('postgresql', '', CONF.database)` a nepridáva žiadny balíček.
 
 ## Ako spustím priame SQL?
 
@@ -159,7 +169,7 @@ builder.or(function(b) {
 
 ## Musím nastaviť QueryBuilder pre vstavanú databázu?
 
-Nie. QueryBuilder je v Total.js 5 už načítaný a prefix `nosql/` pošle dopyt do vstavanej databázy. Iba databázový server potrebuje svoj adaptér, napríklad `querybuilderpg`.
+Nie. QueryBuilder je v Total.js 5 už načítaný a prefix `nosql/` pošle dopyt do vstavanej databázy. Iba databázový server potrebuje jeden riadok: `DATA.init('postgresql', '', CONF.database)`.
 
 ## Ako pomenujem tabuľky a polia vo vstavanej databáze?
 

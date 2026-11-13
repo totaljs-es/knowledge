@@ -11,9 +11,9 @@ The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its route
 | File | In `apps/contacts` | Here |
 |---|---|---|
 | `actions/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
-| `definitions/db.js` | | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
+| `definitions/db.js` | | `DATA.init('postgresql', '', CONF.database);` |
 | `config` | | `database : postgresql://user:password@localhost/contacts` |
-| `package.json` | | the dependency `querybuilderpg` |
+| `package.json` | | `"total5": ">=0.0.20-4"`, the first version with the client of PostgreSQL |
 | `database.sql` | | the table `tbl_contact` |
 | `definitions/init.js` | | creates the table from `database.sql` the first time the application starts |
 

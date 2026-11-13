@@ -7,7 +7,7 @@ Choose the model already used by the feature. Not every app stores data in SQL.
 | Model | How to extend it |
 |---|---|
 | Metadata in memory, serialized to FileStorage | Mutate the existing collection, call `FUNC.save()`, refresh affected rendering caches when necessary |
-| SQL through `DATA` and `querybuilderpg` | Keep projections, filters, identifiers, response shapes and adapter initialization |
+| SQL through `DATA` (`DATA.init('postgresql', ...)`, or `querybuilderpg` in an older application) | Keep projections, filters, identifiers, response shapes and adapter initialization |
 | Named persisted memory object | Keep `MEMORIZE` object ownership and existing save hooks |
 | Flow state | Keep flow load/save lifecycle and websocket permissions together |
 
@@ -41,8 +41,8 @@ The file is `databases/tbl_contact.nosql`, the same one that `NOSQL('tbl_contact
 An application written this way moves to PostgreSQL without writing its queries again: it adds the definition of its adapter and takes the prefix `nosql/` away from the table names.
 
 ```js
-// definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+// definitions/db.js (Total.js 5 0.0.20-4 or later: no package)
+DATA.init('postgresql', '', CONF.database);
 ```
 
 ```js

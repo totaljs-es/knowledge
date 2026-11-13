@@ -20,4 +20,4 @@ No. Total.js 5 is one package, `total5`, and it already has what an Express appl
 | `uuid` | `UID()` |
 | a database for a small application | the embedded NoSQL database through `DATA` |
 
-The only other dependency of the applications of this repository is `querybuilderpg`, for PostgreSQL.
+The applications of this repository have no other dependency: PostgreSQL is in `total5` too, from 0.0.20-4.

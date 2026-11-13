@@ -1,6 +1,6 @@
 # Queries with `DATA`
 
-For SQL-backed features, Total.js uses `DATA` and the configured database adapter (for example `querybuilderpg`). Do not introduce SQL into a FileStorage/MEMORIZE feature just to match this page. Use the builder for what it can express; write raw SQL only when needed.
+For SQL-backed features, Total.js uses `DATA` and the configured database: PostgreSQL with `DATA.init('postgresql', '', CONF.database)` from Total.js 5 0.0.20-4, or `querybuilderpg` in an application made before. Do not introduce SQL into a FileStorage/MEMORIZE feature just to match this page. Use the builder for what it can express; write raw SQL only when needed.
 
 For request-bound results use `.promise($)` (in an async action), `.callback($)` or `.callback($.done(id))`. In jobs and shared helpers without a request use `.promise()` with explicit error handling or an error-first callback. Do not invent a request context. Some source apps enqueue background writes without awaiting them; do not copy that when the response depends on the write succeeding.
 

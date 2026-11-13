@@ -504,7 +504,7 @@ const Path = require('path');
 
 In Total.js 5 use `Total.Path`, not `const Path = require('path')`.
 
-Application files run after Total.js has initialized these globals. Bootstrap files still load `total5`, database adapters may need `require('querybuilderpg')`, and standalone Node.js tools (such as this repo's generator) use Node imports. Do not apply app-global rules to a process that has not loaded the framework.
+Application files run after Total.js has initialized these globals. Bootstrap files still load `total5`, an application made before Total.js 5 0.0.20-4 may have `require('querybuilderpg')` (a new one uses `DATA.init('postgresql', ...)`), and standalone Node.js tools (such as this repo's generator) use Node imports. Do not apply app-global rules to a process that has not loaded the framework.
 
 Access application modules through `MODS.name` or `MODS['hyphenated-name']`, rather than repeatedly requiring their file path. Standalone tools may import a shared helper directly; requiring `total5` alone does not populate the module registry. See [definitions and modules](../backend/definitions-and-modules.md).
 
@@ -1051,7 +1051,7 @@ Choose the model already used by the feature. Not every app stores data in SQL.
 | Model | How to extend it |
 |---|---|
 | Metadata in memory, serialized to FileStorage | Mutate the existing collection, call `FUNC.save()`, refresh affected rendering caches when necessary |
-| SQL through `DATA` and `querybuilderpg` | Keep projections, filters, identifiers, response shapes and adapter initialization |
+| SQL through `DATA` (`DATA.init('postgresql', ...)`, or `querybuilderpg` in an older application) | Keep projections, filters, identifiers, response shapes and adapter initialization |
 | Named persisted memory object | Keep `MEMORIZE` object ownership and existing save hooks |
 | Flow state | Keep flow load/save lifecycle and websocket permissions together |
 
@@ -1085,8 +1085,8 @@ The file is `databases/tbl_contact.nosql`, the same one that `NOSQL('tbl_contact
 An application written this way moves to PostgreSQL without writing its queries again: it adds the definition of its adapter and takes the prefix `nosql/` away from the table names.
 
 ```js
-// definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+// definitions/db.js (Total.js 5 0.0.20-4 or later: no package)
+DATA.init('postgresql', '', CONF.database);
 ```
 
 ```js
@@ -1264,7 +1264,7 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/conventions/
 
 # Queries with `DATA`
 
-For SQL-backed features, Total.js uses `DATA` and the configured database adapter (for example `querybuilderpg`). Do not introduce SQL into a FileStorage/MEMORIZE feature just to match this page. Use the builder for what it can express; write raw SQL only when needed.
+For SQL-backed features, Total.js uses `DATA` and the configured database: PostgreSQL with `DATA.init('postgresql', '', CONF.database)` from Total.js 5 0.0.20-4, or `querybuilderpg` in an application made before. Do not introduce SQL into a FileStorage/MEMORIZE feature just to match this page. Use the builder for what it can express; write raw SQL only when needed.
 
 For request-bound results use `.promise($)` (in an async action), `.callback($)` or `.callback($.done(id))`. In jobs and shared helpers without a request use `.promise()` with explicit error handling or an error-first callback. Do not invent a request context. Some source apps enqueue background writes without awaiting them; do not copy that when the response depends on the write succeeding.
 
@@ -3958,18 +3958,17 @@ question_es: ¿Cómo paso una aplicación de la base de datos embebida a Postgre
 
 # How do I move an application from the embedded database to PostgreSQL?
 
-An application that uses `DATA` from the start changes four things, and no query is written again:
+An application that uses `DATA` from the start changes three things, and no query is written again. Total.js 5 has its own client of PostgreSQL from 0.0.20-4 (`"total5": ">=0.0.20-4"` in `package.json`), so there is no package to add:
 
-1. Add the adapter to `package.json`: `"querybuilderpg": "latest"`.
-2. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
-3. Add the definition of the database:
+1. Add the connection to `config`: `database : postgresql://user:password@localhost/myapp`.
+2. Add the definition of the database:
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
 
-4. Take the prefix `nosql/` away from the table names:
+3. Take the prefix `nosql/` away from the table names:
 
 ```js
 // before
@@ -4315,7 +4314,7 @@ No. Total.js 5 is one package, `total5`, and it already has what an Express appl
 | `uuid` | `UID()` |
 | a database for a small application | the embedded NoSQL database through `DATA` |
 
-The only other dependency of the applications of this repository is `querybuilderpg`, for PostgreSQL.
+The applications of this repository have no other dependency: PostgreSQL is in `total5` too, from 0.0.20-4.
 
 ---
 
@@ -4594,7 +4593,7 @@ It depends on the project. An application that will grow by features is made wit
 
 ## Do I need Express or other packages?
 
-No. Total.js 5 is not built on Express and does not use its middleware. Routes, actions, validation, templates, WebSocket, the database builder and the tests are in `total5`. The only other package a common application adds is the adapter of its database, as `querybuilderpg` for PostgreSQL.
+No. Total.js 5 is not built on Express and does not use its middleware. Routes, actions, validation, templates, WebSocket, the database builder and the tests are in `total5`. PostgreSQL too, from Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. A common application adds no other package.
 
 ## Which version of Total.js 5 do I install?
 
@@ -5160,18 +5159,24 @@ NEWACTION('Groups|list', {
 
 ## How do I connect the application to PostgreSQL?
 
-Add the package `querybuilderpg`, put the address of the database in `config` and write one definition:
+Put the address of the database in `config` and write one definition. Total.js 5 has its own client of PostgreSQL from 0.0.20-4: no package to add.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+The empty name is the default database. `?pooling=5` at the end of the address keeps a pool of five connections.
 
 The queries are the same `DATA` calls, with the name of the table without a prefix: `DATA.find('tbl_contact')`.
 
 ## How do I move from the embedded database to PostgreSQL?
 
-Take the prefix `nosql/` away from the table names, add the definition of `querybuilderpg` and create the tables with `database.sql`. The queries do not change:
+Take the prefix `nosql/` away from the table names, add the definition with `DATA.init('postgresql', '', CONF.database)` and create the tables with `database.sql`. The queries do not change:
 
 ```js
 // before
@@ -5180,6 +5185,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## What is querybuilderpg?
+
+The package that connected `DATA` to PostgreSQL before Total.js 5 had its own client. An application made with it has `require('querybuilderpg').init(...)` in `definitions/db.js` and the package in `package.json`: leave it as it is. A new application uses `DATA.init('postgresql', '', CONF.database)` and adds no package.
 
 ## How do I run raw SQL?
 
@@ -5224,7 +5233,7 @@ builder.or(function(b) {
 
 ## Do I need to set up QueryBuilder for the embedded database?
 
-No. QueryBuilder comes loaded with Total.js 5 and the prefix `nosql/` sends the query to the embedded database. Only a database server needs its adapter, as `querybuilderpg`.
+No. QueryBuilder comes loaded with Total.js 5 and the prefix `nosql/` sends the query to the embedded database. Only a database server needs one line: `DATA.init('postgresql', '', CONF.database)`.
 
 ## How do I name tables and fields in the embedded database?
 
@@ -7316,7 +7325,7 @@ Depende del proyecto. Una aplicación que va a crecer por funcionalidades se hac
 
 ## ¿Necesito Express u otros paquetes?
 
-No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. El único paquete más que añade una aplicación corriente es el adaptador de su base de datos, como `querybuilderpg` para PostgreSQL.
+No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, las acciones, la validación, las plantillas, WebSocket, el constructor de consultas y las pruebas están en `total5`. También PostgreSQL, desde Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Una aplicación corriente no añade ningún otro paquete.
 
 ## ¿Qué versión de Total.js 5 instalo?
 
@@ -7882,18 +7891,24 @@ NEWACTION('Groups|list', {
 
 ## ¿Cómo conecto la aplicación a PostgreSQL?
 
-Añade el paquete `querybuilderpg`, pon la dirección de la base de datos en `config` y escribe una definición:
+Pon la dirección de la base de datos en `config` y escribe una definición. Total.js 5 tiene su propio cliente de PostgreSQL desde la 0.0.20-4: no hay paquete que añadir.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+El nombre vacío es la base de datos por defecto. `?pooling=5` al final de la dirección mantiene un grupo de cinco conexiones.
 
 Las consultas son las mismas llamadas a `DATA`, con el nombre de la tabla sin prefijo: `DATA.find('tbl_contact')`.
 
 ## ¿Cómo paso de la base de datos embebida a PostgreSQL?
 
-Quita el prefijo `nosql/` de los nombres de las tablas, añade la definición de `querybuilderpg` y crea las tablas con `database.sql`. Las consultas no cambian:
+Quita el prefijo `nosql/` de los nombres de las tablas, añade la definición con `DATA.init('postgresql', '', CONF.database)` y crea las tablas con `database.sql`. Las consultas no cambian:
 
 ```js
 // before
@@ -7902,6 +7917,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## ¿Qué es querybuilderpg?
+
+El paquete que conectaba `DATA` con PostgreSQL antes de que Total.js 5 tuviera su propio cliente. Una aplicación hecha con él tiene `require('querybuilderpg').init(...)` en `definitions/db.js` y el paquete en `package.json`: déjala como está. Una aplicación nueva usa `DATA.init('postgresql', '', CONF.database)` y no añade ningún paquete.
 
 ## ¿Cómo ejecuto SQL directo?
 
@@ -7946,7 +7965,7 @@ builder.or(function(b) {
 
 ## ¿Tengo que configurar QueryBuilder para la base de datos embebida?
 
-No. QueryBuilder viene cargado con Total.js 5 y el prefijo `nosql/` envía la consulta a la base de datos embebida. Solo un servidor de base de datos necesita su adaptador, como `querybuilderpg`.
+No. QueryBuilder viene cargado con Total.js 5 y el prefijo `nosql/` envía la consulta a la base de datos embebida. Solo un servidor de base de datos necesita una línea: `DATA.init('postgresql', '', CONF.database)`.
 
 ## ¿Cómo nombro las tablas y los campos en la base de datos embebida?
 
@@ -10038,7 +10057,7 @@ Závisí to od projektu. Aplikácia, ktorá bude rásť po funkciách, sa robí 
 
 ## Potrebujem Express alebo iné balíčky?
 
-Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Jediný ďalší balíček, ktorý bežná aplikácia pridáva, je adaptér jej databázy, napríklad `querybuilderpg` pre PostgreSQL.
+Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Routy, akcie, validácia, šablóny, WebSocket, nástroj na dopyty do databázy aj testy sú v `total5`. Aj PostgreSQL, od Total.js 5 0.0.20-4: `DATA.init('postgresql', '', CONF.database)`. Bežná aplikácia nepridáva žiadny ďalší balíček.
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 
@@ -10604,18 +10623,24 @@ NEWACTION('Groups|list', {
 
 ## Ako pripojím aplikáciu k PostgreSQL?
 
-Pridaj balíček `querybuilderpg`, daj adresu databázy do `config` a napíš jednu definíciu:
+Daj adresu databázy do `config` a napíš jednu definíciu. Total.js 5 má od verzie 0.0.20-4 vlastného klienta PostgreSQL: nepridávaš žiadny balíček.
+
+```
+database : postgresql://user:password@localhost/myapp
+```
 
 ```js
 // definitions/db.js
-require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));
+DATA.init('postgresql', '', CONF.database);
 ```
+
+Prázdny názov je predvolená databáza. `?pooling=5` na konci adresy drží skupinu piatich spojení.
 
 Dopyty sú tie isté volania `DATA`, s názvom tabuľky bez prefixu: `DATA.find('tbl_contact')`.
 
 ## Ako prejdem zo vstavanej databázy na PostgreSQL?
 
-Odstráň prefix `nosql/` z názvov tabuliek, pridaj definíciu `querybuilderpg` a vytvor tabuľky cez `database.sql`. Dopyty sa nemenia:
+Odstráň prefix `nosql/` z názvov tabuliek, pridaj definíciu cez `DATA.init('postgresql', '', CONF.database)` a vytvor tabuľky cez `database.sql`. Dopyty sa nemenia:
 
 ```js
 // before
@@ -10624,6 +10649,10 @@ var items = await DATA.find('nosql/tbl_contact').sort('name').promise($);
 // after
 var items = await DATA.find('tbl_contact').sort('name').promise($);
 ```
+
+## Čo je querybuilderpg?
+
+Balíček, ktorý pripájal `DATA` k PostgreSQL predtým, ako mal Total.js 5 vlastného klienta. Aplikácia urobená s ním má `require('querybuilderpg').init(...)` v `definitions/db.js` a balíček v `package.json`: nechaj ju tak. Nová aplikácia používa `DATA.init('postgresql', '', CONF.database)` a nepridáva žiadny balíček.
 
 ## Ako spustím priame SQL?
 
@@ -10668,7 +10697,7 @@ builder.or(function(b) {
 
 ## Musím nastaviť QueryBuilder pre vstavanú databázu?
 
-Nie. QueryBuilder je v Total.js 5 už načítaný a prefix `nosql/` pošle dopyt do vstavanej databázy. Iba databázový server potrebuje svoj adaptér, napríklad `querybuilderpg`.
+Nie. QueryBuilder je v Total.js 5 už načítaný a prefix `nosql/` pošle dopyt do vstavanej databázy. Iba databázový server potrebuje jeden riadok: `DATA.init('postgresql', '', CONF.database)`.
 
 ## Ako pomenujem tabuľky a polia vo vstavanej databáze?
 
@@ -12685,9 +12714,9 @@ The API of [`apps/contacts`](../contacts) with its data in PostgreSQL. Its route
 | File | In `apps/contacts` | Here |
 |---|---|---|
 | `actions/contacts.js` | `DATA.find('nosql/tbl_contact')` | `DATA.find('tbl_contact')` |
-| `definitions/db.js` | | `require('querybuilderpg').init('default', CONF.database, 1, ERROR('PostgreSQL'));` |
+| `definitions/db.js` | | `DATA.init('postgresql', '', CONF.database);` |
 | `config` | | `database : postgresql://user:password@localhost/contacts` |
-| `package.json` | | the dependency `querybuilderpg` |
+| `package.json` | | `"total5": ">=0.0.20-4"`, the first version with the client of PostgreSQL |
 | `database.sql` | | the table `tbl_contact` |
 | `definitions/init.js` | | creates the table from `database.sql` the first time the application starts |
 
