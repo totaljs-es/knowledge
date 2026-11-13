@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 233 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 234 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -100,7 +100,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 ## Rules that apply to every change
 
 - Total.js 5 only. Do not use Total.js 4 APIs. The interface is jComponent 20.
-- `"total5": ">=0.0.20-2"` is the version of a new project: 0.0.20 or later (its beta today, the stable version when it is published), because it fixes problems of 0.0.19. In a project that depends on another version, check it before using something of `reference/` and say which version it needs.
+- `"total5": ">=0.0.20-4"` is the version of a new project: 0.0.20 or later (its beta today, the stable version when it is published), because it fixes problems of 0.0.19. In a project that depends on another version, check it before using something of `reference/` and say which version it needs.
 - ES5 first: `var`, `function`, classic loops, `'{0}'.format()` instead of template literals, no arrow functions. `const` or `let` only where the code needs it, as a constant at the top of a file; inside a function write `var`. `async` / `await` where the code waits for the database.
 - `index.js` is always the official start script of Total.js 5, whole and unchanged (see `conventions/general/project-structure.md`). It is the one file that keeps its own style.
 - Use Total.js prototypes (`findItem`, `format`, `parseJSON`, `slug`, `isEmail`...) in the backend and Tangular templates in the frontend before any other function.
@@ -3674,9 +3674,9 @@ Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/reference/to
 
 # Total.js 5: what 0.0.20 adds
 
-Version `0.0.20` of `total5` is the beta on npm (`0.0.20-3` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-2"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
+Version `0.0.20` of `total5` is the beta on npm (`0.0.20-4` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-4"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
 
-Every example here was run with `0.0.20-3`. The source of the list is the `changelog.txt` of the framework.
+Every example here was run with `0.0.20-3` or `0.0.20-4`. The source of the list is the `changelog.txt` of the framework.
 
 ## Actions as MCP tools
 
@@ -3779,6 +3779,22 @@ Test.push('orders', async function(next) {
 
 `Test.fake(name, definition)` takes the definition of an action, as `NEWACTION` does, and `Test.restore()` puts the real actions back.
 
+## A client of PostgreSQL of its own
+
+From `0.0.20-4` Total.js 5 connects `DATA` to PostgreSQL with no package: one line in a definition, and the address in `config`.
+
+```js
+// definitions/db.js
+DATA.init('postgresql', '', CONF.database);
+```
+
+- The empty name is the default database; another name makes another database, used with its prefix in the name of the table.
+- `?pooling=5` at the end of the address keeps a pool of five connections.
+- The fourth argument is the function for the errors; without it they go to `ERROR` with the name of the database.
+- The queries are the same `DATA` calls as with `querybuilderpg`, the package that applications made before use (leave it there).
+
+Run with `0.0.20-4` on a test database: insert, modify, read, find, count, a query with parameters and remove, with numbers, booleans and dates in their types.
+
 ## Smaller additions
 
 | Addition | What it is |
@@ -3795,9 +3811,9 @@ Test.push('orders', async function(next) {
 - `$.throw(err)` and `$.touch([url])` in actions and controllers.
 - The fixes of `CRON()` with a step (`*/15`), of the mail attachments, of `AJAX()` with XML and the hardening of hostnames.
 
-## A problem found in 0.0.20-3
+## A problem of 0.0.20-3, fixed in 0.0.20-4
 
-`$.invalidsafe(msg, err)` in an action throws `ReferenceError: path is not defined` and the request ends in a timeout. Use `$.invalid(msg)` and log the error apart until a later version fixes it.
+`$.invalidsafe(msg, err)` in an action threw `ReferenceError: path is not defined` in 0.0.20-3 and the request ended in a timeout. In 0.0.20-4 it answers 400 with the message for the user and logs the error.
 
 ---
 
@@ -3829,7 +3845,7 @@ public/         the static files
 	"version": "1.0.0",
 	"main": "index.js",
 	"dependencies": {
-		"total5": ">=0.0.20-2"
+		"total5": ">=0.0.20-4"
 	},
 	"scripts": {
 		"start": "node index.js 8000"
@@ -4438,7 +4454,7 @@ question_es: ¿Qué versión de Total.js 5 debo usar y qué añade la beta?
 
 # Which version of Total.js 5 should I use, and what does the beta add?
 
-Use `"total5": ">=0.0.20-2"` in `package.json`: version 0.0.20 or later. The stable version on npm is still `0.0.19`, and 0.0.20 is its beta: it fixes several problems of 0.0.19 (the step of `CRON`, `LOGMAIL` with an object, `@{csrf}` in a view) and adds new things. That line installs the beta now and the stable 0.0.20 when it is published, with no change, and it never installs 0.0.19. `npm view total5 dist-tags` says which versions they are today.
+Use `"total5": ">=0.0.20-4"` in `package.json`: version 0.0.20 or later. The stable version on npm is still `0.0.19`, and 0.0.20 is its beta: it fixes several problems of 0.0.19 (the step of `CRON`, `LOGMAIL` with an object, `@{csrf}` in a view) and adds new things. That line installs the beta now and the stable 0.0.20 when it is published, with no change, and it never installs 0.0.19. `npm view total5 dist-tags` says which versions they are today.
 
 Total.js 5 is the current framework. Total.js 4 (`total4`) is the previous one and its code is not the same: do not mix them.
 
@@ -4507,7 +4523,7 @@ Only `total5`. The framework has the server, the routes, the templates, the data
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": ">=0.0.20-2"
+		"total5": ">=0.0.20-4"
 	}
 }
 ```
@@ -4597,7 +4613,7 @@ No. Total.js 5 is not built on Express and does not use its middleware. Routes, 
 
 ## Which version of Total.js 5 do I install?
 
-`"total5": ">=0.0.20-2"` in `package.json`: version 0.0.20 or later. Today it installs the beta of 0.0.20, which fixes several problems of 0.0.19, and the stable 0.0.20 when it is published. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
+`"total5": ">=0.0.20-4"` in `package.json`: version 0.0.20 or later. Today it installs the beta of 0.0.20, which fixes several problems of 0.0.19, and the stable 0.0.20 when it is published. `npm view total5 dist-tags` says which versions they are today. Total.js 4 (`total4`) is the previous framework and its code is not the same.
 
 ---
 
@@ -6238,7 +6254,7 @@ A clean, disposable database only for tests, never the one of the application. B
 
 ## What does Total.js 5 0.0.20 add?
 
-Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test` and `Test.fake()`. A new project has them with `"total5": ">=0.0.20-2"`. In a project that still has 0.0.19, check the version first and say which one it needs.
+Actions as MCP tools (`mcp: true`), the cache of an action (`cache`), the field types `JSON` and `IP`, `$.content()`, the environment of an action (`.env()` and `$.env`), the command `total5 test`, `Test.fake()` and, from 0.0.20-4, its own client of PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). A new project has them with `"total5": ">=0.0.20-4"`. In a project that still has 0.0.19, check the version first and say which one it needs.
 
 ## How do I expose an action as an MCP tool?
 
@@ -7239,7 +7255,7 @@ Solo `total5`. El framework lleva dentro el servidor, las rutas, las plantillas,
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": ">=0.0.20-2"
+		"total5": ">=0.0.20-4"
 	}
 }
 ```
@@ -7329,7 +7345,7 @@ No. Total.js 5 no está hecho sobre Express y no usa su middleware. Las rutas, l
 
 ## ¿Qué versión de Total.js 5 instalo?
 
-`"total5": ">=0.0.20-2"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
+`"total5": ">=0.0.20-4"` en `package.json`: la versión 0.0.20 o posterior. Hoy instala la beta de la 0.0.20, que corrige varios problemas de la 0.0.19, y la 0.0.20 estable cuando se publique. `npm view total5 dist-tags` dice qué versiones son hoy. Total.js 4 (`total4`) es el framework anterior y su código no es el mismo.
 
 ---
 
@@ -8970,7 +8986,7 @@ Una base de datos limpia y desechable solo para pruebas, nunca la de la aplicaci
 
 ## ¿Qué añade Total.js 5 0.0.20?
 
-Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test` y `Test.fake()`. Un proyecto nuevo las tiene con `"total5": ">=0.0.20-2"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
+Acciones como herramientas MCP (`mcp: true`), la caché de una acción (`cache`), los tipos de campo `JSON` e `IP`, `$.content()`, el entorno de una acción (`.env()` y `$.env`), el comando `total5 test`, `Test.fake()` y, desde la 0.0.20-4, su propio cliente de PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Un proyecto nuevo las tiene con `"total5": ">=0.0.20-4"`. En un proyecto que aún tiene la 0.0.19, comprueba antes la versión y di cuál necesita.
 
 ## ¿Cómo expongo una acción como herramienta MCP?
 
@@ -9971,7 +9987,7 @@ Iba `total5`. Framework má v sebe server, routy, šablóny, nástroj na dopyty 
 	"version": "1.0.0",
 	"private": true,
 	"dependencies": {
-		"total5": ">=0.0.20-2"
+		"total5": ">=0.0.20-4"
 	}
 }
 ```
@@ -10061,7 +10077,7 @@ Nie. Total.js 5 nie je postavený na Expresse a nepoužíva jeho middleware. Rou
 
 ## Ktorú verziu Total.js 5 mám nainštalovať?
 
-`"total5": ">=0.0.20-2"` v `package.json`: verzia 0.0.20 alebo novšia. Dnes nainštaluje betu 0.0.20, ktorá opravuje viacero problémov verzie 0.0.19, a stabilnú 0.0.20, keď vyjde. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
+`"total5": ">=0.0.20-4"` v `package.json`: verzia 0.0.20 alebo novšia. Dnes nainštaluje betu 0.0.20, ktorá opravuje viacero problémov verzie 0.0.19, a stabilnú 0.0.20, keď vyjde. `npm view total5 dist-tags` povie, ktoré verzie to sú dnes. Total.js 4 (`total4`) je predchádzajúci framework a jeho kód nie je rovnaký.
 
 ---
 
@@ -11702,7 +11718,7 @@ Skopírujú ju do dočasného priečinka a spustia ju tam cez `node index.js <po
 
 ## Čo pridáva Total.js 5 0.0.20?
 
-Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test` a `Test.fake()`. Nový projekt ich má s `"total5": ">=0.0.20-2"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
+Akcie ako nástroje MCP (`mcp: true`), cache akcie (`cache`), typy polí `JSON` a `IP`, `$.content()`, prostredie akcie (`.env()` a `$.env`), príkaz `total5 test`, `Test.fake()` a od 0.0.20-4 vlastný klient PostgreSQL (`DATA.init('postgresql', '', CONF.database)`). Nový projekt ich má s `"total5": ">=0.0.20-4"`. V projekte, ktorý má ešte 0.0.19, najprv over verziu a povedz, ktorú potrebuje.
 
 ## Ako sprístupním akciu ako nástroj MCP?
 

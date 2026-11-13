@@ -1,8 +1,8 @@
 # Total.js 5: what 0.0.20 adds
 
-Version `0.0.20` of `total5` is the beta on npm (`0.0.20-3` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-2"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
+Version `0.0.20` of `total5` is the beta on npm (`0.0.20-4` when this page was written) and `0.0.19` is still `latest`. A new project gets it with `"total5": ">=0.0.20-4"`, which installs the beta now and the stable 0.0.20 when it is published. A project with `"total5": "latest"` may still have 0.0.19, which has nothing of this page: check the version there and say which one a feature needs.
 
-Every example here was run with `0.0.20-3`. The source of the list is the `changelog.txt` of the framework.
+Every example here was run with `0.0.20-3` or `0.0.20-4`. The source of the list is the `changelog.txt` of the framework.
 
 ## Actions as MCP tools
 
@@ -105,6 +105,22 @@ Test.push('orders', async function(next) {
 
 `Test.fake(name, definition)` takes the definition of an action, as `NEWACTION` does, and `Test.restore()` puts the real actions back.
 
+## A client of PostgreSQL of its own
+
+From `0.0.20-4` Total.js 5 connects `DATA` to PostgreSQL with no package: one line in a definition, and the address in `config`.
+
+```js
+// definitions/db.js
+DATA.init('postgresql', '', CONF.database);
+```
+
+- The empty name is the default database; another name makes another database, used with its prefix in the name of the table.
+- `?pooling=5` at the end of the address keeps a pool of five connections.
+- The fourth argument is the function for the errors; without it they go to `ERROR` with the name of the database.
+- The queries are the same `DATA` calls as with `querybuilderpg`, the package that applications made before use (leave it there).
+
+Run with `0.0.20-4` on a test database: insert, modify, read, find, count, a query with parameters and remove, with numbers, booleans and dates in their types.
+
 ## Smaller additions
 
 | Addition | What it is |
@@ -121,6 +137,6 @@ Test.push('orders', async function(next) {
 - `$.throw(err)` and `$.touch([url])` in actions and controllers.
 - The fixes of `CRON()` with a step (`*/15`), of the mail attachments, of `AJAX()` with XML and the hardening of hostnames.
 
-## A problem found in 0.0.20-3
+## A problem of 0.0.20-3, fixed in 0.0.20-4
 
-`$.invalidsafe(msg, err)` in an action throws `ReferenceError: path is not defined` and the request ends in a timeout. Use `$.invalid(msg)` and log the error apart until a later version fixes it.
+`$.invalidsafe(msg, err)` in an action threw `ReferenceError: path is not defined` in 0.0.20-3 and the request ended in a timeout. In 0.0.20-4 it answers 400 with the message for the user and logs the error.

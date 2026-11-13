@@ -12,7 +12,7 @@ This repository is the knowledge of Total.js 5 for agents and models: the conven
 ## Rules that apply to every change
 
 - Total.js 5 only. Do not use Total.js 4 APIs. The interface is jComponent 20.
-- `"total5": ">=0.0.20-2"` is the version of a new project: 0.0.20 or later (its beta today, the stable version when it is published), because it fixes problems of 0.0.19. In a project that depends on another version, check it before using something of `reference/` and say which version it needs.
+- `"total5": ">=0.0.20-4"` is the version of a new project: 0.0.20 or later (its beta today, the stable version when it is published), because it fixes problems of 0.0.19. In a project that depends on another version, check it before using something of `reference/` and say which version it needs.
 - ES5 first: `var`, `function`, classic loops, `'{0}'.format()` instead of template literals, no arrow functions. `const` or `let` only where the code needs it, as a constant at the top of a file; inside a function write `var`. `async` / `await` where the code waits for the database.
 - `index.js` is always the official start script of Total.js 5, whole and unchanged (see `conventions/general/project-structure.md`). It is the one file that keeps its own style.
 - Use Total.js prototypes (`findItem`, `format`, `parseJSON`, `slug`, `isEmail`...) in the backend and Tangular templates in the frontend before any other function.
