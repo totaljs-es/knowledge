@@ -19,7 +19,7 @@ Total.js 5 knowledge for AI models: small complete applications, examples and an
 | [`conventions/`](conventions) | How Total.js 5 applications are written, one page per subject: [general](conventions/general), [backend](conventions/backend), [database](conventions/database) and [frontend](conventions/frontend) |
 | [`apps/`](apps) | Small complete applications. Each one starts, has its tests and says in its `readme.md` the request it answers and why it has that shape |
 | [`answers/`](answers) | Short answers to the questions people ask about Total.js 5, each with its code and the application that shows it at work |
-| [`questions/`](questions) | One question and its short answer, 234 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
+| [`questions/`](questions) | One question and its short answer, 237 of them by subject, in English, in Spanish ([`questions/es/`](questions/es)) and in Slovak ([`questions/sk/`](questions/sk), a draft until a native speaker reviews it) with the same code |
 | [`reference/components/`](reference/components) | The 348 published jComponent components: the catalogue with what each one does and the page of each one, copied from its repository |
 | [`reference/icons.md`](reference/icons.md) | The names of Total Icons |
 | [`reference/`](reference) | What each version of Total.js 5 adds, tried with that version ([0.0.20](reference/total5-0.0.20.md), the beta), and the official guides of [jComponent 20](reference/jcomponent/readme.md): `ui-component`, `ui-bind`, `ui-plugin`, `ui-import`, the API and how to write a component |
@@ -5080,6 +5080,42 @@ function product($) {
 }
 ```
 
+## What is the difference between $.fallback(404) and $.invalid(404)?
+
+`$.fallback(404)` is for a route that shows a page: the browser gets the page 404. `$.invalid(404)` is for an action: the API answers 404.
+
+```js
+// controllers/default.js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```js
+// actions/products.js
+NEWACTION('Products|read', {
+	name: 'Read a product',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_product').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+## What is the difference between $.json() and $.callback()?
+
+`$.json(data)` answers in a route function. `$.callback(data)` answers in an action.
+
+## How does a client call my API, and how does the server call another service?
+
+A client (the browser, another program) sends a `POST` to `/api/` with the endpoint in `schema` and the data in `data`; in the screen of a plugin `exports.tapi('contacts_create', data, callback)` does it. The server calls another service with `RESTBuilder`.
+
 ---
 
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/data.md
@@ -7812,6 +7848,42 @@ function product($) {
 }
 ```
 
+## ¿Qué diferencia hay entre $.fallback(404) y $.invalid(404)?
+
+`$.fallback(404)` es para una ruta que muestra una página: el navegador recibe la página 404. `$.invalid(404)` es para una acción: la API responde 404.
+
+```js
+// controllers/default.js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```js
+// actions/products.js
+NEWACTION('Products|read', {
+	name: 'Read a product',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_product').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+## ¿Qué diferencia hay entre $.json() y $.callback()?
+
+`$.json(data)` responde en una función de ruta. `$.callback(data)` responde en una acción.
+
+## ¿Cómo llama un cliente a mi API, y cómo llama el servidor a otro servicio?
+
+Un cliente (el navegador, otro programa) envía un `POST` a `/api/` con el endpoint en `schema` y los datos en `data`; en la pantalla de un plugin lo hace `exports.tapi('contacts_create', data, callback)`. El servidor llama a otro servicio con `RESTBuilder`.
+
 ---
 
 Source: https://raw.githubusercontent.com/totaljs-es/knowledge/main/questions/es/data.md
@@ -10543,6 +10615,42 @@ function product($) {
 	$.view('product', item);
 }
 ```
+
+## Aký je rozdiel medzi $.fallback(404) a $.invalid(404)?
+
+`$.fallback(404)` je pre routu, ktorá zobrazuje stránku: prehliadač dostane stránku 404. `$.invalid(404)` je pre akciu: API odpovie 404.
+
+```js
+// controllers/default.js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```js
+// actions/products.js
+NEWACTION('Products|read', {
+	name: 'Read a product',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_product').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+## Aký je rozdiel medzi $.json() a $.callback()?
+
+`$.json(data)` odpovedá vo funkcii routy. `$.callback(data)` odpovedá v akcii.
+
+## Ako volá klient moje API a ako volá server inú službu?
+
+Klient (prehliadač, iný program) pošle `POST` na `/api/` s endpointom v `schema` a dátami v `data`; na obrazovke pluginu to robí `exports.tapi('contacts_create', data, callback)`. Server volá inú službu cez `RESTBuilder`.
 
 ---
 

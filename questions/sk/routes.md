@@ -166,3 +166,39 @@ function product($) {
 	$.view('product', item);
 }
 ```
+
+## Aký je rozdiel medzi $.fallback(404) a $.invalid(404)?
+
+`$.fallback(404)` je pre routu, ktorá zobrazuje stránku: prehliadač dostane stránku 404. `$.invalid(404)` je pre akciu: API odpovie 404.
+
+```js
+// controllers/default.js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```js
+// actions/products.js
+NEWACTION('Products|read', {
+	name: 'Read a product',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_product').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+## Aký je rozdiel medzi $.json() a $.callback()?
+
+`$.json(data)` odpovedá vo funkcii routy. `$.callback(data)` odpovedá v akcii.
+
+## Ako volá klient moje API a ako volá server inú službu?
+
+Klient (prehliadač, iný program) pošle `POST` na `/api/` s endpointom v `schema` a dátami v `data`; na obrazovke pluginu to robí `exports.tapi('contacts_create', data, callback)`. Server volá inú službu cez `RESTBuilder`.

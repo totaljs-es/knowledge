@@ -166,3 +166,39 @@ function product($) {
 	$.view('product', item);
 }
 ```
+
+## What is the difference between $.fallback(404) and $.invalid(404)?
+
+`$.fallback(404)` is for a route that shows a page: the browser gets the page 404. `$.invalid(404)` is for an action: the API answers 404.
+
+```js
+// controllers/default.js
+function product($) {
+	var item = MAIN.products.findItem('id', $.params.id);
+	if (!item) {
+		$.fallback(404);
+		return;
+	}
+	$.view('product', item);
+}
+```
+
+```js
+// actions/products.js
+NEWACTION('Products|read', {
+	name: 'Read a product',
+	params: '*id:UID',
+	action: async function($) {
+		var item = await DATA.read('nosql/tbl_product').id($.params.id).error(404).promise($);
+		$.callback(item);
+	}
+});
+```
+
+## What is the difference between $.json() and $.callback()?
+
+`$.json(data)` answers in a route function. `$.callback(data)` answers in an action.
+
+## How does a client call my API, and how does the server call another service?
+
+A client (the browser, another program) sends a `POST` to `/api/` with the endpoint in `schema` and the data in `data`; in the screen of a plugin `exports.tapi('contacts_create', data, callback)` does it. The server calls another service with `RESTBuilder`.
